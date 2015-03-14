@@ -66,5 +66,19 @@ namespace CommunicationServer
             return config;
         }
 
+        public static ServerConfig GetServerConfig(string[] arguments)
+        {
+            var configFromArguments = LoadFromArguments(arguments);
+            var configFromAppConf = LoadFromAppConfig();
+
+            if (configFromArguments.ComponentTimeout != 0)
+                configFromAppConf.ComponentTimeout = configFromArguments.ComponentTimeout;
+            if (configFromArguments.IsBackup)
+                configFromAppConf.IsBackup = configFromArguments.IsBackup;
+            if (configFromArguments.ServerPort != null)
+                configFromAppConf.ServerPort = configFromArguments.ServerPort;
+
+            return configFromAppConf;
+        }
     }
 }
