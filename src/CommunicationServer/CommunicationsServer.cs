@@ -4,9 +4,9 @@ namespace CommunicationServer
 {
     class CommunicationsServer
     {
-        private string listeningPort;
+        private readonly string listeningPort;
         private bool backupMode;
-        private int componentTimeout;
+        private readonly int componentTimeout;
         
         public CommunicationsServer(ServerConfig configuration)
         {
@@ -15,9 +15,16 @@ namespace CommunicationServer
             componentTimeout = configuration.ComponentTimeout;
         }
 
+        private void LogServerInfo()
+        {
+            Console.WriteLine("Server is running in {0} mode.", backupMode ? "backup" : "primary");
+            Console.WriteLine("Listening on port " + listeningPort);
+            Console.WriteLine("Componenet timeout = {0} [s]", componentTimeout);
+        }
+
         public void Start()
         {
-            Console.WriteLine("Server is running...");
+            LogServerInfo();
             while (true)
             {
                 
