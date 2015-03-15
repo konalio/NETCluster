@@ -6,8 +6,9 @@ namespace ComputationalNode
     {
         static void Main(string[] args)
         {
-            var config = ComponentConfig.GetComponentConfig(args);
+            var node = new ComputationalNode(ComponentConfig.GetComponentConfig(args));
 
+            node.Start();
         }
     }
 }
