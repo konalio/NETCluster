@@ -10,7 +10,7 @@ namespace CommunicationServer
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
 
-        private static int _componentCount = 0;
+        private static int _componentCount;
 
         private readonly string _listeningPort;
         private bool _backupMode;
@@ -84,8 +84,6 @@ namespace CommunicationServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
-            Register content;
-
             var state = (StateObject)ar.AsyncState;
             var handler = state.WorkSocket;
 
