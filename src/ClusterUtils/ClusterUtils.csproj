@@ -41,9 +41,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentConfig.cs" />
+    <Compile Include="ComponentRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers.cs" />
     <Compile Include="StateObject.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClusterMessages\ClusterMessages.csproj">
+      <Project>{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}</Project>
+      <Name>ClusterMessages</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,7 +8,7 @@ namespace ComputationalNode
         public string ServerPort { get; set; }
 
         public string ServerAddress { get; set; }
-     
+
         public ComputationalNode(ComponentConfig componentConfig)
         {
             ServerPort = componentConfig.ServerPort;
@@ -19,18 +19,16 @@ namespace ComputationalNode
         {
             LogNodeInfo();
 
-            Register();
+            var registrationHander = new ComponentRegistration();
 
-            while (true)
-            {
-                
-            }
+            var response = registrationHander.Register(ServerAddress, ServerPort);
+
+            Console.WriteLine("Registered at server with Id: {0}.", response.Id);
+
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.Read();
         }
 
-        private void Register()
-        {
-            
-        }
 
         private void LogNodeInfo()
         {
