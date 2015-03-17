@@ -10,21 +10,19 @@ namespace TaskManager
 {
     public class TaskManager
     {
-        //List<TaskSolver> ts_List;
-        int maxParallelThreads;
+        private int maxParallelThreads;
+        private int timeout;
 
         public string PrimaryServerAddress { get; set; }
         public string ServerPort { get; set; }
 
-        //int port;
-        //System.Net.IPAddress primaryServer;
-        //List<System.Net.IPAddress> backupServers;
-       
-        public TaskManager(int mPT_)
-        {
-            //ts_List = new List<TaskSolver>(ts_);
-            maxParallelThreads = mPT_;
-          
+        public TaskManager(int maxPT)
+        {   
+            /*
+            Do ustawiania maxParrallelThreads:
+            Parallel.For(0, maxPT, new ParallelOptions { MaxDegreeOfParallelism = 4 }, count =>{Console.WriteLine(count);});               
+            */
+
             ComponentConfig cc = ComponentConfig.GetConfigFromAppConfig();
             PrimaryServerAddress = cc.ServerAddress;
             ServerPort = cc.ServerPort;            

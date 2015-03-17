@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterUtils", "..\ClusterU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterUtilsTests", "..\test\ClusterUtilsTests\ClusterUtilsTests.csproj", "{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerTests", "..\TaskManagerTests\TaskManagerTests.csproj", "{86B63892-52BC-417D-92F5-12B9CBB403BF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86B63892-52BC-417D-92F5-12B9CBB403BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86B63892-52BC-417D-92F5-12B9CBB403BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86B63892-52BC-417D-92F5-12B9CBB403BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86B63892-52BC-417D-92F5-12B9CBB403BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
