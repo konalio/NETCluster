@@ -16,14 +16,8 @@ namespace TaskManager
         public string PrimaryServerAddress { get; set; }
         public string ServerPort { get; set; }
 
-        public TaskManager(int maxPT)
+        public TaskManager(int maxPT, ComponentConfig cc)
         {   
-            /*
-            Do ustawiania maxParrallelThreads:
-            Parallel.For(0, maxPT, new ParallelOptions { MaxDegreeOfParallelism = 4 }, count =>{Console.WriteLine(count);});               
-            */
-
-            ComponentConfig cc = ComponentConfig.GetConfigFromAppConfig();
             PrimaryServerAddress = cc.ServerAddress;
             ServerPort = cc.ServerPort;            
         }
