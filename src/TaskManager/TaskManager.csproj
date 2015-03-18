@@ -39,10 +39,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UCCTaskSolver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\UCCTaskSolver.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap.cs" />
@@ -56,6 +52,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClusterMessages\ClusterMessages.csproj">
+      <Project>{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}</Project>
+      <Name>ClusterMessages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClusterUtils\ClusterUtils.csproj">
       <Project>{9dadcf46-e2fd-4844-9f68-0a5b5b966f57}</Project>
       <Name>ClusterUtils</Name>

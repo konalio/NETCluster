@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ClusterUtils;
 
 namespace TaskManager
 {
@@ -10,7 +6,9 @@ namespace TaskManager
     {
         static void Main(string[] args)
         {
+            var manager = new TaskManager(ComponentConfig.GetComponentConfig(args));
 
+            manager.Start();
         }
     }
 }

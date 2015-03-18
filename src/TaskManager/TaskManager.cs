@@ -1,43 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UCCTaskSolver;
 using ClusterUtils;
 
 namespace TaskManager
 {
     public class TaskManager
     {
-        private int maxParallelThreads;
-        private int timeout;
-
-        public string PrimaryServerAddress { get; set; }
+        public string ServerAddress { get; set; }
         public string ServerPort { get; set; }
 
-        public TaskManager(int maxPT, ComponentConfig cc)
+        public TaskManager(ComponentConfig cc)
         {   
-            PrimaryServerAddress = cc.ServerAddress;
+            ServerAddress = cc.ServerAddress;
             ServerPort = cc.ServerPort;            
         }
 
-        public void DivideProblem()
+        public void Start()
         {
+            LogManagerInfo();
 
+            var registrationHandler = new ComponentRegistration();
+
+            var response = registrationHandler.Register(ServerAddress, ServerPort, "TaskManager");
+
+            Console.WriteLine("Registered at server with Id: {0}.", response.Id);
+
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.Read();
         }
-        public void ChooseFinalSolution()
-        {
-           
-        }
-        public void SendRegisterMessageToServer()
-        {
 
-        }
-
-        public void SendMessageToServer()
+        private void LogManagerInfo()
         {
-
+            Console.WriteLine("Manager is running...");
+            Console.WriteLine("Server address: {0}", ServerAddress);
+            Console.WriteLine("Server port: {0}", ServerPort);
         }
     }
 }

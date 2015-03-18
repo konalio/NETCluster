@@ -21,7 +21,7 @@ namespace ComputationalNode
 
             var registrationHander = new ComponentRegistration();
 
-            var response = registrationHander.Register(ServerAddress, ServerPort);
+            var response = registrationHander.Register(ServerAddress, ServerPort, "ComputationalNode");
 
             Console.WriteLine("Registered at server with Id: {0}.", response.Id);
 

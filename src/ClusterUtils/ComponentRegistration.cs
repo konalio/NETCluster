@@ -16,7 +16,7 @@ namespace ClusterUtils
 
         private static RegisterResponse _response;
 
-        public RegisterResponse Register(string serverAddress, string serverPort)
+        public RegisterResponse Register(string serverAddress, string serverPort, string componentType)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace ClusterUtils
 
                 var message = new Register
                 {
-                    Type = "ComputationalNode"
+                    Type = componentType
                 };
 
                 Send(client, Serializers.ObjectToByteArray(message));
