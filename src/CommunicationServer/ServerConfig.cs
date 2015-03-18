@@ -39,7 +39,7 @@ namespace CommunicationServer
                         }
                         catch (Exception e)
                         {
-                            throw;
+                            throw e;
                         }
                         break;
                     }
@@ -57,7 +57,7 @@ namespace CommunicationServer
                         }
                         catch (Exception e)
                         {
-                            throw;
+                            throw e;
                         }
                         break;
                     }

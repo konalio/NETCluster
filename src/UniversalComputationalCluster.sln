@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterMessages", "ClusterMessages\ClusterMessages.csproj", "{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterUtils", "ClusterUtils\ClusterUtils.csproj", "{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer", "CommunicationServer\CommunicationServer.csproj", "{8756D0D2-D661-4054-B6F8-92A6471C5D7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode", "ComputationalNode\ComputationalNode.csproj", "{EA3FB3FC-BEC8-4B6B-B520-05254C3A8CCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "TaskManager\TaskManager.csproj", "{77EAE195-46B0-4804-A341-E75B97FE492F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterUtilsTests", "test\ClusterUtilsTests\ClusterUtilsTests.csproj", "{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerTests", "test\CommunicationServerTests\CommunicationServerTests.csproj", "{12BA18E0-E96A-4523-BCBB-2F1F8B3C4F28}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FF92BB8-7E63-48F4-90B3-CBA9FB109AF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8756D0D2-D661-4054-B6F8-92A6471C5D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8756D0D2-D661-4054-B6F8-92A6471C5D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8756D0D2-D661-4054-B6F8-92A6471C5D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8756D0D2-D661-4054-B6F8-92A6471C5D7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3FB3FC-BEC8-4B6B-B520-05254C3A8CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3FB3FC-BEC8-4B6B-B520-05254C3A8CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3FB3FC-BEC8-4B6B-B520-05254C3A8CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3FB3FC-BEC8-4B6B-B520-05254C3A8CCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77EAE195-46B0-4804-A341-E75B97FE492F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77EAE195-46B0-4804-A341-E75B97FE492F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77EAE195-46B0-4804-A341-E75B97FE492F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77EAE195-46B0-4804-A341-E75B97FE492F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E50ADC3E-C75E-4802-9B19-9F38CE224CA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12BA18E0-E96A-4523-BCBB-2F1F8B3C4F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12BA18E0-E96A-4523-BCBB-2F1F8B3C4F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12BA18E0-E96A-4523-BCBB-2F1F8B3C4F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12BA18E0-E96A-4523-BCBB-2F1F8B3C4F28}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
