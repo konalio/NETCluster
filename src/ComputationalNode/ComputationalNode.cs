@@ -18,15 +18,19 @@ namespace ComputationalNode
         public void Start()
         {
             LogNodeInfo();
+            Register();
 
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.Read();
+        }
+
+        private void Register()
+        {
             var registrationHander = new ComponentRegistration();
 
             var response = registrationHander.Register(ServerAddress, ServerPort, "ComputationalNode");
 
             Console.WriteLine("Registered at server with Id: {0}.", response.Id);
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
         }
 
 
