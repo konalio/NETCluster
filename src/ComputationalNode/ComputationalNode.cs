@@ -49,6 +49,12 @@ namespace ComputationalNode
 
         private static void ProcessResponses(IReadOnlyList<XmlDocument> responses)
         {
+            if (responses.Count == 0)
+            {
+                Console.WriteLine("No response from server, possible communication error.");
+                return;
+            }
+
             var response = responses[0];
 
             var id = response.GetElementsByTagName("Id")[0].InnerText;

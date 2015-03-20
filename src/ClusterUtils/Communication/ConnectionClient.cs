@@ -102,23 +102,30 @@ namespace ClusterUtils.Communication
                 var state = (StateObject)ar.AsyncState;
                 var client = state.WorkSocket;
 
-                var bytesRead = client.EndReceive(ar);
-
-                if (bytesRead > 0)
+                try
                 {
-                    state.ByteBuffer.AddRange(state.Buffer);
+                    var bytesRead = client.EndReceive(ar);
 
-                    client.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
-                        ReceiveCallback, state);
-                }
-                else
-                {
-                    if (state.ByteBuffer.Count > 1)
+                    if (bytesRead > 0)
                     {
-                        var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-                        Responses.Add(response);
+                        state.ByteBuffer.AddRange(state.Buffer);
+
+                        client.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
+                            ReceiveCallback, state);
+                    } 
+                    else
+                    {
+                        if (state.ByteBuffer.Count > 1)
+                        {
+                            var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+                            Responses.Add(response);
+                        }
+                        ReceiveDone.Set();
                     }
-                    ReceiveDone.Set();
+                }
+                catch (SocketException se)
+                {
+                    Console.WriteLine(se.Message);
                 }
             }
             catch (Exception e)
