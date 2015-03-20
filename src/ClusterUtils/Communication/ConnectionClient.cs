@@ -1,11 +1,14 @@
-﻿using ClusterMessages;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-namespace ClusterUtils
+using System.Xml;
+using ClusterMessages;
+
+namespace ClusterUtils.Communication
 {
-    class ConnectionClient
+    public class ConnectionClient
     {
         private static readonly ManualResetEvent ConnectDone =
             new ManualResetEvent(false);
@@ -14,10 +17,10 @@ namespace ClusterUtils
         private static readonly ManualResetEvent ReceiveDone =
             new ManualResetEvent(false);
 
-        private List<ClusterMessage> _responses;
+        private static readonly List<XmlDocument> Responses = new List<XmlDocument>();
 
-        private IPAddress _serverAddress;
-        private int _serverPort;
+        private readonly IPAddress _serverAddress;
+        private readonly int _serverPort;
 
         private Socket _client;
 
@@ -31,21 +34,25 @@ namespace ClusterUtils
         {
             var remoteEP = new IPEndPoint(_serverAddress, _serverPort);
 
-            var client = new Socket(AddressFamily.InterNetwork,
+            _client = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
 
-            client.BeginConnect(remoteEP,
-                ConnectCallback, client);
+            _client.BeginConnect(remoteEP,
+                ConnectCallback, _client);
             ConnectDone.WaitOne();
         }
 
-        public List<ClusterMessage> SendAndWaitForResponse(ClusterMessage message)
+        public List<XmlDocument> SendAndWaitForResponses(IClusterMessage message)
         {
-            Send(_client, Serializers.ObjectToByteArray(message));
+            var byteMessage = Serializers.ObjectToByteArray(message);
+
+            Send(_client, byteMessage);
             SendDone.WaitOne();
 
             Receive(_client);
             ReceiveDone.WaitOne();
+
+            return Responses;
         }
 
         public void Close()
@@ -108,7 +115,8 @@ namespace ClusterUtils
                 {
                     if (state.ByteBuffer.Count > 1)
                     {
-                        _response = Serializers.ByteArrayObject<RegisterResponse>(state.ByteBuffer.ToArray());
+                        var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+                        Responses.Add(response);
                     }
                     ReceiveDone.Set();
                 }

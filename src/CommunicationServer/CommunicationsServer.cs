@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Xml;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace CommunicationServer
 {
@@ -94,10 +97,13 @@ namespace CommunicationServer
                 //TODO Correct message end detection - naive approach
                 state.ByteBuffer.AddRange(state.Buffer);
 
-                var message = Serializers.ByteArrayObject<Register>(state.ByteBuffer.ToArray());
+                var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+
+                var elemList = message.GetElementsByTagName("Type");
+                var componentType = elemList[0].InnerText;
 
                 ++_componentCount;
-                Console.WriteLine("Registered component of type {0} with id {1}", message.Type, _componentCount);
+                Console.WriteLine("Registered component of type {0} with id {1}", componentType, _componentCount);
 
                 var response = new RegisterResponse
                 {

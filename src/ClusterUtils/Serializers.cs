@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace ClusterUtils
@@ -10,8 +11,9 @@ namespace ClusterUtils
         {
             using (var ms = new MemoryStream())
             {
-                var xmlS = new XmlSerializer(typeof(T));
-                xmlS.Serialize(ms, obj);
+                var streamWriter = new StreamWriter(ms, Encoding.UTF8);
+                var xmlS = new XmlSerializer(obj.GetType());
+                xmlS.Serialize(streamWriter, obj);
 
                 return ms.ToArray();
             }
