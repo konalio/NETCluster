@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -111,7 +111,8 @@ namespace CommunicationServer
                         Id = _componentCount.ToString()
                     };
 
-                    Send(handler, Serializers.ObjectToByteArray(response));
+                    var responseBuffer = new List<byte>(Serializers.ObjectToByteArray(response));
+                    Send(handler, responseBuffer.ToArray());
                 }
             }
             catch (SocketException se)

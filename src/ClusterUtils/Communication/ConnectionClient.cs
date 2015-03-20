@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -108,11 +109,20 @@ namespace ClusterUtils.Communication
 
                     if (bytesRead > 0)
                     {
-                        state.ByteBuffer.AddRange(state.Buffer);
+                        foreach (var receivedByte in state.Buffer.TakeWhile(receivedByte => receivedByte != 0))
+                        {
+                            if (receivedByte == 23)
+                            {
+                                ExtractSingleResponse(state);
+                                state.ByteBuffer.Clear();
+                                continue;
+                            }
+                            state.ByteBuffer.Add(receivedByte);
+                        }
 
                         client.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0,
                             ReceiveCallback, state);
-                    } 
+                    }
                     else
                     {
                         if (state.ByteBuffer.Count > 1)
@@ -132,6 +142,12 @@ namespace ClusterUtils.Communication
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        private static void ExtractSingleResponse(StateObject state)
+        {
+            var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+            Responses.Add(response);
         }
 
         private static void Send(Socket client, byte[] byteData)
