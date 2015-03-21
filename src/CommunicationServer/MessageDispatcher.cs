@@ -28,9 +28,10 @@ namespace CommunicationServer
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
-        private Queue<IClusterMessage> messagesQueue;
+        private Queue<IClusterMessage> otherMessagesQueue;
+        private Queue<IClusterMessage> statusMessagesQueue;
         private List<ComponentStatus> componentsStatusList;
-
+        
         public MessageDispatcher(ServerConfig configuration)
         {
             _listeningPort = configuration.ServerPort;           
@@ -41,6 +42,10 @@ namespace CommunicationServer
 
         public void BeginDispatching()
         {
+            statusMessagesQueue = new Queue<IClusterMessage>();
+            otherMessagesQueue = new Queue<IClusterMessage>();
+            componentsStatusList = new List<ComponentStatus>();
+
             Thread th_1 = new Thread(new ParameterizedThreadStart(ListeningThread));
             th_1.Start(null);
 
@@ -67,11 +72,7 @@ namespace CommunicationServer
                 while (true)
                 {
                     AllDone.Reset();
-
-                    Console.WriteLine("Waiting for a connection...");
-
-                    //TODO Consider moving BeginAccept to AcceptCallback
-
+                    Console.WriteLine("Waiting for a connection...");                  
                     listener.BeginAccept(
                         AcceptCallback,
                         listener);
@@ -91,12 +92,24 @@ namespace CommunicationServer
 
         public void StatusThread(Object o)
         {
-
+            while (true)
+            {
+                if (statusMessagesQueue.Count == 0)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
         }
 
         public void TaskThread(Object o)
         {
-
+            while (true)
+            {
+                if (otherMessagesQueue.Count == 0)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
         }
 
 
@@ -125,55 +138,37 @@ namespace CommunicationServer
                 if (bytesRead > 0)
                 {
                     state.ByteBuffer.AddRange(state.Buffer);
-
                     var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
 
-                    var elemList = message.GetElementsByTagName("Type");
-                    var componentType = elemList[0].InnerText;
-
-                    ++_componentCount;
-                    Console.WriteLine("Registered component of type {0} with id {1}", componentType, _componentCount);
-
-                    var response = new RegisterResponse
+                    var elemList = message.GetElementsByTagName("Status");
+                    if(elemList.Count!=0)
                     {
-                        Id = _componentCount.ToString()
-                    };
+                        //Add to status messages
+                    }
+                    else
+                    {
+                        elemList = message.GetElementsByTagName("Register");
+                        if (elemList.Count != 0)
+                        {
+                            //Add to status messages
 
-                    var responseBuffer = new List<byte>(Serializers.ObjectToByteArray(response));
-                    Send(handler, responseBuffer.ToArray());
+                        }
+                        else
+                        {
+                            elemList = message.GetElementsByTagName("SolveRequest");
+                            if (elemList.Count != 0)
+                            {
+                                //Add to other messages
+                            }
+                        }
+                    }                                    
                 }
             }
             catch (SocketException se)
             {
                 Console.WriteLine(se.Message);
             }
-        }
-
-        private static void Send(Socket handler, byte[] byteData)
-        {
-            handler.BeginSend(byteData, 0, byteData.Length, 0,
-                SendCallback, handler);
-        }
-
-        private static void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                var handler = (Socket)ar.AsyncState;
-
-                var bytesSent = handler.EndSend(ar);
-
-                if (bytesSent > 0)
-                    Console.WriteLine("Response sent.");
-
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
+        }     
 
     }
 }
