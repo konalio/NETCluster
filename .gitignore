@@ -201,6 +201,12 @@ sdist/
 develop-eggs/
 .installed.cfg
 
+#dist subfolders
+dist/TaskManager
+dist/CommunicationServer
+dist/ComputationalClient
+dist/ComputationalNode
+
 # Installer logs
 pip-log.txt
 
