@@ -41,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentConfig.cs" />
-    <Compile Include="ComponentRegistration.cs" />
+    <Compile Include="Communication\ConnectionClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers.cs" />
-    <Compile Include="StateObject.cs" />
+    <Compile Include="Communication\StateObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClusterMessages\ClusterMessages.csproj">

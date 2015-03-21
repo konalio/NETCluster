@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Xml;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace CommunicationServer
 {
@@ -87,24 +90,34 @@ namespace CommunicationServer
             var state = (StateObject)ar.AsyncState;
             var handler = state.WorkSocket;
 
-            var bytesRead = handler.EndReceive(ar);
-
-            if (bytesRead > 0)
+            try
             {
-                //TODO Correct message end detection - naive approach
-                state.ByteBuffer.AddRange(state.Buffer);
+                var bytesRead = handler.EndReceive(ar);
 
-                var message = Serializers.ByteArrayObject<Register>(state.ByteBuffer.ToArray());
-
-                ++_componentCount;
-                Console.WriteLine("Registered component of type {0} with id {1}", message.Type, _componentCount);
-
-                var response = new RegisterResponse
+                if (bytesRead > 0)
                 {
-                    Id = _componentCount.ToString()
-                };
+                    state.ByteBuffer.AddRange(state.Buffer);
 
-                Send(handler, Serializers.ObjectToByteArray(response));
+                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+
+                    var elemList = message.GetElementsByTagName("Type");
+                    var componentType = elemList[0].InnerText;
+
+                    ++_componentCount;
+                    Console.WriteLine("Registered component of type {0} with id {1}", componentType, _componentCount);
+
+                    var response = new RegisterResponse
+                    {
+                        Id = _componentCount.ToString()
+                    };
+
+                    var responseBuffer = new List<byte>(Serializers.ObjectToByteArray(response));
+                    Send(handler, responseBuffer.ToArray());
+                }
+            }
+            catch (SocketException se)
+            {
+                Console.WriteLine(se.Message);
             }
         }
 
@@ -127,7 +140,6 @@ namespace CommunicationServer
 
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
-
             }
             catch (Exception e)
             {
