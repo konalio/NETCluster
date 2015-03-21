@@ -43,10 +43,10 @@ namespace ComputationalNode
 
             tcpClient.Close();
 
-            ProcessResponses(responses);
+            ProcessRegisterResponse(responses);
         }
 
-        private static void ProcessResponses(IReadOnlyList<XmlDocument> responses)
+        private static void ProcessRegisterResponse(IReadOnlyList<XmlDocument> responses)
         {
             if (responses.Count == 0)
             {
