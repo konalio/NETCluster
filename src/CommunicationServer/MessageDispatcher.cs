@@ -15,9 +15,16 @@ namespace CommunicationServer
 {
     class ComponentStatus
     {
-        int id;
-        int type;
-        bool busy;
+        public int id;
+        public String type;
+        public bool busy;
+
+        public ComponentStatus(int idVal, String typeVal, bool busyVal)
+        {
+            id = idVal;
+            type = typeVal;
+            busy = busyVal;
+        }
     }
 
     class MessageDispatcher
@@ -28,16 +35,15 @@ namespace CommunicationServer
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
-        private Queue<IClusterMessage> otherMessagesQueue;
-        private Queue<IClusterMessage> statusMessagesQueue;
-        private List<ComponentStatus> componentsStatusList;
+        private static Queue<IClusterMessage> otherMessagesQueue;
+        private static Queue<IClusterMessage> statusMessagesQueue;
+        private static List<ComponentStatus> componentsStatusList;
         
         public MessageDispatcher(ServerConfig configuration)
         {
             _listeningPort = configuration.ServerPort;           
             _componentTimeout = configuration.ComponentTimeout;
-        }
-        
+        }       
         
 
         public void BeginDispatching()
@@ -49,10 +55,10 @@ namespace CommunicationServer
             Thread th_1 = new Thread(new ParameterizedThreadStart(ListeningThread));
             th_1.Start(null);
 
-            Thread th_2 = new Thread(new ParameterizedThreadStart(StatusThread));
+            Thread th_2 = new Thread(MessageDispatcher.StatusThread);
             th_2.Start(null);
 
-            Thread th_3 = new Thread(new ParameterizedThreadStart(TaskThread));
+            Thread th_3 = new Thread(MessageDispatcher.TaskThread);
             th_3.Start(null);
 
         }
@@ -90,7 +96,7 @@ namespace CommunicationServer
             Console.Read();
         }
 
-        public void StatusThread(Object o)
+        public static void StatusThread(Object o)
         {
             while (true)
             {
@@ -101,7 +107,7 @@ namespace CommunicationServer
             }
         }
 
-        public void TaskThread(Object o)
+        public static void TaskThread(Object o)
         {
             while (true)
             {
@@ -112,6 +118,56 @@ namespace CommunicationServer
             }
         }
 
+        public static void MessageReadThread(Object m)
+        {
+            XmlDocument message = (XmlDocument) m;
+
+            var elemIdList = message.GetElementsByTagName("Id");
+            var elemList = message.GetElementsByTagName("Status");
+
+            var elemIdString = elemIdList[0].InnerText;
+            var elemIdNumber = UInt64.Parse(elemIdString);
+
+            //Wiadomosc o Statusie
+            if (elemList.Count != 0)
+            {
+                elemList = message.GetElementsByTagName("State");
+                var state = elemList[0];
+
+                if(state.InnerText =="Idle")
+                {
+                    componentsStatusList[(int) elemIdNumber].busy = false;
+                }
+                else
+                {
+                    componentsStatusList[(int)elemIdNumber].busy = true;
+                }
+            }
+
+            else
+            {
+                
+                elemList = message.GetElementsByTagName("Register");
+
+                //Wiadomosc o Zarejestrowaniu
+                if (elemList.Count != 0)
+                {
+                    var elemTypeList = message.GetElementsByTagName("Type");
+                    ComponentStatus cs = new ComponentStatus(_componentCount, elemTypeList[0].InnerText, false);
+
+                    _componentCount++;
+
+                }
+                //Pozostale wiadomosci (SolveRequest, SolutionRequest, PartialProblems)
+                else
+                {
+                    elemList = message.GetElementsByTagName("SolveRequest");
+                    if (elemList.Count != 0)
+                    {
+                    }
+                }
+            }       
+        }
 
         public static void AcceptCallback(IAsyncResult ar)
         {
@@ -138,30 +194,10 @@ namespace CommunicationServer
                 if (bytesRead > 0)
                 {
                     state.ByteBuffer.AddRange(state.Buffer);
-                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-
-                    var elemList = message.GetElementsByTagName("Status");
-                    if(elemList.Count!=0)
-                    {
-                        //Add to status messages
-                    }
-                    else
-                    {
-                        elemList = message.GetElementsByTagName("Register");
-                        if (elemList.Count != 0)
-                        {
-                            //Add to status messages
-
-                        }
-                        else
-                        {
-                            elemList = message.GetElementsByTagName("SolveRequest");
-                            if (elemList.Count != 0)
-                            {
-                                //Add to other messages
-                            }
-                        }
-                    }                                    
+                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());   
+                
+                    Thread th = new Thread(MessageDispatcher.MessageReadThread);
+                    th.Start(message);                                                
                 }
             }
             catch (SocketException se)
