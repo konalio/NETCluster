@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Xml;
 using ClusterUtils;
 using ClusterUtils.Communication;
+using System.Threading;
 
 namespace ComputationalNode
 {
     class ComputationalNode
     {
+        public ulong AssignedId { get; set; }
+
         public string ServerPort { get; set; }
 
         public string ServerAddress { get; set; }
+
+        public List<StatusThread> StatusThreads { get; set; }
+
 
         public ComputationalNode(ComponentConfig componentConfig)
         {
@@ -25,6 +31,25 @@ namespace ComputationalNode
 
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
+        }
+
+
+        public void StartSendingStatus()
+        {
+            // defining how often we want to send the KeepAlive message,
+            // before deciding on global solution, I'm setting it to 5s for testing purposes
+            int msStatusCycleTime = 5000; 
+            
+            var tcpClient = new ConnectionClient(ServerAddress, ServerPort);
+
+            tcpClient.Connect();
+            Status statusMessage = new Status();
+            statusMessage.Id = AssignedId;
+            statusMessage.Threads = StatusThreads.ToArray();
+
+            Thread keepSendingStatusThread = new Thread(() => 
+                    tcpClient.KeepSendingStatus(statusMessage, msStatusCycleTime));
+            keepSendingStatusThread.Start();
         }
 
         private void Register()
