@@ -8,13 +8,11 @@ namespace TaskManager
 {
     public class TaskManager
     {
-        public string ServerAddress { get; set; }
-        public string ServerPort { get; set; }
+        private readonly ServerInfo _serverInfo;
 
         public TaskManager(ComponentConfig cc)
         {   
-            ServerAddress = cc.ServerAddress;
-            ServerPort = cc.ServerPort;            
+            _serverInfo = new ServerInfo(cc.ServerAddress, cc.ServerPort);          
         }
 
         public void Start()
@@ -28,7 +26,7 @@ namespace TaskManager
 
         private void Register()
         {
-            var tcpClient = new ConnectionClient(ServerAddress, ServerPort);
+            var tcpClient = new ConnectionClient(_serverInfo);
 
             tcpClient.Connect();
 
@@ -62,8 +60,8 @@ namespace TaskManager
         private void LogManagerInfo()
         {
             Console.WriteLine("Manager is running...");
-            Console.WriteLine("Server address: {0}", ServerAddress);
-            Console.WriteLine("Server port: {0}", ServerPort);
+            Console.WriteLine("Server address: {0}", _serverInfo.Address);
+            Console.WriteLine("Server port: {0}", _serverInfo.Port);
         }
     }
 }
