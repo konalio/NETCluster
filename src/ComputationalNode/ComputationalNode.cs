@@ -44,7 +44,6 @@ namespace ComputationalNode
             var tcpClient = new ConnectionClient(ServerAddress, ServerPort);
             tcpClient.Connect();
 
-            var byteMessage = Serializers.ObjectToByteArray(message);
             Console.WriteLine("Sending status message to Server.");
             var responses = tcpClient.SendAndWaitForResponses((IClusterMessage)message);
 
@@ -63,7 +62,7 @@ namespace ComputationalNode
         {
             // defining how often we want to send the KeepAlive message,
             // before deciding on global solution, I'm setting it to 5s for testing purposes
-            int msStatusCycleTime = 5000; 
+            int msStatusCycleTime = 8000; 
 
             Status statusMessage = new Status();
             statusMessage.Id = AssignedId;
