@@ -14,9 +14,7 @@ namespace ComputationalNode
         private int _id;
 
         private List<ServerInfo> _backups = new List<ServerInfo>(); 
-
-        private Queue<IClusterMessage> _messagesToSend = new Queue<IClusterMessage>(); 
-
+        
         public ComputationalNode(ComponentConfig componentConfig)
         {
             _serverInfo = new ServerInfo(componentConfig.ServerPort, componentConfig.ServerAddress);
@@ -93,12 +91,27 @@ namespace ComputationalNode
 
             //Sleep udający liczenie?
 
-            var response = new Solutions
+            CreateAndSendPartialSolution(taskId, problemInstanceId);
+        }
+
+        private void CreateAndSendPartialSolution(ulong taskId, ulong problemInstanceId)
+        {
+            var solution = new Solutions
             {
                 Solutions1 = new[] {new SolutionsSolution {TaskId = taskId, Type = SolutionsSolutionType.Partial}},
                 Id = problemInstanceId
             };
-            _messagesToSend.Enqueue(response);
+
+            var tcpClient = new ConnectionClient(_serverInfo);
+
+            tcpClient.Connect();
+
+            var response = tcpClient.SendAndWaitForResponses(solution);
+
+            tcpClient.Close();
+
+            if (response.Count != 1)
+                throw new Exception();
         }
 
         private void LogNodeInfo()
