@@ -20,8 +20,6 @@ namespace ComputationalNode
 
         public List<NoOperationBackupCommunicationServersBackupCommunicationServer> BackupServers { get; set; }
 
-
-
         public ComputationalNode(ComponentConfig componentConfig)
         {
             ServerPort = componentConfig.ServerPort;
@@ -45,7 +43,7 @@ namespace ComputationalNode
             tcpClient.Connect();
 
             Console.WriteLine("Sending status message to Server.");
-            var responses = tcpClient.SendAndWaitForResponses((IClusterMessage)message);
+            var responses = tcpClient.SendAndWaitForResponses(message);
 
             tcpClient.Close();
             ProcessNoOperationMessage(responses);
@@ -62,7 +60,7 @@ namespace ComputationalNode
         {
             // defining how often we want to send the KeepAlive message,
             // before deciding on global solution, I'm setting it to 5s for testing purposes
-            int msStatusCycleTime = 8000; 
+            int msStatusCycleTime = 2000; 
 
             Status statusMessage = new Status();
             statusMessage.Id = AssignedId;

@@ -11,14 +11,14 @@ namespace ClusterUtils.Communication
 {
     public class ConnectionClient
     {
-        private static readonly ManualResetEvent ConnectDone =
+        private readonly ManualResetEvent ConnectDone =
             new ManualResetEvent(false);
-        private static readonly ManualResetEvent SendDone =
+        private readonly ManualResetEvent SendDone =
             new ManualResetEvent(false);
-        private static readonly ManualResetEvent ReceiveDone =
+        private readonly ManualResetEvent ReceiveDone =
             new ManualResetEvent(false);
 
-        private static readonly List<XmlDocument> Responses = new List<XmlDocument>();
+        private readonly List<XmlDocument> Responses = new List<XmlDocument>();
 
         private readonly IPAddress _serverAddress;
         private readonly int _serverPort;
@@ -62,7 +62,7 @@ namespace ClusterUtils.Communication
             _client.Close();
         }
 
-        private static void ConnectCallback(IAsyncResult ar)
+        private void ConnectCallback(IAsyncResult ar)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void Receive(Socket client)
+        private void Receive(Socket client)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void ReceiveCallback(IAsyncResult ar)
+        private void ReceiveCallback(IAsyncResult ar)
         {
             try
             {
@@ -144,19 +144,19 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void ExtractSingleResponse(StateObject state)
+        private void ExtractSingleResponse(StateObject state)
         {
             var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
             Responses.Add(response);
         }
 
-        private static void Send(Socket client, byte[] byteData)
+        private void Send(Socket client, byte[] byteData)
         {
             client.BeginSend(byteData, 0, byteData.Length, 0,
                 SendCallback, client);
         }
 
-        private static void SendCallback(IAsyncResult ar)
+        private void SendCallback(IAsyncResult ar)
         {
             try
             {
