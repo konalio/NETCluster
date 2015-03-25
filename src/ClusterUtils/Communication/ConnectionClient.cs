@@ -56,33 +56,6 @@ namespace ClusterUtils.Communication
             return Responses;
         }
 
-        private void SendStatusMessage(object sender, System.Timers.ElapsedEventArgs e,
-                                    Status message)
-        {
-            var byteMessage = Serializers.ObjectToByteArray(message);
-
-            Send(_client, byteMessage);
-            SendDone.WaitOne();
-        }
-
-        public void KeepSendingStatus(Status message, int msCycleTime)
-        {
-            System.Timers.Timer sendStatus = new System.Timers.Timer(msCycleTime);
-            sendStatus.Elapsed += (sender, e) => SendStatusMessage(sender, e, message);
-            sendStatus.Start();
-
-            // less 'elegant' version, leaving it here for now just in case
-            //while (true)
-            //{
-            //    DateTime beginTime = DateTime.Now;
-            //    var byteMessage = Serializers.ObjectToByteArray(message);
-            //    Send(_client, byteMessage);
-            //    SendDone.WaitOne();
-            //    while (DateTime.Now - beginTime < TimeSpan.FromMilliseconds(msCycleTime));
-            //}
-        }
-
-
         public void Close()
         {
             _client.Shutdown(SocketShutdown.Both);
@@ -192,7 +165,9 @@ namespace ClusterUtils.Communication
                 var bytesSent = client.EndSend(ar);
 
                 if (bytesSent > 0)
-                    Console.WriteLine("Register message sent...");
+                {
+                    Console.WriteLine("Message sent...");
+                }
 
                 SendDone.Set();
             }

@@ -4,6 +4,7 @@ using System.Xml;
 using ClusterUtils;
 using ClusterUtils.Communication;
 using System.Threading;
+using ClusterMessages;
 
 namespace ComputationalNode
 {
@@ -17,11 +18,15 @@ namespace ComputationalNode
 
         public List<StatusThread> StatusThreads { get; set; }
 
+        public List<NoOperationBackupCommunicationServersBackupCommunicationServer> BackupServers { get; set; }
+
+
 
         public ComputationalNode(ComponentConfig componentConfig)
         {
             ServerPort = componentConfig.ServerPort;
             ServerAddress = componentConfig.ServerAddress;
+            BackupServers = new List<NoOperationBackupCommunicationServersBackupCommunicationServer>();
         }
 
         public void Start()
@@ -29,26 +34,45 @@ namespace ComputationalNode
             LogNodeInfo();
             Register();
 
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            //Console.WriteLine("\nPress ENTER to continue...");
+            //Console.Read();
         }
 
+        private void SendStatusMessage(object sender, System.Timers.ElapsedEventArgs e,
+                                    Status message)
+        {
+            var tcpClient = new ConnectionClient(ServerAddress, ServerPort);
+            tcpClient.Connect();
+
+            var byteMessage = Serializers.ObjectToByteArray(message);
+            Console.WriteLine("Sending status message to Server.");
+            var responses = tcpClient.SendAndWaitForResponses((IClusterMessage)message);
+
+            tcpClient.Close();
+            ProcessNoOperationMessage(responses);
+        }
+
+        public void KeepSendingStatus(Status message, int msCycleTime)
+        {
+            System.Timers.Timer sendStatus = new System.Timers.Timer(msCycleTime);
+            sendStatus.Elapsed += (sender, e) => SendStatusMessage(sender, e, message);
+            sendStatus.Start();
+        }
 
         public void StartSendingStatus()
         {
             // defining how often we want to send the KeepAlive message,
             // before deciding on global solution, I'm setting it to 5s for testing purposes
             int msStatusCycleTime = 5000; 
-            
-            var tcpClient = new ConnectionClient(ServerAddress, ServerPort);
 
-            tcpClient.Connect();
             Status statusMessage = new Status();
             statusMessage.Id = AssignedId;
             statusMessage.Threads = StatusThreads.ToArray();
 
             Thread keepSendingStatusThread = new Thread(() => 
-                    tcpClient.KeepSendingStatus(statusMessage, msStatusCycleTime));
+                    KeepSendingStatus(statusMessage, msStatusCycleTime));
+
+            Console.WriteLine("Starting thread sending the Status messages.");
             keepSendingStatusThread.Start();
         }
 
@@ -84,6 +108,23 @@ namespace ComputationalNode
             var id = response.GetElementsByTagName("Id")[0].InnerText;
 
             Console.WriteLine("Registered at server with Id: {0}.", id);
+        }
+
+        private void ProcessNoOperationMessage(IReadOnlyList<XmlDocument> responses)
+        {
+            if (responses.Count == 0)
+            {
+                Console.WriteLine("No response from server, possible communication error.");
+                return;
+            }
+
+            var response = responses[0];
+            //BackupServers = response.GetElementsByTagName("BackupCommunicationServers");
+                        
+
+            //var id = response.GetElementsByTagName("Id")[0].InnerText;
+            
+            Console.WriteLine("Received a NoOperation message.");
         }
 
 

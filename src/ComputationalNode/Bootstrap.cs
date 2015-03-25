@@ -57,6 +57,7 @@ namespace ComputationalNode
             node.AssignedId = 420;
 
             node.StartSendingStatus();
+
             Console.ReadLine();
 
         }
