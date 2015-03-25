@@ -45,6 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializers.cs" />
     <Compile Include="Communication\StateObject.cs" />
+    <Compile Include="ServerInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClusterMessages\ClusterMessages.csproj">
