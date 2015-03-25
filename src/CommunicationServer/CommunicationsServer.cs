@@ -31,10 +31,16 @@ namespace CommunicationServer
             Console.WriteLine("Server is running in {0} mode.", _backupMode ? "backup" : "primary");
             Console.WriteLine("Listening on port " + _listeningPort);
             Console.WriteLine("Componenet timeout = {0} [s]", _componentTimeout);
+            
         }
 
         public void Start()
         {
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.Read();
+            MessageDispatcher md = new MessageDispatcher(_listeningPort, _componentTimeout);
+            md.BeginDispatching();
+            /*
             LogServerInfo();
 
             var localEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(_listeningPort));
@@ -69,7 +75,7 @@ namespace CommunicationServer
             }
 
             Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            Console.Read();*/
         }
 
         public static void AcceptCallback(IAsyncResult ar)

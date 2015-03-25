@@ -49,10 +49,10 @@ namespace CommunicationServer
         private List<IClusterMessage> messageList;
         private List<ComponentStatus> components;
         
-        public MessageDispatcher(ServerConfig configuration)
+        public MessageDispatcher(string listport, int timeout)
         {
-            _listeningPort = configuration.ServerPort;           
-            _componentTimeout = configuration.ComponentTimeout;
+            _listeningPort = listport;       
+            _componentTimeout = timeout;
         }       
         
 
