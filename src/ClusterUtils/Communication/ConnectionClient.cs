@@ -25,10 +25,10 @@ namespace ClusterUtils.Communication
 
         private Socket _client;
 
-        public ConnectionClient(string serverAddress, string serverPort)
+        public ConnectionClient(ServerInfo serverInfo)
         {
-            _serverAddress = IPAddress.Parse(serverAddress);
-            _serverPort = int.Parse(serverPort);
+            _serverAddress = IPAddress.Parse(serverInfo.Address);
+            _serverPort = int.Parse(serverInfo.Port);
         }
 
         public void Connect()
