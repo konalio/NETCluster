@@ -15,15 +15,26 @@ namespace CommunicationServer
 {
     class ComponentStatus
     {
-        public int id;
+        public ulong id;
         public String type;
-        public bool busy;
+        public RegisterSolvableProblemsProblemName[] solvableProblems;
 
-        public ComponentStatus(int idVal, String typeVal, bool busyVal)
+        public ComponentStatus(ulong idVal, String typeVal, RegisterSolvableProblemsProblemName[] problemsVal)
         {
             id = idVal;
             type = typeVal;
-            busy = busyVal;
+            solvableProblems = problemsVal;
+        }
+    }
+
+    class ThreadPackage
+    {
+        public Socket handler;
+        public XmlDocument message;
+        public ThreadPackage(Socket h, XmlDocument m)
+        {
+            handler = h;
+            message = m;
         }
     }
 
@@ -31,13 +42,12 @@ namespace CommunicationServer
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
 
-        private static int _componentCount;
+        private ulong _componentCount;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
-
-        private static Queue<IClusterMessage> otherMessagesQueue;
-        private static Queue<IClusterMessage> statusMessagesQueue;
-        private static List<ComponentStatus> componentsStatusList;
+        
+        private List<IClusterMessage> messageList;
+        private List<ComponentStatus> components;
         
         public MessageDispatcher(ServerConfig configuration)
         {
@@ -48,19 +58,11 @@ namespace CommunicationServer
 
         public void BeginDispatching()
         {
-            statusMessagesQueue = new Queue<IClusterMessage>();
-            otherMessagesQueue = new Queue<IClusterMessage>();
-            componentsStatusList = new List<ComponentStatus>();
+            messageList = new List<IClusterMessage>();
+            components = new List<ComponentStatus>();
 
             Thread th_1 = new Thread(new ParameterizedThreadStart(ListeningThread));
             th_1.Start(null);
-
-            Thread th_2 = new Thread(MessageDispatcher.StatusThread);
-            th_2.Start(null);
-
-            Thread th_3 = new Thread(MessageDispatcher.TaskThread);
-            th_3.Start(null);
-
         }
 
         public void ListeningThread(Object o)
@@ -69,7 +71,6 @@ namespace CommunicationServer
             Console.WriteLine("Address: {0}", localEndPoint.Address.ToString());
             var listener = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
-
             try
             {
                 listener.Bind(localEndPoint);
@@ -96,80 +97,194 @@ namespace CommunicationServer
             Console.Read();
         }
 
-        public static void StatusThread(Object o)
+        public void MessageReadThread(Object m)
         {
-            while (true)
-            {
-                if (statusMessagesQueue.Count == 0)
-                {
-                    Thread.Sleep(1000);
-                }
-            }
+            XmlDocument message = ((ThreadPackage)m).message;
+            Socket handler = ((ThreadPackage)m).handler;
+
+            MessageTypeResolver.MessageType messageType = MessageTypeResolver.GetMessageType(message);
+            MessageAnalyze(message,messageType,handler);
+           
         }
-
-        public static void TaskThread(Object o)
-        {
-            while (true)
+        
+        public void MessageAnalyze(XmlDocument message, MessageTypeResolver.MessageType messageType, Socket handler)
+        {            
+            if (messageType == MessageTypeResolver.MessageType.Status)
             {
-                if (otherMessagesQueue.Count == 0)
+                var id = UInt64.Parse(message.GetElementsByTagName("Id")[0].InnerText);
+                var state = message.GetElementsByTagName("State")[0];
+                if (state.InnerText == "Idle")
                 {
-                    Thread.Sleep(1000);
-                }
-            }
-        }
-
-        public static void MessageReadThread(Object m)
-        {
-            XmlDocument message = (XmlDocument) m;
-
-            var elemIdList = message.GetElementsByTagName("Id");
-            var elemList = message.GetElementsByTagName("Status");
-
-            var elemIdString = elemIdList[0].InnerText;
-            var elemIdNumber = UInt64.Parse(elemIdString);
-
-            //Wiadomosc o Statusie
-            if (elemList.Count != 0)
-            {
-                elemList = message.GetElementsByTagName("State");
-                var state = elemList[0];
-
-                if(state.InnerText =="Idle")
-                {
-                    componentsStatusList[(int) elemIdNumber].busy = false;
-                }
-                else
-                {
-                    componentsStatusList[(int)elemIdNumber].busy = true;
-                }
-            }
-
-            else
-            {
-                
-                elemList = message.GetElementsByTagName("Register");
-
-                //Wiadomosc o Zarejestrowaniu
-                if (elemList.Count != 0)
-                {
-                    var elemTypeList = message.GetElementsByTagName("Type");
-                    ComponentStatus cs = new ComponentStatus(_componentCount, elemTypeList[0].InnerText, false);
-
-                    _componentCount++;
-
-                }
-                //Pozostale wiadomosci (SolveRequest, SolutionRequest, PartialProblems)
-                else
-                {
-                    elemList = message.GetElementsByTagName("SolveRequest");
-                    if (elemList.Count != 0)
+                    while (messageList.Count == 0)
                     {
+                        Thread.Sleep(100);
                     }
+                    if(components[(int)id].type=="TaskManager")
+                    {
+                        SearchTaskManagerMessages(id,handler);
+                    }
+                    else if(components[(int)id].type=="ComputationalNode")
+                    {
+                        SearchComputationalNodeMessages(handler);
+                    } 
                 }
-            }       
+
+                NoOperation no = new NoOperation();
+                byte[] messageData = Serializers.ObjectToByteArray<NoOperation>(no);
+                SendMessage(handler, messageData);
+            }
+
+            else if (messageType == MessageTypeResolver.MessageType.Register)
+            {
+                var type = message.GetElementsByTagName("Type")[0];
+                var solvableProblems = message.GetElementsByTagName("ProblemName");
+
+                int count = solvableProblems.Count;
+                RegisterSolvableProblemsProblemName[] problems = new RegisterSolvableProblemsProblemName[count];
+
+                for (int i = 0; i < count;i++ )
+                {
+                    RegisterSolvableProblemsProblemName rp = new RegisterSolvableProblemsProblemName();
+                    rp.Value = solvableProblems[i].InnerText;
+                    problems[i] = rp;
+                }
+                ComponentStatus cs = new ComponentStatus(_componentCount, type.InnerText, problems);
+                components.Add(cs);
+                _componentCount++;
+
+                RegisterResponse rr = new RegisterResponse();
+                rr.Id = cs.id.ToString();
+                rr.Timeout = _componentTimeout.ToString();                
+               
+                byte[] messageData = Serializers.ObjectToByteArray<RegisterResponse>(rr);
+                SendMessage(handler,messageData);
+            }
+            else if (messageType == MessageTypeResolver.MessageType.SolveRequest)
+            {
+                SolveRequest sr = new SolveRequest();
+
+                var problemType = message.GetElementsByTagName("ProblemType")[0];
+                var timeout = message.GetElementsByTagName("SolvingTimeout")[0];
+                var data = message.GetElementsByTagName("Data")[0];
+                var id = UInt64.Parse(message.GetElementsByTagName("Id")[0].InnerText);
+
+                sr.Id = id;
+                sr.ProblemType = problemType.InnerText;
+                sr.SolvingTimeout = UInt64.Parse(timeout.InnerText);
+                sr.Data = System.Text.Encoding.ASCII.GetBytes(data.InnerText);
+                messageList.Add(sr);
+
+                SolveRequestResponse srr = new SolveRequestResponse();
+                srr.Id = id;
+                byte[] messageData = Serializers.ObjectToByteArray<SolveRequestResponse>(srr);
+                SendMessage(handler, messageData);
+
+            }
+            else if (messageType == MessageTypeResolver.MessageType.SolutionRequest)
+            {
+                var id = UInt64.Parse(message.GetElementsByTagName("Id")[0].InnerText);
+                Solutions s = new Solutions();
+                s.Id = id;                
+                
+                byte[] messageData = Serializers.ObjectToByteArray<Solutions>(s);
+                SendMessage(handler, messageData);
+                
+            }
+            else if (messageType == MessageTypeResolver.MessageType.PartialProblems)
+            {
+                SolvePartialProblems spp = new SolvePartialProblems();
+                var problemType = message.GetElementsByTagName("ProblemType")[0];
+                var commonData = message.GetElementsByTagName("CommonData")[0];
+                var timeout = message.GetElementsByTagName("SolvingTimeout");
+                var id = UInt64.Parse(message.GetElementsByTagName("Id")[0].InnerText);
+
+                var partialProblemTaskIds = message.GetElementsByTagName("TaskId");
+                var partialProblemDatas = message.GetElementsByTagName("Data");
+                var partialProblemNodeIds = message.GetElementsByTagName("NodeId");
+
+                int count = partialProblemTaskIds.Count;
+
+                SolvePartialProblemsPartialProblem[] partialproblems = new SolvePartialProblemsPartialProblem[count];
+                for(int i=0;i<count;i++)
+                {
+                    SolvePartialProblemsPartialProblem problem = new SolvePartialProblemsPartialProblem();
+                    problem.Data = System.Text.Encoding.ASCII.GetBytes(partialProblemDatas[i].InnerText);
+                    problem.TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
+                    problem.NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
+
+                    partialproblems[i] = problem;
+
+                }
+                spp.Id = id;
+                spp.CommonData = System.Text.Encoding.ASCII.GetBytes(commonData.InnerText);
+                spp.ProblemType = problemType.InnerText;
+                spp.PartialProblems = partialproblems;
+
+                if (timeout.Count != 0)
+                {
+                    spp.SolvingTimeout = UInt64.Parse(timeout[0].InnerText);
+                    spp.SolvingTimeoutSpecified = true;
+                }
+                else
+                {
+                    spp.SolvingTimeoutSpecified = false;
+                }
+                messageList.Add(spp);
+            }
+        }        
+
+        public void SearchTaskManagerMessages(ulong id, Socket handler)
+        {
+            int i = 0;
+            while (true)
+            {
+                if (i > messageList.Count)
+                {
+                    i = 0;
+                }
+                if (messageList[i] is SolveRequest)
+                {
+
+                    SolveRequest m = messageList[i] as SolveRequest;
+                    DivideProblem dp = new DivideProblem();
+                    dp.Id = m.Id;
+                    dp.ProblemType = m.ProblemType;
+                    dp.NodeID = id;
+                    dp.Data = m.Data;
+                    //dp.ComputationalNodes ???
+
+                    byte[] messageData = Serializers.ObjectToByteArray<DivideProblem>(dp);
+                    SendMessage(handler, messageData);
+                    messageList.Remove(messageList[i]);                    
+                    break;
+                }
+                i++;
+            }
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
+        public void SearchComputationalNodeMessages(Socket handler)
+        {
+            int i = 0;
+            while (true)
+            {
+                if (i > messageList.Count)
+                {
+                    i = 0;                    
+                }
+                if (messageList[i] is SolvePartialProblems)
+                {
+                    SolvePartialProblems m = messageList[i] as SolvePartialProblems;
+
+                    byte[] messageData = Serializers.ObjectToByteArray<SolvePartialProblems>(m);
+                    SendMessage(handler, messageData);
+
+                    messageList.Remove(messageList[i]);
+                    break;
+                }
+                i++;
+            }
+        }
+        public void AcceptCallback(IAsyncResult ar)
         {
             AllDone.Set();
 
@@ -182,7 +297,7 @@ namespace CommunicationServer
                 ReadCallback, state);
         }
 
-        public static void ReadCallback(IAsyncResult ar)
+        public void ReadCallback(IAsyncResult ar)
         {
             var state = (StateObject)ar.AsyncState;
             var handler = state.WorkSocket;
@@ -194,17 +309,42 @@ namespace CommunicationServer
                 if (bytesRead > 0)
                 {
                     state.ByteBuffer.AddRange(state.Buffer);
-                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());   
-                
-                    Thread th = new Thread(MessageDispatcher.MessageReadThread);
-                    th.Start(message);                                                
+                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+
+                    ThreadPackage tp = new ThreadPackage(handler, message);
+                    Thread th = new Thread(new ParameterizedThreadStart(MessageReadThread));
+                    th.Start(tp);
                 }
             }
             catch (SocketException se)
             {
                 Console.WriteLine(se.Message);
             }
-        }     
+        }
+        public static void SendMessage(Socket handler, byte[] byteData)
+        {
+            handler.BeginSend(byteData, 0, byteData.Length, 0,
+               SendCallback, handler);
+        }
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                var handler = (Socket)ar.AsyncState;
+
+                var bytesSent = handler.EndSend(ar);
+
+                if (bytesSent > 0)
+                    Console.WriteLine("Response sent.");
+
+                handler.Shutdown(SocketShutdown.Both);
+                handler.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
 
     }
 }
