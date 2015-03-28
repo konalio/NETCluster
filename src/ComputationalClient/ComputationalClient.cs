@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Xml;
-using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
 
@@ -10,7 +8,6 @@ namespace ComputationalClient
     class ComputationalClient
     {
         private readonly ServerInfo _serverInfo;
-        private int _id;
 
         public ComputationalClient(ComponentConfig componentConfig)
         {
@@ -30,7 +27,7 @@ namespace ComputationalClient
         {
             while (true)
             {
-                Console.WriteLine("\nPress SPACE to ask server for solution");
+                Console.WriteLine("\nPress ENTER to ask server for solution");
                 Console.Read();
 
                 var response = AskForSolution(problemId);
