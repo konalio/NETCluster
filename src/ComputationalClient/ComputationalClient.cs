@@ -20,56 +20,64 @@ namespace ComputationalClient
         public void Start()
         {
             LogClientInfo();
-            Register();
 
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            var problemId = RequestForSolvingProblem();
+
+            WaitForSolution(problemId);
         }
 
-        private void Register()
+        private void WaitForSolution(ulong problemId)
         {
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var responses = tcpClient.SendAndWaitForResponses(
-                new Register
-                {
-                    Type = "ComputationalClient"
-                }
-            );
-
-            tcpClient.Close(); 
-            ProcessMessages(responses);
-        }
-
-        private void ProcessMessages(List<XmlDocument> responses)
-        {
-            foreach (var xmlMessage in responses)
+            while (true)
             {
-                switch (MessageTypeResolver.GetMessageType(xmlMessage))
+                Console.WriteLine("\nPress SPACE to ask server for solution");
+                Console.Read();
+
+                var response = AskForSolution(problemId);
+                var status = response.GetElementsByTagName("Type")[0];
+
+                Console.WriteLine("Problem status: {0}.", status.InnerText);
+
+                if (status.InnerText == "Final")
                 {
-                    case MessageTypeResolver.MessageType.NoOperation:
-                        ProcessNoOperationMessage(xmlMessage);
-                        break;
-                    case MessageTypeResolver.MessageType.RegisterResponse:
-                        ProcessRegisterResponse(xmlMessage);
-                        break;
+                    break;
                 }
             }
         }
 
-        private void ProcessRegisterResponse(XmlDocument response)
+        private XmlDocument AskForSolution(ulong problemId)
         {
-            _id = int.Parse(response.GetElementsByTagName("Id")[0].InnerText);
-            Console.WriteLine("Registered at server with Id: {0}.", _id);
-        }
-        private void ProcessNoOperationMessage(XmlDocument xmlMessage)
-        {
-            //TODO update backup servers info
-            Console.WriteLine("Received NoOperation message.");
+            var request = new SolutionRequest
+            {
+                Id = problemId
+            };
+
+            var tcpClient = new ConnectionClient(_serverInfo);
+
+            tcpClient.Connect();
+
+            var response = tcpClient.SendAndWaitForResponses(request)[0];
+
+            tcpClient.Close();
+
+            return response;
         }
 
+        private ulong RequestForSolvingProblem()
+        {
+            var request = new SolveRequest();
+
+            var tcpClient = new ConnectionClient(_serverInfo);
+
+            tcpClient.Connect();
+
+            var response = tcpClient.SendAndWaitForResponses(request)[0];
+
+            tcpClient.Close();
+
+            return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
+        }
+        
         private void LogClientInfo()
         {
             Console.WriteLine("Client is running...");
