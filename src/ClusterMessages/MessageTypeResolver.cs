@@ -43,7 +43,7 @@ namespace ClusterMessages
                     return MessageType.Register;
                 case "RegisterResponse":
                     return MessageType.RegisterResponse;
-                case "Solution":
+                case "Solutions":
                     return MessageType.Solution;
                 case "SolutionRequest":
                     return MessageType.SolutionRequest;
