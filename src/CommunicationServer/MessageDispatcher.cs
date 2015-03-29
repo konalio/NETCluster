@@ -48,10 +48,12 @@ namespace CommunicationServer
         
         private List<IClusterMessage> messageList;
         private List<ComponentStatus> components;
+
+        private List<SolutionsSolution> partialSolutions;
         
         public MessageDispatcher(string listport, int timeout)
         {
-            _listeningPort = listport;       
+            _listeningPort = listport;                   
             _componentTimeout = timeout;
         }       
         
@@ -193,6 +195,7 @@ namespace CommunicationServer
             else if (messageType == MessageTypeResolver.MessageType.PartialProblems)
             {
                 SolvePartialProblems spp = new SolvePartialProblems();
+
                 var problemType = message.GetElementsByTagName("ProblemType")[0];
                 var commonData = message.GetElementsByTagName("CommonData")[0];
                 var timeout = message.GetElementsByTagName("SolvingTimeout");
@@ -204,17 +207,8 @@ namespace CommunicationServer
 
                 int count = partialProblemTaskIds.Count;
 
-                SolvePartialProblemsPartialProblem[] partialproblems = new SolvePartialProblemsPartialProblem[count];
-                for(int i=0;i<count;i++)
-                {
-                    SolvePartialProblemsPartialProblem problem = new SolvePartialProblemsPartialProblem();
-                    problem.Data = System.Text.Encoding.ASCII.GetBytes(partialProblemDatas[i].InnerText);
-                    problem.TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
-                    problem.NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
-
-                    partialproblems[i] = problem;
-
-                }
+                SolvePartialProblemsPartialProblem[] partialproblems = new SolvePartialProblemsPartialProblem[1];
+                
                 spp.Id = id;
                 spp.CommonData = System.Text.Encoding.ASCII.GetBytes(commonData.InnerText);
                 spp.ProblemType = problemType.InnerText;
@@ -229,9 +223,88 @@ namespace CommunicationServer
                 {
                     spp.SolvingTimeoutSpecified = false;
                 }
-                messageList.Add(spp);
+
+                for (int i = 0; i < count; i++)
+                {
+                    SolvePartialProblemsPartialProblem problem = new SolvePartialProblemsPartialProblem();
+                    problem.Data = System.Text.Encoding.ASCII.GetBytes(partialProblemDatas[i].InnerText);
+                    problem.TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
+                    problem.NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
+
+                    partialproblems[0] = problem;
+                    messageList.Add(spp);
+                }                
             }
-        }        
+
+            else if (messageType == MessageTypeResolver.MessageType.Solution)
+            {
+                var taskIds = message.GetElementsByTagName("TaskId");
+                var timeoutOccureds = message.GetElementsByTagName("TimeoutOccured");
+                var types = message.GetElementsByTagName("Type");
+                var datas = message.GetElementsByTagName("Data");
+                var computationsTimes = message.GetElementsByTagName("ComputationsTime");
+
+                var commonData = message.GetElementsByTagName("CommonData")[0];
+                var id = message.GetElementsByTagName("Id")[0];
+                var problemType = message.GetElementsByTagName("ProblemType")[0];  
+          
+                /*
+                int count = types.Count;
+                SolutionsSolution[] solutions = new SolutionsSolution[count];                
+                Solutions s = new Solutions();
+                s.ProblemType = problemType.InnerText;
+                s.Id = UInt64.Parse(id.InnerText);
+                s.CommonData = System.Text.Encoding.ASCII.GetBytes(commonData.InnerText);
+                s.Solutions1 = solutions;*/
+
+                if (types[0].InnerText == "Final")
+                {
+                    //wyslac do CC
+                }
+                else if(types[0].InnerText == "Ongoing")
+                {
+                    //wyslac do CC
+                }
+                else if (types[0].InnerText == "Partial")
+                {
+                    ulong problemID =  UInt64.Parse(id.InnerText);
+
+                    SolutionsSolution ss = new SolutionsSolution();
+                    ss.ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText);
+                    ss.Data = System.Text.Encoding.ASCII.GetBytes(datas[0].InnerText);
+                    String ssType = types[0].InnerText;
+                    ss.Type = SolutionsSolutionType.Partial;                    
+                    ss.TaskId = UInt64.Parse(taskIds[0].InnerText);
+                    if (timeoutOccureds[0].InnerText == "true")
+                    {
+                        ss.TimeoutOccured = true;
+                    }
+                    else
+                    {
+                        ss.TimeoutOccured = false;
+                    }
+
+                    AddPartialSolution(ss,problemID);
+                }
+            }
+        }
+
+        public void AddPartialSolution(SolutionsSolution ss, ulong id)
+        {
+            if (partialSolutions == null)
+            {
+                partialSolutions = new List<SolutionsSolution>();
+            }            
+            partialSolutions.Add(ss);
+            if (partialSolutions.Count == 5)
+            {
+                Solutions s = new Solutions();                
+                s.Id = id;
+                s.Solutions1 = partialSolutions.ToArray();
+                messageList.Add(s);
+            }
+            
+        }
 
         public void SearchTaskManagerMessages(ulong id, Socket handler)
         {
@@ -281,6 +354,15 @@ namespace CommunicationServer
                     messageList.Remove(messageList[i]);
                     break;
                 }
+                if (messageList[i] is Solutions)
+                {
+                    Solutions m = messageList[i] as Solutions;
+
+                    byte[] messageData = Serializers.ObjectToByteArray<Solutions>(m);
+                    SendMessage(handler, messageData);
+                    messageList.Remove(messageList[i]);
+                    break;
+                }  
                 i++;
             }
         }
