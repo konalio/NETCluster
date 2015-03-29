@@ -150,11 +150,6 @@ namespace CommunicationServer
 
             if (state == "Idle")
             {
-                while (_messageList.Count == 0)
-                {
-                    Thread.Sleep(100);
-                }
-
                 if (_components[(int)id].type == "TaskManager")
                 {
                     IClusterMessage cm = SearchTaskManagerMessages(id, tp.handler);
@@ -181,9 +176,8 @@ namespace CommunicationServer
                 }
             }
 
-            //NoOperation no = new NoOperation();
-            //byte[] messageData = Serializers.ObjectToByteArray<NoOperation>(no);
-            //SendMessage(tp.handler, messageData);
+            NoOperation no = new NoOperation();
+            ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
         public void HandleRegisterMessages(ThreadPackage tp)
@@ -375,10 +369,16 @@ namespace CommunicationServer
             int i = 0;
             while (true)
             {
+                while (_messageList.Count == 0)
+                {
+                    Thread.Sleep(100);
+                }
+
                 if (i > _messageList.Count)
                 {
                     i = 0;
                 }
+
                 if (_messageList[i] is SolveRequest)
                 {
 
@@ -403,6 +403,11 @@ namespace CommunicationServer
             int i = 0;
             while (true)
             {
+                while (_messageList.Count == 0)
+                {
+                    Thread.Sleep(100);
+                }
+
                 if (i > _messageList.Count)
                 {
                     i = 0;                    
