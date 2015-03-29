@@ -11,14 +11,14 @@ namespace ClusterUtils.Communication
 {
     public class ConnectionClient
     {
-        private static readonly ManualResetEvent ConnectDone =
+        private readonly ManualResetEvent _connectDone =
             new ManualResetEvent(false);
-        private static readonly ManualResetEvent SendDone =
+        private readonly ManualResetEvent _sendDone =
             new ManualResetEvent(false);
-        private static readonly ManualResetEvent ReceiveDone =
+        private readonly ManualResetEvent _receiveDone =
             new ManualResetEvent(false);
 
-        private static readonly List<XmlDocument> Responses = new List<XmlDocument>();
+        private readonly List<XmlDocument> _responses = new List<XmlDocument>();
 
         private readonly IPAddress _serverAddress;
         private readonly int _serverPort;
@@ -40,7 +40,7 @@ namespace ClusterUtils.Communication
 
             _client.BeginConnect(remoteEP,
                 ConnectCallback, _client);
-            ConnectDone.WaitOne();
+            _connectDone.WaitOne();
         }
 
         public List<XmlDocument> SendAndWaitForResponses(IClusterMessage message)
@@ -48,32 +48,29 @@ namespace ClusterUtils.Communication
             var byteMessage = Serializers.ObjectToByteArray(message);
 
             Send(_client, byteMessage);
-            SendDone.WaitOne();
+            _sendDone.WaitOne();
 
             Receive(_client);
-            ReceiveDone.WaitOne();
+            _receiveDone.WaitOne();
 
-            return Responses;
+            return _responses;
         }
 
         public void Close()
         {
-            _client.Shutdown(SocketShutdown.Both);
+            _client.Shutdown(SocketShutdown.Receive);
             _client.Close();
         }
 
-        private static void ConnectCallback(IAsyncResult ar)
+        private void ConnectCallback(IAsyncResult ar)
         {
             try
             {
                 var client = (Socket)ar.AsyncState;
 
                 client.EndConnect(ar);
-
-                Console.WriteLine("Socket connected to {0}",
-                    client.RemoteEndPoint);
-
-                ConnectDone.Set();
+                
+                _connectDone.Set();
             }
             catch (Exception e)
             {
@@ -81,7 +78,7 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void Receive(Socket client)
+        private void Receive(Socket client)
         {
             try
             {
@@ -96,7 +93,7 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void ReceiveCallback(IAsyncResult ar)
+        private void ReceiveCallback(IAsyncResult ar)
         {
             try
             {
@@ -127,10 +124,9 @@ namespace ClusterUtils.Communication
                     {
                         if (state.ByteBuffer.Count > 1)
                         {
-                            var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-                            Responses.Add(response);
+                            ExtractSingleResponse(state);
                         }
-                        ReceiveDone.Set();
+                        _receiveDone.Set();
                     }
                 }
                 catch (SocketException se)
@@ -144,30 +140,30 @@ namespace ClusterUtils.Communication
             }
         }
 
-        private static void ExtractSingleResponse(StateObject state)
+        private void ExtractSingleResponse(StateObject state)
         {
             var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-            Responses.Add(response);
+            _responses.Add(response);
         }
 
-        private static void Send(Socket client, byte[] byteData)
+        private void Send(Socket client, byte[] byteData)
         {
             client.BeginSend(byteData, 0, byteData.Length, 0,
                 SendCallback, client);
         }
 
-        private static void SendCallback(IAsyncResult ar)
+        private void SendCallback(IAsyncResult ar)
         {
             try
             {
                 var client = (Socket)ar.AsyncState;
 
                 var bytesSent = client.EndSend(ar);
+                
+                if (bytesSent == 0)
+                    _client.Shutdown(SocketShutdown.Send);
 
-                if (bytesSent > 0)
-                    Console.WriteLine("Register message sent...");
-
-                SendDone.Set();
+                _sendDone.Set();
             }
             catch (Exception e)
             {
