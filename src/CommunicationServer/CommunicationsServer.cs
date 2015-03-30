@@ -6,7 +6,6 @@ using System.Threading;
 using System.Xml;
 using ClusterUtils;
 using ClusterUtils.Communication;
-using ClusterMessages;
 
 namespace CommunicationServer
 {
@@ -18,15 +17,12 @@ namespace CommunicationServer
 
         private readonly string _listeningPort;
         private bool _backupMode;
-        private readonly ServerInfo _serverInfo;
-        private int _id;
         private readonly int _componentTimeout;
         
         public CommunicationsServer(ServerConfig configuration)
         {
             _listeningPort = configuration.ServerPort;
             _backupMode = configuration.IsBackup;
-            _serverInfo = new ServerInfo(configuration.ServerPort, configuration.ServerAddress);
             _componentTimeout = configuration.ComponentTimeout;
         }
 
@@ -37,25 +33,8 @@ namespace CommunicationServer
             Console.WriteLine("Componenet timeout = {0} [s]", _componentTimeout);
         }
 
-        private void LogBackupInfo()
-        {
-            Console.WriteLine("Server is running in {0} mode.", _backupMode ? "backup" : "primary");
-            Console.WriteLine("Primary Server address: {0}", _serverInfo.Address);
-            Console.WriteLine("Primary Server port: {0}", _serverInfo.Port);
-        }
-
         public void Start()
         {
-            if (_backupMode)
-            {
-                LogBackupInfo();
-                Register();
-
-                Console.WriteLine("\nPress ENTER to continue...");
-                Console.Read();
-                return;
-            }
-
             LogServerInfo();
 
             var localEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(_listeningPort));
@@ -91,42 +70,6 @@ namespace CommunicationServer
 
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
-        }
-
-        private void Register()
-        {
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var responses = tcpClient.SendAndWaitForResponses(
-                new Register
-                {
-                    Type = "BackupServer"
-                }
-            );
-
-            tcpClient.Close();
-            ProcessMessages(responses);
-        }
-
-        private void ProcessMessages(List<XmlDocument> responses)
-        {
-            foreach (var xmlMessage in responses)
-            {
-                switch (MessageTypeResolver.GetMessageType(xmlMessage))
-                {
-                    case MessageTypeResolver.MessageType.RegisterResponse:
-                        ProcessRegisterResponse(xmlMessage);
-                        break;
-                }
-            }
-        }
-
-        private void ProcessRegisterResponse(XmlDocument response)
-        {
-            _id = int.Parse(response.GetElementsByTagName("Id")[0].InnerText);
-            Console.WriteLine("Registered at server with Id: {0}.", _id);
         }
 
         public static void AcceptCallback(IAsyncResult ar)
