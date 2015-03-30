@@ -48,7 +48,9 @@
     <Compile Include="ServerConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClusterMessages\ClusterMessages.csproj">
@@ -59,6 +61,9 @@
       <Project>{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}</Project>
       <Name>ClusterUtils</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

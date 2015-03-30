@@ -5,18 +5,21 @@ namespace CommunicationServer
 {
     public class ServerConfig
     {
+        public string ServerAddress { get; set; }
         public string ServerPort { get; set; }
         public bool IsBackup { get; set; }
         public int ComponentTimeout { get; set; }
 
         public static ServerConfig LoadFromAppConfig()
         {
+            var serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
             var serverPort = ConfigurationManager.AppSettings["ServerPort"];
             var isBackup = bool.Parse(ConfigurationManager.AppSettings["IsBackup"]);
             var componentTimeout = int.Parse(ConfigurationManager.AppSettings["ComponentTimeout"]);
 
             return new ServerConfig
             {
+                ServerAddress = serverAddress,
                 ServerPort = serverPort,
                 IsBackup = isBackup,
                 ComponentTimeout = componentTimeout
