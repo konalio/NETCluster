@@ -12,9 +12,10 @@ namespace ComputationalNode
     {
         public ulong AssignedId { get; set; }
 
-        public string ServerPort { get; set; }
+        public ComponentConfig ServerConfig { get; set; }
+        //public string ServerPort { get; set; }
 
-        public string ServerAddress { get; set; }
+        //public string ServerAddress { get; set; }
 
         public List<StatusThread> StatusThreads { get; set; }
 
@@ -22,8 +23,7 @@ namespace ComputationalNode
 
         public ComputationalNode(ComponentConfig componentConfig)
         {
-            ServerPort = componentConfig.ServerPort;
-            ServerAddress = componentConfig.ServerAddress;
+            ServerConfig = componentConfig;
             BackupServers = new List<NoOperationBackupCommunicationServersBackupCommunicationServer>();
         }
 
@@ -32,8 +32,7 @@ namespace ComputationalNode
             LogNodeInfo();
             Register();
 
-            //Console.WriteLine("\nPress ENTER to continue...");
-            //Console.Read();
+            StartSendingStatus();
         }
 
         private void SendStatusMessage(object sender, System.Timers.ElapsedEventArgs e,
