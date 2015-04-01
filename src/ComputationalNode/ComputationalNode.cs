@@ -140,20 +140,6 @@ namespace ComputationalNode
             CreateAndSendPartialSolution(taskId, problemInstanceId);
         }
 
-        private void ProcessNoOperationMessage(IReadOnlyList<XmlDocument> responses)
-        {
-            if (responses.Count == 0)
-            {
-                Console.WriteLine("No response from server, possible communication error.");
-                return;
-            }
-
-            var response = responses[0];
-            //_backups = response.GetElementsByTagName("BackupCommunicationServers");
-                       
-            Console.WriteLine("Received a NoOperation message.");
-        }
-
         private void CreateAndSendPartialSolution(ulong taskId, ulong problemInstanceId)
         {
             var solution = new Solutions
