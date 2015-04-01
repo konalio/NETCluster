@@ -46,7 +46,7 @@ namespace ComputationalNode
             var responses = tcpClient.SendAndWaitForResponses(message);
 
             tcpClient.Close();
-            ProcessNoOperationMessage(responses);
+            ProcessMessages(responses);
         }
 
         public void KeepSendingStatus(Status message, int msCycleTime)
