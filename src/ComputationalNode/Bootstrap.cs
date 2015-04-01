@@ -1,4 +1,8 @@
 ﻿using ClusterUtils;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 namespace ComputationalNode
 {
@@ -7,8 +11,11 @@ namespace ComputationalNode
         static void Main(string[] args)
         {
             var node = new ComputationalNode(ComponentConfig.GetComponentConfig(args));
-
+            
             node.Start();
+
+            Console.ReadLine();
+
         }
     }
 }

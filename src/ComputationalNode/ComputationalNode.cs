@@ -4,20 +4,28 @@ using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
+using System.Threading;
+using ClusterMessages;
 
 namespace ComputationalNode
 {
     class ComputationalNode
     {
+
         private readonly ServerInfo _serverInfo;
 
         private int _id;
 
         private List<ServerInfo> _backups = new List<ServerInfo>(); 
+
+        public List<StatusThread> StatusThreads { get; set; }
+
+        private int ServerTimeout { get; set; }
         
         public ComputationalNode(ComponentConfig componentConfig)
         {
             _serverInfo = new ServerInfo(componentConfig.ServerPort, componentConfig.ServerAddress);
+            StatusThreads = new List<StatusThread>();
         }
 
         public void Start()
@@ -25,8 +33,44 @@ namespace ComputationalNode
             LogNodeInfo();
             Register();
 
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            StartSendingStatus();
+        }
+
+        private void SendStatusMessage(object sender, System.Timers.ElapsedEventArgs e,
+                                    Status message)
+        {
+            var tcpClient = new ConnectionClient(_serverInfo);
+            tcpClient.Connect();
+
+            Console.WriteLine("Sending status message to Server.");
+            var responses = tcpClient.SendAndWaitForResponses(message);
+
+            tcpClient.Close();
+            ProcessMessages(responses);
+        }
+
+        public void KeepSendingStatus(Status message, int msCycleTime)
+        {
+            System.Timers.Timer sendStatus = new System.Timers.Timer(msCycleTime);
+            sendStatus.Elapsed += (sender, e) => SendStatusMessage(sender, e, message);
+            sendStatus.Start();
+        }
+
+        public void StartSendingStatus()
+        {
+            // defining how often we want to send the KeepAlive message,
+            // setting it to half of the defined Server Timeout
+            int msStatusCycleTime = ServerTimeout/2; 
+
+            Status statusMessage = new Status();
+            statusMessage.Id = (ulong)_id;
+            statusMessage.Threads = StatusThreads.ToArray();
+
+            Thread keepSendingStatusThread = new Thread(() => 
+                    KeepSendingStatus(statusMessage, msStatusCycleTime));
+
+            Console.WriteLine("Starting thread sending the Status messages.");
+            keepSendingStatusThread.Start();
         }
 
         private void Register()
@@ -72,6 +116,8 @@ namespace ComputationalNode
         {
             //TODO update backup servers info
             _id = int.Parse(response.GetElementsByTagName("Id")[0].InnerText);
+            ServerTimeout = int.Parse(response.GetElementsByTagName("Timeout")[0].InnerText);
+
             Console.WriteLine("Registered at server with Id: {0}.", _id);
         }
 
@@ -92,6 +138,20 @@ namespace ComputationalNode
             //Sleep udający liczenie?
 
             CreateAndSendPartialSolution(taskId, problemInstanceId);
+        }
+
+        private void ProcessNoOperationMessage(IReadOnlyList<XmlDocument> responses)
+        {
+            if (responses.Count == 0)
+            {
+                Console.WriteLine("No response from server, possible communication error.");
+                return;
+            }
+
+            var response = responses[0];
+            //_backups = response.GetElementsByTagName("BackupCommunicationServers");
+                       
+            Console.WriteLine("Received a NoOperation message.");
         }
 
         private void CreateAndSendPartialSolution(ulong taskId, ulong problemInstanceId)
