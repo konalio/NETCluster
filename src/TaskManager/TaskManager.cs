@@ -3,48 +3,21 @@ using System.Collections.Generic;
 using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
-using ClusterUtils.Communication;
 
 namespace TaskManager
 {
-    public class TaskManager
+    public class TaskManager : RegisteredComponent
     {
-        private readonly ServerInfo _serverInfo;
-
-        private int _id;
-
-        public TaskManager(ComponentConfig cc)
-        {   
-            _serverInfo = new ServerInfo(cc.ServerAddress, cc.ServerPort);          
-        }
+        public TaskManager(ComponentConfig config) : base(config, "TaskManager") { } 
 
         public void Start()
         {
-            LogManagerInfo();
+            LogRuntimeInfo();
             Register();
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            StartSendingStatus();
         }
-
-        private void Register()
-        {
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var responses = tcpClient.SendAndWaitForResponses (
-                new Register
-                {
-                    Type = "TaskManager"
-                }
-            );
-
-            tcpClient.Close();
-            ProcessMessages(responses);
-        }
-
-        private void ProcessMessages(List<XmlDocument> responses)
+        
+        protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
         {
             foreach (var xmlMessage in responses)
             {
@@ -52,9 +25,6 @@ namespace TaskManager
                 {
                     case MessageTypeResolver.MessageType.NoOperation:
                         ProcessNoOperationMessage(xmlMessage);
-                        break;
-                    case MessageTypeResolver.MessageType.RegisterResponse:
-                        ProcessRegisterResponse(xmlMessage);
                         break;
                     case MessageTypeResolver.MessageType.DivideProblem:
                         ProcessDivideProblem(xmlMessage);
@@ -86,7 +56,6 @@ namespace TaskManager
 
         private ulong ChooseFinalSolution()
         {
-            //Pretend to choose solution
             var r = new Random();
             return (ulong) r.Next(0, 4);
         }
@@ -99,16 +68,7 @@ namespace TaskManager
                 Id = problemInstanceId
             };
 
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var response = tcpClient.SendAndWaitForResponses(solution);
-
-            tcpClient.Close();
-
-            if (response.Count != 1)
-                throw new Exception();
+            SendMessageNoResponse(solution);
         }
 
         private void ProcessDivideProblem(XmlDocument xmlMessage)
@@ -126,16 +86,7 @@ namespace TaskManager
         {
             var partialProblems = CreatePartialProblems(problemInstanceId);
 
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var response = tcpClient.SendAndWaitForResponses(partialProblems);
-
-            tcpClient.Close();
-
-            if (response.Count != 1)
-                throw new Exception();
+            SendMessageNoResponse(partialProblems);
         }
 
         private SolvePartialProblems CreatePartialProblems(ulong problemInstanceId)
@@ -153,24 +104,6 @@ namespace TaskManager
                 }
             };
             return partialProblems;
-        }
-
-        private void ProcessRegisterResponse(XmlDocument response)
-        {
-            _id = int.Parse(response.GetElementsByTagName("Id")[0].InnerText);
-            Console.WriteLine("Registered at server with Id: {0}.", _id);
-        }
-        private void ProcessNoOperationMessage(XmlDocument xmlMessage)
-        {
-            //TODO update backup servers info
-            Console.WriteLine("Received NoOperation message.");
-        }
-
-        private void LogManagerInfo()
-        {
-            Console.WriteLine("Manager is running...");
-            Console.WriteLine("Server address: {0}", _serverInfo.Address);
-            Console.WriteLine("Server port: {0}", _serverInfo.Port);
         }
     }
 }
