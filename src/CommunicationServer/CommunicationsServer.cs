@@ -6,6 +6,7 @@ using System.Threading;
 using System.Xml;
 using ClusterUtils;
 using ClusterUtils.Communication;
+using ClusterMessages;
 
 namespace CommunicationServer
 {
@@ -106,16 +107,43 @@ namespace CommunicationServer
 
                     var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
 
-                    var elemList = message.GetElementsByTagName("Type");
-                    var componentType = elemList[0].InnerText;
+                    string elemName = message.DocumentElement.Name;
 
-                    ++_componentCount;
-                    Console.WriteLine("Registered component of type {0} with id {1}", componentType, _componentCount);
-
-                    var response = new RegisterResponse
+                    Object response = null;
+                    switch (elemName)
                     {
-                        Id = _componentCount.ToString()
-                    };
+                        case "Register":
+                            var elemList = message.GetElementsByTagName("Type");
+                            var componentType = elemList[0].InnerText;
+                            ++_componentCount;
+                            Console.WriteLine("Registered component of type {0} with id {1}", componentType, _componentCount);
+
+                            response = new RegisterResponse
+                            {
+                                Id = _componentCount.ToString()
+                            };
+                            break;
+                        case "Status":
+                            Console.WriteLine("Responding to Status: sending a NoOperation message.");
+                            NoOperationBackupCommunicationServers backupServers = new NoOperationBackupCommunicationServers();
+
+                            //var backups = message.GetElementsByTagName("BackupCommunicationServers");
+
+                            // adding some example backup server data for testing
+                            backupServers.BackupCommunicationServer = new NoOperationBackupCommunicationServersBackupCommunicationServer()
+                            {
+                                address = "192.125.24.1",
+                                port = 1992,
+                                portSpecified = true
+                            };
+                            response = new NoOperation
+                            {
+                                BackupCommunicationServers = backupServers
+                            };
+                            break;
+                    }
+                    Console.WriteLine("elemName = " + elemName);
+
 
                     var responseBuffer = new List<byte>(Serializers.ObjectToByteArray(response));
                     Send(handler, responseBuffer.ToArray());
