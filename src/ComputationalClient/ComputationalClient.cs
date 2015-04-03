@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml;
 using ClusterUtils;
-using ClusterUtils.Communication;
 
 namespace ComputationalClient
 {
@@ -42,34 +41,13 @@ namespace ComputationalClient
                 Id = problemId
             };
 
-            return SendSolutionRequest(request);
-        }
-
-        private XmlDocument SendSolutionRequest(SolutionRequest request)
-        {
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var response = tcpClient.SendAndWaitForResponses(request)[0];
-
-            tcpClient.Close();
-
-            return response;
+            return SendMessageSingleResponse(request);
         }
 
         private ulong RequestForSolvingProblem()
         {
             var request = new SolveRequest();
-
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            var response = tcpClient.SendAndWaitForResponses(request)[0];
-
-            tcpClient.Close();
-
+            var response = SendMessageSingleResponse(request);
             return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
         }
     }

@@ -18,7 +18,6 @@ namespace ComputationalNode
             StartSendingStatus();
         }
 
-        //process nooperation, partialproblems
         protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
         {
             foreach (var xmlMessage in responses)

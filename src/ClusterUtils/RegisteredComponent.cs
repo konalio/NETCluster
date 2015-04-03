@@ -4,7 +4,6 @@ using System.Threading;
 using System.Timers;
 using System.Xml;
 using ClusterMessages;
-using ClusterUtils.Communication;
 using Timer = System.Timers.Timer;
 
 namespace ClusterUtils
@@ -19,19 +18,14 @@ namespace ClusterUtils
 
         protected bool Register()
         {
-            var tcpClient = new ConnectionClient(_serverInfo);
+            var registerMessage = new Register
+            {
+                Type = Type
+            };
 
-            tcpClient.Connect();
+            var response = SendMessageSingleResponse(registerMessage);
 
-            var responses = tcpClient.SendAndWaitForResponses(
-                new Register
-                {
-                    Type = Type
-                }
-            );
-
-            tcpClient.Close();
-            return ProcessRegisterResponse(responses[0]);
+            return ProcessRegisterResponse(response);
         }
 
         private bool ProcessRegisterResponse(XmlDocument response)
@@ -50,13 +44,8 @@ namespace ClusterUtils
             if (sender == null) throw new ArgumentNullException("sender");
             if (e == null) throw new ArgumentNullException("e");
 
-            var tcpClient = new ConnectionClient(_serverInfo);
-            tcpClient.Connect();
+            var responses = SendMessage(message);
 
-            var responses = tcpClient.SendAndWaitForResponses(message);
-            Console.WriteLine("Status message sent.");
-
-            tcpClient.Close();
             ProcessMessages(responses);
         }
 
@@ -85,15 +74,9 @@ namespace ClusterUtils
             Console.WriteLine("Received NoOperation message.");
         }
 
-        protected void SendMessageNoResponse(IClusterMessage solution)
+        protected void SendMessageNoResponse(IClusterMessage message)
         {
-            var tcpClient = new ConnectionClient(_serverInfo);
-
-            tcpClient.Connect();
-
-            tcpClient.SendAndWaitForResponses(solution);
-
-            tcpClient.Close();
+            SendMessage(message);
         }
 
         protected abstract void ProcessMessages(IEnumerable<XmlDocument> responses);
