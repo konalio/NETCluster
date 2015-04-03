@@ -176,7 +176,7 @@ namespace CommunicationServer
                 }
             }
 
-            NoOperation no = new NoOperation();
+            var no = new NoOperation { };
             ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
@@ -204,16 +204,19 @@ namespace CommunicationServer
             var data = GetXmlElementInnerByte("Data", tp.message);
             var id = GetXmlElementInnerUlong("Id", tp.message);
 
-            SolveRequest sr = new SolveRequest();
-            sr.Id = id;
-            sr.ProblemType = problemType;
-            sr.SolvingTimeout = timeout;
-            sr.Data = data;
+            var sr = new SolveRequest
+            {
+                 Id = id,
+                 ProblemType = problemType,
+                 SolvingTimeout = timeout,
+                 Data = data
+            };
             _messageList.Add(sr);
 
-            SolveRequestResponse srr = new SolveRequestResponse();
-            srr.Id = id;
-
+            var srr = new SolveRequestResponse
+            {
+                Id=id
+            };
             ConvertAndSendMessage<SolveRequestResponse>(srr, tp.handler);
 
         }
@@ -221,8 +224,10 @@ namespace CommunicationServer
         public void HandleSolutionRequestMessages(ThreadPackage tp)
         {
             var id = GetXmlElementInnerUlong("Id", tp.message);
-            Solutions s = new Solutions();
-            s.Id = id;
+            var s = new Solutions 
+            { 
+                Id = id 
+            };
 
             ConvertAndSendMessage<Solutions>(s, tp.handler);
         }
@@ -230,7 +235,7 @@ namespace CommunicationServer
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
             XmlDocument message = tp.message;
-            SolvePartialProblems spp = new SolvePartialProblems();
+            
 
             var problemType = GetXmlElementInnerText("ProblemType", message);
             var commonData = GetXmlElementInnerByte("CommonData", message);
@@ -244,11 +249,13 @@ namespace CommunicationServer
             int count = partialProblemTaskIds.Count;
 
             SolvePartialProblemsPartialProblem[] partialproblems = new SolvePartialProblemsPartialProblem[1];
-
-            spp.Id = id;
-            spp.CommonData = commonData;
-            spp.ProblemType = problemType;
-            spp.PartialProblems = partialproblems;
+            var spp = new SolvePartialProblems
+            {
+                 Id = id,
+                 CommonData = commonData,
+                 ProblemType = problemType,
+                 PartialProblems = partialproblems
+            };          
 
             if (timeout.Count != 0)
             {
@@ -261,12 +268,14 @@ namespace CommunicationServer
             }
 
             for (int i = 0; i < count; i++)
-            {
-                SolvePartialProblemsPartialProblem problem = new SolvePartialProblemsPartialProblem();
-                problem.Data = System.Text.Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText);
-                problem.TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
-                problem.NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
-
+            {              
+                var problem = new SolvePartialProblemsPartialProblem
+                {
+                    Data = System.Text.Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText),
+                    TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText),
+                    NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText)
+                };
+               
                 partialproblems[0] = problem;
                 spp.PartialProblems = partialproblems;
                 _messageList.Add(spp);
@@ -291,12 +300,16 @@ namespace CommunicationServer
                 //wyslac do CC
             }
             else if (types[0].InnerText == "Partial")
-            {
-                SolutionsSolution ss = new SolutionsSolution();
-                ss.ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText);
-                ss.Data = System.Text.Encoding.UTF8.GetBytes(datas[0].InnerText);
-                ss.Type = SolutionsSolutionType.Partial;
-                ss.TaskId = UInt64.Parse(taskIds[0].InnerText);
+            {                
+
+                var ss = new SolutionsSolution
+                {
+                    ComputationsTime =  UInt64.Parse(computationsTimes[0].InnerText),
+                    Data = System.Text.Encoding.UTF8.GetBytes(datas[0].InnerText),
+                    Type = SolutionsSolutionType.Partial,
+                    TaskId = UInt64.Parse(taskIds[0].InnerText),
+                    TaskIdSpecified=true
+                };
 
                 if (timeoutOccureds[0].InnerText == "true")
                 {
@@ -355,10 +368,12 @@ namespace CommunicationServer
             _partialSolutions[(int)listID].Add(ss);
 
             if (_partialSolutions[(int)listID].Count == 5)
-            {
-                Solutions s = new Solutions();                
-                s.Id = listID;
-                s.Solutions1 = _partialSolutions[0].ToArray();
+            {                
+                var s = new Solutions
+                {
+                    Id = listID,
+                    Solutions1 = _partialSolutions[0].ToArray()
+                };                
                 _messageList.Add(s);
             }
             
@@ -367,50 +382,63 @@ namespace CommunicationServer
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
             int i = 0;
-            while (true)
+            int timeout = 20;
+            int time = 0;
+            while (time <= timeout)
             {
-                while (_messageList.Count == 0)
+                while (_messageList.Count == 0 && time <= timeout)
                 {
                     Thread.Sleep(100);
+                    time++;
                 }
 
-                if (i > _messageList.Count)
+                if (i >= _messageList.Count)
                 {
                     i = 0;
+                    continue;
                 }
 
                 if (_messageList[i] is SolveRequest)
                 {
 
                     SolveRequest sr = _messageList[i] as SolveRequest;
-                    DivideProblem dp = new DivideProblem();
-                    dp.Id = sr.Id;
-                    dp.ProblemType = sr.ProblemType;
-                    dp.NodeID = id;
-                    dp.Data = sr.Data;
+                    var dp = new DivideProblem
+                    {
+                        Id = sr.Id,
+                        ProblemType = sr.ProblemType,
+                        NodeID = id,
+                        Data = sr.Data
+                    };                   
                                         
                     _messageList.Remove(_messageList[i]);
                     return dp;
                
                     
                 }
+                Thread.Sleep(100);
+                time++;
                 i++;
             }
+            return null;
         }
 
         public IClusterMessage SearchComputationalNodeMessages(Socket handler)
         {
             int i = 0;
-            while (true)
+            int timeout = 20;
+            int time = 0;
+            while (time <= timeout)
             {
-                while (_messageList.Count == 0)
+                while (_messageList.Count == 0 && time <=timeout)
                 {
                     Thread.Sleep(100);
+                    time++;
                 }
 
-                if (i > _messageList.Count)
+                if (i >= _messageList.Count)
                 {
-                    i = 0;                    
+                    i = 0;
+                    continue;
                 }
                 if (_messageList[i] is SolvePartialProblems)
                 {
@@ -423,9 +451,12 @@ namespace CommunicationServer
                     Solutions s = _messageList[i] as Solutions;
                     _messageList.Remove(_messageList[i]);
                     return s;
-                }  
+                }
+                Thread.Sleep(100);
+                time++;
                 i++;
             }
+            return null;
         }       
 
         public void AcceptCallback(IAsyncResult ar)
