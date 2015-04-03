@@ -5,21 +5,14 @@ using ClusterUtils.Communication;
 
 namespace ComputationalClient
 {
-    class ComputationalClient
+    class ComputationalClient : Component
     {
-        private readonly ServerInfo _serverInfo;
-
-        public ComputationalClient(ComponentConfig componentConfig)
-        {
-            _serverInfo = new ServerInfo(componentConfig.ServerPort, componentConfig.ServerAddress);
-        }
+        public ComputationalClient(ComponentConfig componentConfig) : base(componentConfig, "ComputationalClient") {}
 
         public void Start()
         {
-            LogClientInfo();
-
+            LogRuntimeInfo();
             var problemId = RequestForSolvingProblem();
-
             WaitForSolution(problemId);
         }
 
@@ -49,6 +42,11 @@ namespace ComputationalClient
                 Id = problemId
             };
 
+            return SendSolutionRequest(request);
+        }
+
+        private XmlDocument SendSolutionRequest(SolutionRequest request)
+        {
             var tcpClient = new ConnectionClient(_serverInfo);
 
             tcpClient.Connect();
@@ -73,13 +71,6 @@ namespace ComputationalClient
             tcpClient.Close();
 
             return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
-        }
-        
-        private void LogClientInfo()
-        {
-            Console.WriteLine("Client is running...");
-            Console.WriteLine("Server address: {0}", _serverInfo.Address);
-            Console.WriteLine("Server port: {0}", _serverInfo.Port);
         }
     }
 }
