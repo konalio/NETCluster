@@ -154,7 +154,7 @@ namespace CommunicationServer
                 {
                     IClusterMessage cm = SearchTaskManagerMessages(id, tp.handler);
 
-                    if (cm.GetType() == typeof(DivideProblem))
+                    if (cm!=null && cm.GetType() == typeof(DivideProblem))
                     {
                         ConvertAndSendMessage<DivideProblem>(cm as DivideProblem, tp.handler);
                     }
@@ -164,11 +164,11 @@ namespace CommunicationServer
                 else if (_components[(int)id].type == "ComputationalNode")
                 {
                     IClusterMessage cm = SearchComputationalNodeMessages(tp.handler);
-                    if (cm.GetType() == typeof(SolvePartialProblems))
+                    if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
                     {
                         ConvertAndSendMessage<SolvePartialProblems>(cm as SolvePartialProblems, tp.handler);
                     }
-                    else if (cm.GetType() == typeof(Solutions))
+                    else if (cm!=null && cm.GetType() == typeof(Solutions))
                     {
                         ConvertAndSendMessage<Solutions>(cm as Solutions, tp.handler);
 
@@ -382,13 +382,15 @@ namespace CommunicationServer
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
             int i = 0;
-            int timeout = 20;
+            const int timeout = 20;
             int time = 0;
+            ManualResetEvent ev = new ManualResetEvent(false);
+
             while (time <= timeout)
             {
                 while (_messageList.Count == 0 && time <= timeout)
                 {
-                    Thread.Sleep(100);
+                    ev.WaitOne(100);
                     time++;
                 }
 
@@ -415,7 +417,7 @@ namespace CommunicationServer
                
                     
                 }
-                Thread.Sleep(100);
+                ev.WaitOne(100);
                 time++;
                 i++;
             }
@@ -425,13 +427,14 @@ namespace CommunicationServer
         public IClusterMessage SearchComputationalNodeMessages(Socket handler)
         {
             int i = 0;
-            int timeout = 20;
+            const int timeout = 20;
             int time = 0;
+            ManualResetEvent ev = new ManualResetEvent(false);
             while (time <= timeout)
             {
                 while (_messageList.Count == 0 && time <=timeout)
                 {
-                    Thread.Sleep(100);
+                    ev.WaitOne(100);
                     time++;
                 }
 
@@ -452,7 +455,7 @@ namespace CommunicationServer
                     _messageList.Remove(_messageList[i]);
                     return s;
                 }
-                Thread.Sleep(100);
+                ev.WaitOne(100);
                 time++;
                 i++;
             }
