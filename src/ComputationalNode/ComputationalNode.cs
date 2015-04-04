@@ -49,8 +49,18 @@ namespace ComputationalNode
         {
             var solution = new Solutions
             {
-                Solutions1 = new[] {new SolutionsSolution {TaskId = taskId, Type = SolutionsSolutionType.Partial}},
-                Id = problemInstanceId
+                Solutions1 = new[] {new SolutionsSolution
+                {
+                    TaskId = taskId, 
+                    TaskIdSpecified = true,
+                    Type = SolutionsSolutionType.Partial, 
+                    TimeoutOccured = false, 
+                    ComputationsTime = 1,
+                    Data = new byte[0]
+                }},
+                Id = problemInstanceId,
+                ProblemType = "DVRP",
+                CommonData = new byte[0]
             };
 
             SendMessageNoResponse(solution);
