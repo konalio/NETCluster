@@ -62,7 +62,11 @@ namespace ComputationalClient
 
         private ulong RequestForSolvingProblem()
         {
-            var request = new SolveRequest();
+            var request = new SolveRequest
+            {
+                Data = new byte[0],
+                ProblemType = "DVRP"
+            };
 
             var tcpClient = new ConnectionClient(_serverInfo);
 
