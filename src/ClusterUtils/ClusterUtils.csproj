@@ -40,9 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component.cs" />
     <Compile Include="ComponentConfig.cs" />
     <Compile Include="Communication\ConnectionClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegisteredComponent.cs" />
     <Compile Include="Serializers.cs" />
     <Compile Include="Communication\StateObject.cs" />
     <Compile Include="ServerInfo.cs" />
