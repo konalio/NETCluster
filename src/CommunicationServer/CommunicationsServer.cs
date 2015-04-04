@@ -6,7 +6,6 @@ using System.Threading;
 using System.Xml;
 using ClusterUtils;
 using ClusterUtils.Communication;
-using ClusterMessages;
 
 namespace CommunicationServer
 {
@@ -114,7 +113,8 @@ namespace CommunicationServer
 
                             response = new RegisterResponse
                             {
-                                Id = _componentCount.ToString()
+                                Id = _componentCount.ToString(),
+                                Timeout = "5"
                             };
                             break;
                         case "Status":
@@ -122,6 +122,9 @@ namespace CommunicationServer
                             NoOperationBackupCommunicationServers backupServers = new NoOperationBackupCommunicationServers();
 
                             //var backups = message.GetElementsByTagName("BackupCommunicationServers");
+
+                            string componentId = message.GetElementsByTagName("Id")[0].InnerText;
+                            Console.WriteLine("Received status message from component {0}", componentId);
 
                             // adding some example backup server data for testing
                             backupServers.BackupCommunicationServer = new NoOperationBackupCommunicationServersBackupCommunicationServer()
@@ -136,8 +139,6 @@ namespace CommunicationServer
                             };
                             break;
                     }
-                    Console.WriteLine("elemName = " + elemName);
-
 
                     var responseBuffer = new List<byte>(Serializers.ObjectToByteArray(response));
                     Send(handler, responseBuffer.ToArray());
