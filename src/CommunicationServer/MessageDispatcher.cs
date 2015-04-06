@@ -149,9 +149,6 @@ namespace CommunicationServer
             var state = GetXmlElementInnerText("State", tp.message);
 
             var no = new NoOperation { };
-            //var no = new NoOperation { };
-            //ConvertAndSendMessage<NoOperation>(no, tp.handler);
-
             //if (state == "Idle")
             //{
                 if (_components[(int)id].type == "TaskManager")
@@ -176,12 +173,10 @@ namespace CommunicationServer
                     if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
                     {
                         ConvertTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.handler);
-                        //ConvertAndSendMessage<SolvePartialProblems>(cm as SolvePartialProblems, tp.handler);
                     }
                     else if (cm!=null && cm.GetType() == typeof(Solutions))
                     {
                         ConvertTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
-                        //ConvertAndSendMessage<Solutions>(cm as Solutions, tp.handler);
 
                     }
                     else
@@ -245,7 +240,7 @@ namespace CommunicationServer
                 
             };
 
-            if (_partialSolutions!=null && _partialSolutions.Count<(int)id && _partialSolutions[(int)id].Count == 5)
+            if (_partialSolutions!=null && _partialSolutions.Count>(int)id && _partialSolutions[(int)id].Count == 5)
             {
                 solutions[0] = new SolutionsSolution
                 {
@@ -443,7 +438,7 @@ namespace CommunicationServer
                 var s = new Solutions
                 {
                     Id = listID,
-                    Solutions1 = _partialSolutions[0].ToArray()
+                    Solutions1 = _partialSolutions[(int)listID].ToArray()
                 };                
                 _messageList.Add(s);
             }
@@ -511,22 +506,25 @@ namespace CommunicationServer
                     time++;
                 }
 
-                if (i >= _messageList.Count)
+                lock (_messageList)
                 {
-                    i = 0;
-                    continue;
-                }
-                if (_messageList[i] is SolvePartialProblems)
-                {
-                    SolvePartialProblems spp = _messageList[i] as SolvePartialProblems;
-                    _messageList.Remove(_messageList[i]);
-                    return spp;
-                }
-                if (_messageList[i] is Solutions)
-                {
-                    Solutions s = _messageList[i] as Solutions;
-                    _messageList.Remove(_messageList[i]);
-                    return s;
+                    if (i >= _messageList.Count)
+                    {
+                        i = 0;
+                        continue;
+                    }
+                    if (_messageList[i] is SolvePartialProblems)
+                    {
+                        SolvePartialProblems spp = _messageList[i] as SolvePartialProblems;
+                        _messageList.Remove(_messageList[i]);
+                        return spp;
+                    }
+                    if (_messageList[i] is Solutions)
+                    {
+                        Solutions s = _messageList[i] as Solutions;
+                        _messageList.Remove(_messageList[i]);
+                        return s;
+                    }
                 }
                 ev.WaitOne(100);
                 time++;
