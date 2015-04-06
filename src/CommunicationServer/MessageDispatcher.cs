@@ -262,7 +262,7 @@ namespace CommunicationServer
 
             var partialProblemTaskIds = message.GetElementsByTagName("TaskId");
             var partialProblemDatas = message.GetElementsByTagName("Data");
-            var partialProblemNodeIds = message.GetElementsByTagName("NodeId");
+            var partialProblemNodeIds = message.GetElementsByTagName("NodeID");
 
             int count = partialProblemTaskIds.Count;
 
@@ -285,19 +285,27 @@ namespace CommunicationServer
                 spp.SolvingTimeoutSpecified = false;
             }
 
+
+
             for (int i = 0; i < count; i++)
-            {              
+            {
+                byte[] data = System.Text.Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText);
+                ulong tID = UInt64.Parse(partialProblemTaskIds[i].InnerText);
+                ulong nID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
                 var problem = new SolvePartialProblemsPartialProblem
                 {
-                    Data = System.Text.Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText),
-                    TaskId = UInt64.Parse(partialProblemTaskIds[i].InnerText),
-                    NodeID = UInt64.Parse(partialProblemNodeIds[i].InnerText)
+                    Data = data,
+                    TaskId = tID,
+                    NodeID = nID
                 };
                
                 partialproblems[0] = problem;
                 spp.PartialProblems = partialproblems;
                 _messageList.Add(spp);
             }
+            
+            var no = new NoOperation { };
+            //ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
         public void HandleSolutionMessages(ThreadPackage tp)
@@ -339,6 +347,8 @@ namespace CommunicationServer
                 }
                 AddPartialSolution(ss, id);
             }
+            var no = new NoOperation { };
+            ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
         public void ConvertAndSendMessage<T>( T message, Socket handler )
@@ -417,11 +427,11 @@ namespace CommunicationServer
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
             int i = 0;
-            const int timeout = 400;
+            const int timeout = 2;
             int time = 0;
             ManualResetEvent ev = new ManualResetEvent(false);
 
-            while (true)
+            while (time <= timeout)
             {
                 while (_messageList.Count == 0 && time <= timeout)
                 {
@@ -429,28 +439,30 @@ namespace CommunicationServer
                     time++;
                 }
 
-                if (i >= _messageList.Count)
+                lock (_messageList)
                 {
-                    i = 0;
-                    continue;
-                }
-
-                if (_messageList[i] is SolveRequest)
-                {
-
-                    SolveRequest sr = _messageList[i] as SolveRequest;
-                    var dp = new DivideProblem
+                    if (i >= _messageList.Count)
                     {
-                        Id = sr.Id,
-                        ProblemType = sr.ProblemType,
-                        NodeID = id,
-                        Data = sr.Data
-                    };                   
-                                        
-                    _messageList.Remove(_messageList[i]);
-                    return dp;
-               
-                    
+                        i = 0;
+                        continue;
+                    }
+                    if (_messageList[i] is SolveRequest)
+                    {
+
+                        SolveRequest sr = _messageList[i] as SolveRequest;
+                        var dp = new DivideProblem
+                        {
+                            Id = sr.Id,
+                            ProblemType = sr.ProblemType,
+                            NodeID = id,
+                            Data = sr.Data
+                        };
+
+                        _messageList.Remove(_messageList[i]);
+                        return dp;
+
+
+                    }
                 }
                 ev.WaitOne(100);
                 time++;
@@ -462,10 +474,10 @@ namespace CommunicationServer
         public IClusterMessage SearchComputationalNodeMessages(Socket handler)
         {
             int i = 0;
-            const int timeout = 20;
+            const int timeout = 2;
             int time = 0;
             ManualResetEvent ev = new ManualResetEvent(false);
-            while (true)
+            while (time<=timeout)
             {
                 while (_messageList.Count == 0 && time <=timeout)
                 {
@@ -538,7 +550,7 @@ namespace CommunicationServer
         public static void SendMessage(Socket handler, byte[] byteData)
         {
             handler.BeginSend(byteData, 0, byteData.Length, 0,
-               SendCallback, handler);
+                   SendCallback, handler);
         }
 
         private static void SendCallback(IAsyncResult ar)
