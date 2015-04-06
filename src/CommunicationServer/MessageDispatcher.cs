@@ -148,6 +148,10 @@ namespace CommunicationServer
             var id = GetXmlElementInnerUlong("Id", tp.message);
             var state = GetXmlElementInnerText("State", tp.message);
 
+            var no = new NoOperation { };
+            //var no = new NoOperation { };
+            //ConvertAndSendMessage<NoOperation>(no, tp.handler);
+
             //if (state == "Idle")
             //{
                 if (_components[(int)id].type == "TaskManager")
@@ -156,7 +160,12 @@ namespace CommunicationServer
 
                     if (cm!=null && cm.GetType() == typeof(DivideProblem))
                     {
-                        ConvertAndSendMessage<DivideProblem>(cm as DivideProblem, tp.handler);
+                        ConvertTwoMessages<DivideProblem, NoOperation>(cm as DivideProblem, no, tp.handler);
+                       
+                    }
+                    else
+                    {
+                        ConvertAndSendMessage<NoOperation>(no, tp.handler);
                     }
                     
                 }
@@ -166,18 +175,23 @@ namespace CommunicationServer
                     IClusterMessage cm = SearchComputationalNodeMessages(tp.handler);
                     if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
                     {
-                        ConvertAndSendMessage<SolvePartialProblems>(cm as SolvePartialProblems, tp.handler);
+                        ConvertTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.handler);
+                        //ConvertAndSendMessage<SolvePartialProblems>(cm as SolvePartialProblems, tp.handler);
                     }
                     else if (cm!=null && cm.GetType() == typeof(Solutions))
                     {
-                        ConvertAndSendMessage<Solutions>(cm as Solutions, tp.handler);
+                        ConvertTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
+                        //ConvertAndSendMessage<Solutions>(cm as Solutions, tp.handler);
 
+                    }
+                    else
+                    {
+                        ConvertAndSendMessage<NoOperation>(no, tp.handler);
                     }
                 }
             //}
 
-            var no = new NoOperation { };
-            ConvertAndSendMessage<NoOperation>(no, tp.handler);
+
         }
 
         public void HandleRegisterMessages(ThreadPackage tp)
@@ -305,7 +319,7 @@ namespace CommunicationServer
             }
             
             var no = new NoOperation { };
-            //ConvertAndSendMessage<NoOperation>(no, tp.handler);
+            ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
         public void HandleSolutionMessages(ThreadPackage tp)
@@ -349,6 +363,18 @@ namespace CommunicationServer
             }
             var no = new NoOperation { };
             ConvertAndSendMessage<NoOperation>(no, tp.handler);
+        }
+
+        public void ConvertTwoMessages<T,S>( T message1, S message2, Socket handler )
+        {
+            byte[] messageData1 = Serializers.ObjectToByteArray<T>(message1);
+            byte[] messageData2 = Serializers.ObjectToByteArray<S>(message2);
+            byte[] messageData = new byte[messageData1.Length + messageData2.Length + 1];
+            messageData1.CopyTo(messageData, 0);
+            messageData[messageData1.Length] = 23;            
+            messageData2.CopyTo(messageData, messageData1.Length + 1);
+            SendMessage(handler, messageData);
+        
         }
 
         public void ConvertAndSendMessage<T>( T message, Socket handler )
@@ -405,7 +431,7 @@ namespace CommunicationServer
 
         public void AddPartialSolution(SolutionsSolution ss, ulong listID)
         {       
-            if(_partialSolutions.Count<(int)listID)
+            if(_partialSolutions.Count<=(int)listID)
             {
                 _partialSolutions.Add(new List<SolutionsSolution>());
             }
