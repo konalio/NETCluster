@@ -15,6 +15,7 @@ namespace TaskManager
             LogRuntimeInfo();
             Register();
             StartSendingStatus();
+            Console.ReadLine();
         }
         
         protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
@@ -64,8 +65,18 @@ namespace TaskManager
         {
             var solution = new Solutions
             {
-                Solutions1 = new[] { new SolutionsSolution { TaskId = taskId, Type = SolutionsSolutionType.Final } },
-                Id = problemInstanceId
+                Solutions1 = new[] { new SolutionsSolution
+                {
+                    TaskId = taskId, 
+                    TaskIdSpecified = true,
+                    ComputationsTime = 1,
+                    TimeoutOccured = false,
+                    Type = SolutionsSolutionType.Final,
+                    Data = new byte[0]
+                } },
+                Id = problemInstanceId,
+                ProblemType = "DVRP",
+                CommonData = new byte[0]
             };
 
             SendMessageNoResponse(solution);
@@ -94,13 +105,15 @@ namespace TaskManager
             var partialProblems = new SolvePartialProblems
             {
                 Id = problemInstanceId,
+                ProblemType = "DVRP",
+                CommonData = new byte[0],
                 PartialProblems = new[]
                 {
-                    new SolvePartialProblemsPartialProblem {TaskId = 0},
-                    new SolvePartialProblemsPartialProblem {TaskId = 1},
-                    new SolvePartialProblemsPartialProblem {TaskId = 2},
-                    new SolvePartialProblemsPartialProblem {TaskId = 3},
-                    new SolvePartialProblemsPartialProblem {TaskId = 4},
+                    new SolvePartialProblemsPartialProblem {TaskId = 0, Data = new byte[0], NodeID = Id},
+                    new SolvePartialProblemsPartialProblem {TaskId = 1, Data = new byte[0], NodeID = Id},
+                    new SolvePartialProblemsPartialProblem {TaskId = 2, Data = new byte[0], NodeID = Id},
+                    new SolvePartialProblemsPartialProblem {TaskId = 3, Data = new byte[0], NodeID = Id},
+                    new SolvePartialProblemsPartialProblem {TaskId = 4, Data = new byte[0], NodeID = Id},
                 }
             };
             return partialProblems;

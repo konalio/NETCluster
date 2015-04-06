@@ -46,7 +46,11 @@ namespace ComputationalClient
 
         private ulong RequestForSolvingProblem()
         {
-            var request = new SolveRequest();
+            var request = new SolveRequest
+            {
+                ProblemType = "DVRP",
+                Data = new byte[0]
+            };
             var response = SendMessageSingleResponse(request);
             return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
         }

@@ -148,8 +148,8 @@ namespace CommunicationServer
             var id = GetXmlElementInnerUlong("Id", tp.message);
             var state = GetXmlElementInnerText("State", tp.message);
 
-            if (state == "Idle")
-            {
+            //if (state == "Idle")
+            //{
                 if (_components[(int)id].type == "TaskManager")
                 {
                     IClusterMessage cm = SearchTaskManagerMessages(id, tp.handler);
@@ -174,7 +174,7 @@ namespace CommunicationServer
 
                     }
                 }
-            }
+            //}
 
             var no = new NoOperation { };
             ConvertAndSendMessage<NoOperation>(no, tp.handler);
@@ -224,11 +224,29 @@ namespace CommunicationServer
         public void HandleSolutionRequestMessages(ThreadPackage tp)
         {
             var id = GetXmlElementInnerUlong("Id", tp.message);
+            SolutionsSolution[] solutions = new SolutionsSolution[1];
             var s = new Solutions 
             { 
-                Id = id 
+                Id = id,                
+                
             };
 
+            if (_partialSolutions!=null && _partialSolutions.Count<(int)id && _partialSolutions[(int)id].Count == 5)
+            {
+                solutions[0] = new SolutionsSolution
+                {
+                    Type = SolutionsSolutionType.Final
+                };
+            }
+            else
+            {
+                solutions[0] = new SolutionsSolution
+                {
+                    Type = SolutionsSolutionType.Ongoing
+                };
+            }
+
+            s.Solutions1 = solutions;
             ConvertAndSendMessage<Solutions>(s, tp.handler);
         }
 
@@ -344,18 +362,35 @@ namespace CommunicationServer
 
         public String GetXmlElementInnerText(String s, XmlDocument doc)
         {
-            return doc.GetElementsByTagName(s)[0].InnerText;
+            var list = doc.GetElementsByTagName(s);
+            if (list.Count == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return list[0].InnerText;
+            }
         }
 
         public ulong GetXmlElementInnerUlong(String s, XmlDocument doc)
         {
-            return UInt64.Parse(doc.GetElementsByTagName(s)[0].InnerText);            
+            String number = GetXmlElementInnerText(s, doc);  
+            ulong value=0;
+            try
+            {
+                value = UInt64.Parse(number);            
+            }
+            catch(FormatException ex)
+            {
+                return 0;
+            }
+            return value;
         }
 
         public byte[] GetXmlElementInnerByte(String s, XmlDocument doc)
         {
             return System.Text.Encoding.UTF8.GetBytes(GetXmlElementInnerText(s, doc));
-
         }
 
         public void AddPartialSolution(SolutionsSolution ss, ulong listID)
@@ -382,11 +417,11 @@ namespace CommunicationServer
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
             int i = 0;
-            const int timeout = 20;
+            const int timeout = 400;
             int time = 0;
             ManualResetEvent ev = new ManualResetEvent(false);
 
-            while (time <= timeout)
+            while (true)
             {
                 while (_messageList.Count == 0 && time <= timeout)
                 {
@@ -430,7 +465,7 @@ namespace CommunicationServer
             const int timeout = 20;
             int time = 0;
             ManualResetEvent ev = new ManualResetEvent(false);
-            while (time <= timeout)
+            while (true)
             {
                 while (_messageList.Count == 0 && time <=timeout)
                 {
