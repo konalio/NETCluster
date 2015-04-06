@@ -160,6 +160,11 @@ namespace CommunicationServer
                         ConvertTwoMessages<DivideProblem, NoOperation>(cm as DivideProblem, no, tp.handler);
                        
                     }
+                    else if (cm != null && cm.GetType() == typeof(Solutions))
+                    {
+                        ConvertTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
+
+                    }
                     else
                     {
                         ConvertAndSendMessage<NoOperation>(no, tp.handler);
@@ -174,11 +179,7 @@ namespace CommunicationServer
                     {
                         ConvertTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.handler);
                     }
-                    else if (cm!=null && cm.GetType() == typeof(Solutions))
-                    {
-                        ConvertTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
-
-                    }
+                   
                     else
                     {
                         ConvertAndSendMessage<NoOperation>(no, tp.handler);
@@ -437,9 +438,11 @@ namespace CommunicationServer
             {                
                 var s = new Solutions
                 {
+                    CommonData=new byte[1],
+                    ProblemType = "",
                     Id = listID,
                     Solutions1 = _partialSolutions[(int)listID].ToArray()
-                };                
+                };            
                 _messageList.Add(s);
             }
             
@@ -484,6 +487,12 @@ namespace CommunicationServer
 
 
                     }
+                    if (_messageList[i] is Solutions)
+                    {
+                        Solutions s = _messageList[i] as Solutions;
+                        _messageList.Remove(_messageList[i]);
+                        return s;
+                    }
                 }
                 ev.WaitOne(100);
                 time++;
@@ -518,12 +527,6 @@ namespace CommunicationServer
                         SolvePartialProblems spp = _messageList[i] as SolvePartialProblems;
                         _messageList.Remove(_messageList[i]);
                         return spp;
-                    }
-                    if (_messageList[i] is Solutions)
-                    {
-                        Solutions s = _messageList[i] as Solutions;
-                        _messageList.Remove(_messageList[i]);
-                        return s;
                     }
                 }
                 ev.WaitOne(100);
