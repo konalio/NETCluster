@@ -57,7 +57,9 @@ namespace CommunicationServer
             _componentTimeout = timeout;
         }       
         
-
+        /// <summary>
+        /// Starts listening thread
+        /// </summary>
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
@@ -68,6 +70,10 @@ namespace CommunicationServer
             th_1.Start(null);
         }
 
+        /// <summary>
+        /// Listens for messages from other components
+        /// </summary>
+        /// <param name="o"></param>
         public void ListeningThread(Object o)
         {               
             var localEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(_listeningPort));
@@ -106,7 +112,10 @@ namespace CommunicationServer
             AnalyzeMessage(tp);
            
         }
-
+        /// <summary>
+        /// Analyzes different messages types
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void AnalyzeMessage(ThreadPackage tp)
         {            
             MessageTypeResolver.MessageType messageType = MessageTypeResolver.GetMessageType(tp.message);
@@ -142,7 +151,10 @@ namespace CommunicationServer
                 HandleSolutionMessages(tp);
             }
         }
-
+        /// <summary>
+        /// Handles State Messages from components
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleStateMessages(ThreadPackage tp)
         {
             var id = GetXmlElementInnerUlong("Id", tp.message);
@@ -159,12 +171,12 @@ namespace CommunicationServer
 
                     if (cm!=null && cm.GetType() == typeof(DivideProblem))
                     {
-                        ConvertTwoMessages<DivideProblem, NoOperation>(cm as DivideProblem, no, tp.handler);
+                        ConvertAndSendTwoMessages<DivideProblem, NoOperation>(cm as DivideProblem, no, tp.handler);
                        
                     }
                     else if (cm != null && cm.GetType() == typeof(Solutions))
                     {
-                        ConvertTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
+                        ConvertAndSendTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.handler);
 
                     }
                     else
@@ -179,7 +191,7 @@ namespace CommunicationServer
                     IClusterMessage cm = SearchComputationalNodeMessages(tp.handler);
                     if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
                     {
-                        ConvertTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.handler);
+                        ConvertAndSendTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.handler);
                     }
                    
                     else
@@ -192,6 +204,10 @@ namespace CommunicationServer
 
         }
 
+        /// <summary>
+        /// Handles Register Messages from components
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleRegisterMessages(ThreadPackage tp)
         {
             var type = GetXmlElementInnerText("Type", tp.message);
@@ -209,6 +225,10 @@ namespace CommunicationServer
             ConvertAndSendMessage<RegisterResponse>(rr, tp.handler);
         }
 
+        /// <summary>
+        /// Handles SolveRequest Messages from Client
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleSolveRequestMessages(ThreadPackage tp)
         {
             var problemType = GetXmlElementInnerText("ProblemType", tp.message);
@@ -233,6 +253,10 @@ namespace CommunicationServer
 
         }
 
+        /// <summary>
+        /// Handles SolutionRequest Messages from Client
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleSolutionRequestMessages(ThreadPackage tp)
         {
             var id = GetXmlElementInnerUlong("Id", tp.message);
@@ -259,6 +283,10 @@ namespace CommunicationServer
             ConvertAndSendMessage<Solutions>(s, tp.handler);
         }
 
+        /// <summary>
+        /// Handles SolvePartialProblem Messages from components
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
             XmlDocument message = tp.message;           
@@ -315,6 +343,11 @@ namespace CommunicationServer
             ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
+        /// <summary>
+        /// Handles Solution Messages from components. If Solution is Final, prepares it to send it to Client. 
+        /// If Solution is Partia, adds it to the _partialSolutions list
+        /// </summary>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleSolutionMessages(ThreadPackage tp)
         {
             XmlDocument message = tp.message;
@@ -368,7 +401,15 @@ namespace CommunicationServer
             ConvertAndSendMessage<NoOperation>(no, tp.handler);
         }
 
-        public void ConvertTwoMessages<T,S>( T message1, S message2, Socket handler )
+        /// <summary>
+        /// Converts two Messages of different types to the binary array data and sends them to component
+        /// </summary>
+        /// <typeparam name="T">Type of the first message</typeparam>
+        /// <typeparam name="S">Type of the second message</typeparam>
+        /// <param name="message1">First message</param>
+        /// <param name="message2">Second message</param>
+        /// <param name="handler">Socket handler of the component, that messages will be sent to</param>
+        public void ConvertAndSendTwoMessages<T,S>( T message1, S message2, Socket handler )
         {
             byte[] messageData1 = Serializers.ObjectToByteArray<T>(message1);
             byte[] messageData2 = Serializers.ObjectToByteArray<S>(message2);
@@ -379,13 +420,23 @@ namespace CommunicationServer
             SendMessage(handler, messageData);
         
         }
-
+        /// <summary>
+        /// Converts a message to binary array data and sends it to component
+        /// </summary>
+        /// <typeparam name="T">Type of the message</typeparam>
+        /// <param name="message">Message</param>
+        /// <param name="handler">Socket handler of the component, that message will be sent to</param>
         public void ConvertAndSendMessage<T>( T message, Socket handler )
         {
             byte[] messageData = Serializers.ObjectToByteArray<T>(message);
             SendMessage(handler, messageData);
         }
 
+        /// <summary>
+        /// Creates String array from XmlNodeList element
+        /// </summary>
+        /// <param name="xmlElementsList">XmlNodeList element</param>
+        /// <returns></returns>
         public String[] CreateArrayFromXml(XmlNodeList xmlElementsList)
         {
             int count = xmlElementsList.Count;
@@ -399,6 +450,12 @@ namespace CommunicationServer
             return array;
         }
 
+        /// <summary>
+        /// Finds text value of the element in the XmlDocument
+        /// </summary>
+        /// <param name="s">Name of the element</param>
+        /// <param name="doc">XmlDocument we are searching in</param>
+        /// <returns></returns>
         public String GetXmlElementInnerText(String s, XmlDocument doc)
         {
             var list = doc.GetElementsByTagName(s);
@@ -412,6 +469,12 @@ namespace CommunicationServer
             }
         }
 
+        /// <summary>
+        /// Finds ulong value of the element in the XmlDocument
+        /// </summary>
+        /// <param name="s">Name of the element</param>
+        /// <param name="doc">XmlDocument we are searching in</param>
+        /// <returns></returns>
         public ulong GetXmlElementInnerUlong(String s, XmlDocument doc)
         {
             String number = GetXmlElementInnerText(s, doc);  
@@ -427,11 +490,22 @@ namespace CommunicationServer
             return value;
         }
 
+        /// <summary>
+        /// Finds byte[] value of the element in the XmlDocument
+        /// </summary>
+        /// <param name="s">Name of the element</param>
+        /// <param name="doc">XmlDocument we are searching in</param>
+        /// <returns></returns>
         public byte[] GetXmlElementInnerByte(String s, XmlDocument doc)
         {
             return System.Text.Encoding.UTF8.GetBytes(GetXmlElementInnerText(s, doc));
         }
 
+        /// <summary>
+        /// Adds Parital Solution to the _partialSolutions list
+        /// </summary>
+        /// <param name="ss">PartialSolution that is added to the list</param>
+        /// <param name="listID">ID of _partialSolutions list</param>
         public void AddPartialSolution(SolutionsSolution ss, ulong listID)
         {       
             if(_partialSolutions.Count<=(int)listID)
@@ -453,7 +527,12 @@ namespace CommunicationServer
             }
             
         }
-
+        /// <summary>
+        /// Searches listed messages (SolveRequest and Solutions) for TaskManager
+        /// </summary>
+        /// <param name="id">TaskManager id</param>
+        /// <param name="handler">Handler to the TaskManager</param>
+        /// <returns></returns>
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
             int i = 0;
@@ -506,6 +585,12 @@ namespace CommunicationServer
             }
             return null;
         }
+
+        /// <summary>
+        /// Searches listed messages (SolvePartialProblems) for ComputationalNode
+        /// </summary>
+        /// <param name="handler">Handler to the ComputationalNode</param>
+        /// <returns></returns>
 
         public IClusterMessage SearchComputationalNodeMessages(Socket handler)
         {
