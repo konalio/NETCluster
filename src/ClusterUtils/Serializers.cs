@@ -5,8 +5,16 @@ using System.Xml.Serialization;
 
 namespace ClusterUtils
 {
+    /// <summary>
+    /// Helper class for serializing/deserializing objects.
+    /// </summary>
     public static class Serializers
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj">Object to be serialized.</param>
+        /// <returns>Object as bytes.</returns>
         public static Byte[] ObjectToByteArray<T>(T obj)
         {
             using (var ms = new MemoryStream())
@@ -19,6 +27,11 @@ namespace ClusterUtils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bObj">Object as bytes array.</param>
+        /// <returns>Deserialized object.</returns>
         public static T ByteArrayObject<T>(Byte[] bObj)
         {
             using (var ms = new MemoryStream(bObj))

@@ -3,11 +3,18 @@ using System.Configuration;
 
 namespace ClusterUtils
 {
+    /// <summary>
+    /// Container for components' configuration info - server's address and port.
+    /// </summary>
     public class ComponentConfig
     {
         public string ServerAddress { get; set; }
         public string ServerPort { get; set; }
 
+        /// <summary>
+        /// Retreives configuration from App.config file.
+        /// </summary>
+        /// <returns>Config from App.config</returns>
         public static ComponentConfig GetConfigFromAppConfig()
         {
             var serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
@@ -20,7 +27,11 @@ namespace ClusterUtils
             };
         }
     
-
+        /// <summary>
+        /// Retreives configuration from command line arguments.
+        /// </summary>
+        /// <param name="arguments">Command line args.</param>
+        /// <returns>Config from command line args.</returns>
         public static ComponentConfig GetConfigFromArgs(string[] arguments)
         {
             var config = new ComponentConfig();
@@ -64,6 +75,12 @@ namespace ClusterUtils
             return config;
         }
 
+        /// <summary>
+        /// Retreives config from both App.config and command line.
+        /// Command line arguments supress App.config settings.
+        /// </summary>
+        /// <param name="arguments">Command line arguments.</param>
+        /// <returns>Actual component config.</returns>
         public static ComponentConfig GetComponentConfig(string[] arguments)
         {
             var appConfig = GetConfigFromAppConfig();

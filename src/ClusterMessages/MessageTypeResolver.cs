@@ -3,6 +3,9 @@ using System.Xml;
 
 namespace ClusterMessages
 {
+    /// <summary>
+    /// Helper class for retreiving cluster message type from XmlDocument.
+    /// </summary>
     public static class MessageTypeResolver
     {
         public enum MessageType
@@ -21,6 +24,11 @@ namespace ClusterMessages
             Error
         }
 
+        /// <summary>
+        /// Returns appropriate type based on Xml message.
+        /// </summary>
+        /// <param name="message">Xml message.</param>
+        /// <returns>Message type.</returns>
         public static MessageType GetMessageType(XmlDocument message)
         {
             if (message == null)

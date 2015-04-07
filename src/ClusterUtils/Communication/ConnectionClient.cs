@@ -9,6 +9,12 @@ using ClusterMessages;
 
 namespace ClusterUtils.Communication
 {
+    /// <summary>
+    /// Helper class for components to communicate with server.
+    /// When instance of ConnectionClient is created, component may open connection with server.
+    /// Than component may send messages to server and wait for response/responses. 
+    /// Than connection is closed manually by component.
+    /// </summary>
     public class ConnectionClient
     {
         private readonly ManualResetEvent _connectDone =
@@ -25,12 +31,19 @@ namespace ClusterUtils.Communication
 
         private Socket _client;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverInfo">Server address and port.</param>
         public ConnectionClient(ServerInfo serverInfo)
         {
             _serverAddress = IPAddress.Parse(serverInfo.Address);
             _serverPort = int.Parse(serverInfo.Port);
         }
 
+        /// <summary>
+        /// Connects client with server. 
+        /// </summary>
         public void Connect()
         {
             var remoteEP = new IPEndPoint(_serverAddress, _serverPort);
@@ -43,6 +56,11 @@ namespace ClusterUtils.Communication
             _connectDone.WaitOne();
         }
 
+        /// <summary>
+        /// Sends message to server and waits for responses.
+        /// </summary>
+        /// <param name="message">Message to be sent.</param>
+        /// <returns>All possible responses.</returns>
         public List<XmlDocument> SendAndWaitForResponses(IClusterMessage message)
         {
             var byteMessage = Serializers.ObjectToByteArray(message);
@@ -56,6 +74,9 @@ namespace ClusterUtils.Communication
             return _responses;
         }
 
+        /// <summary>
+        /// Closes sockets between server and client.
+        /// </summary>
         public void Close()
         {
             _client.Shutdown(SocketShutdown.Receive);
