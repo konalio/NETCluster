@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Xml;
+using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
-using ClusterMessages;
 
 namespace CommunicationServer
 {
@@ -42,8 +40,8 @@ namespace CommunicationServer
             _components = new List<ComponentStatus>();
             _partialSolutions = new List<List<SolutionsSolution>>();
 
-            Thread th_1 = new Thread(new ParameterizedThreadStart(ListeningThread));
-            th_1.Start(null);
+            var th1 = new Thread(ListeningThread);
+            th1.Start(null);
         }
 
         /// <summary>
@@ -93,40 +91,32 @@ namespace CommunicationServer
         /// </summary>
         /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void AnalyzeMessage(ThreadPackage tp)
-        {            
-            MessageTypeResolver.MessageType messageType = MessageTypeResolver.GetMessageType(tp.Message);
+        {
+            var messageType = MessageTypeResolver.GetMessageType(tp.Message);
 
-            if (messageType == MessageTypeResolver.MessageType.Status)
+            switch (messageType)
             {
-                HandleStateMessages(tp);
-            }
-
-            else if (messageType == MessageTypeResolver.MessageType.Register)
-            {
-
-                HandleRegisterMessages(tp);
-               
-            }
-            else if (messageType == MessageTypeResolver.MessageType.SolveRequest)
-            {
-                HandleSolveRequestMessages(tp);
-
-            }
-            else if (messageType == MessageTypeResolver.MessageType.SolutionRequest)
-            {
-                HandleSolutionRequestMessages(tp);
-                
-            }
-            else if (messageType == MessageTypeResolver.MessageType.PartialProblems)
-            {
-                HandlePartialProblemsMessages(tp);     
-            }
-
-            else if (messageType == MessageTypeResolver.MessageType.Solution)
-            {
-                HandleSolutionMessages(tp);
+                case MessageTypeResolver.MessageType.Status:
+                    HandleStateMessages(tp);
+                    break;
+                case MessageTypeResolver.MessageType.Register:
+                    HandleRegisterMessages(tp);
+                    break;
+                case MessageTypeResolver.MessageType.SolveRequest:
+                    HandleSolveRequestMessages(tp);
+                    break;
+                case MessageTypeResolver.MessageType.SolutionRequest:
+                    HandleSolutionRequestMessages(tp);
+                    break;
+                case MessageTypeResolver.MessageType.PartialProblems:
+                    HandlePartialProblemsMessages(tp);
+                    break;
+                case MessageTypeResolver.MessageType.Solution:
+                    HandleSolutionMessages(tp);
+                    break;
             }
         }
+
         /// <summary>
         /// Handles State Messages from components
         /// </summary>
@@ -135,48 +125,49 @@ namespace CommunicationServer
         {
             var id = GetXmlElementInnerUlong("Id", tp.Message);
             var state = GetXmlElementInnerText("State", tp.Message);
-            var no = new NoOperation { };
+            var no = new NoOperation();
 
-            //  The components do not inform server if they are busy or idle, that's why this part is
+            //  The components do not inform server if they are busy or idle yet, that's why this part is
             //  commented at the moment
-
             //if (state == "Idle")
             //{
-                if (_components[(int)id].type == "TaskManager")
+                switch (_components[(int)id].type)
                 {
-                    
-
-                    IClusterMessage cm = SearchTaskManagerMessages(id, tp.Handler);
-
-                    if (cm!=null && cm.GetType() == typeof(DivideProblem))
+                    case "TaskManager":
                     {
-                        ConvertAndSendTwoMessages<DivideProblem, NoOperation>(cm as DivideProblem, no, tp.Handler);
+                        var cm = SearchTaskManagerMessages(id, tp.Handler);
+
+                        if (cm!=null && cm.GetType() == typeof(DivideProblem))
+                        {
+                            ConvertAndSendTwoMessages(cm as DivideProblem, no, tp.Handler);
                        
-                    }
-                    else if (cm != null && cm.GetType() == typeof(Solutions))
-                    {
-                        ConvertAndSendTwoMessages<Solutions, NoOperation>(cm as Solutions, no, tp.Handler);
+                        }
+                        else if (cm != null && cm.GetType() == typeof(Solutions))
+                        {
+                            ConvertAndSendTwoMessages(cm as Solutions, no, tp.Handler);
 
-                    }
-                    else
-                    {
-                        ConvertAndSendMessage<NoOperation>(no, tp.Handler);
-                    }
+                        }
+                        else
+                        {
+                            ConvertAndSendMessage(no, tp.Handler);
+                        }
                     
-                }
-
-                else if (_components[(int)id].type == "ComputationalNode")
-                {
-                    IClusterMessage cm = SearchComputationalNodeMessages(tp.Handler);
-                    if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
-                    {
-                        ConvertAndSendTwoMessages<SolvePartialProblems, NoOperation>(cm as SolvePartialProblems, no, tp.Handler);
                     }
+                        break;
+                    case "ComputationalNode":
+                    {
+                        var cm = SearchComputationalNodeMessages(tp.Handler);
+                        if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
+                        {
+                            ConvertAndSendTwoMessages(cm as SolvePartialProblems, no, tp.Handler);
+                        }
                    
-                    else
-                    {
-                        ConvertAndSendMessage<NoOperation>(no, tp.Handler);
+                        else
+                        {
+                            ConvertAndSendMessage(no, tp.Handler);
+                        }
                     }
+                        break;
                 }
             //}
 
@@ -198,17 +189,19 @@ namespace CommunicationServer
         {
             var type = GetXmlElementInnerText("Type", tp.Message);
             var solvableProblems = tp.Message.GetElementsByTagName("ProblemName");
-            String[] problems = CreateArrayFromXml(solvableProblems);
+            var problems = CreateArrayFromXml(solvableProblems);
 
-            ComponentStatus cs = new ComponentStatus(_componentCount, type, problems);
+            var cs = new ComponentStatus(_componentCount, type, problems);
             _components.Add(cs);
             _componentCount++;
 
-            RegisterResponse rr = new RegisterResponse();
-            rr.Id = cs.id.ToString();
-            rr.Timeout = _componentTimeout.ToString();
+            var rr = new RegisterResponse
+            {
+                Id = cs.id.ToString(), 
+                Timeout = _componentTimeout.ToString()
+            };
 
-            ConvertAndSendMessage<RegisterResponse>(rr, tp.Handler);
+            ConvertAndSendMessage(rr, tp.Handler);
         }
 
         /// <summary>
@@ -235,7 +228,7 @@ namespace CommunicationServer
             {
                 Id=id
             };
-            ConvertAndSendMessage<SolveRequestResponse>(srr, tp.Handler);
+            ConvertAndSendMessage(srr, tp.Handler);
 
         }
 
@@ -246,7 +239,7 @@ namespace CommunicationServer
         public void HandleSolutionRequestMessages(ThreadPackage tp)
         {
             var id = GetXmlElementInnerUlong("Id", tp.Message);
-            SolutionsSolution[] solutions = new SolutionsSolution[1];
+            var solutions = new SolutionsSolution[1];
             var s = new Solutions 
             { 
                 Id = id,                
@@ -266,7 +259,7 @@ namespace CommunicationServer
             }
 
             s.Solutions1 = solutions;
-            ConvertAndSendMessage<Solutions>(s, tp.Handler);
+            ConvertAndSendMessage(s, tp.Handler);
         }
 
         /// <summary>
@@ -275,7 +268,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {            
-            XmlDocument message = tp.Message;           
+            var message = tp.Message;           
             var problemType = GetXmlElementInnerText("ProblemType", message);
             var commonData = GetXmlElementInnerByte("CommonData", message);
             var timeout = message.GetElementsByTagName("SolvingTimeout");
@@ -285,12 +278,11 @@ namespace CommunicationServer
             var partialProblemDatas = message.GetElementsByTagName("Data");
             var partialProblemNodeIds = message.GetElementsByTagName("NodeID");
 
-            int count = partialProblemTaskIds.Count;
+            var count = partialProblemTaskIds.Count;
 
-            SolvePartialProblemsPartialProblem[] partialproblems = new SolvePartialProblemsPartialProblem[1];      
-
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
+                var partialproblems = new SolvePartialProblemsPartialProblem[1];    
                 var spp = new SolvePartialProblems
                 {
                     Id = id,
@@ -309,15 +301,15 @@ namespace CommunicationServer
                     spp.SolvingTimeoutSpecified = false;
                 }
 
-                byte[] data = System.Text.Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText);
-                ulong tID = UInt64.Parse(partialProblemTaskIds[i].InnerText);
-                ulong nID = UInt64.Parse(partialProblemNodeIds[i].InnerText);
+                var data = Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText);
+                var tId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
+                var nId = UInt64.Parse(partialProblemNodeIds[i].InnerText);
                 
                 var problem = new SolvePartialProblemsPartialProblem
                 {
                     Data = data,
-                    TaskId = tID,
-                    NodeID = nID
+                    TaskId = tId,
+                    NodeID = nId
                 };
                
                 partialproblems[0] = problem;
@@ -335,16 +327,17 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleSolutionMessages(ThreadPackage tp)
         {
-            XmlDocument message = tp.Message;
+            var message = tp.Message;
             var types = message.GetElementsByTagName("Type");          
 
-            if (types[0].InnerText == "Final")
+            switch (types[0].InnerText)
             {
-                HandleFinalSolutionMessages(tp);
-            }
-            else if (types[0].InnerText == "Partial")
-            {
-                HandlePartialSolutionMessages(tp);
+                case "Final":
+                    HandleFinalSolutionMessages(tp);
+                    break;
+                case "Partial":
+                    HandlePartialSolutionMessages(tp);
+                    break;
             }
             SendNoOperationMessage(tp);
         }
@@ -354,7 +347,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void HandleFinalSolutionMessages(ThreadPackage tp)
         {
-            XmlDocument message = tp.Message;
+            var message = tp.Message;
             var taskIds = message.GetElementsByTagName("TaskId");
             var datas = message.GetElementsByTagName("Data");
             var computationsTimes = message.GetElementsByTagName("ComputationsTime");
@@ -363,7 +356,7 @@ namespace CommunicationServer
             var ss = new SolutionsSolution
             {
                 ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText),
-                Data = System.Text.Encoding.UTF8.GetBytes(datas[0].InnerText),
+                Data = Encoding.UTF8.GetBytes(datas[0].InnerText),
                 Type = SolutionsSolutionType.Final,
                 TaskId = UInt64.Parse(taskIds[0].InnerText),
                 TaskIdSpecified = true
@@ -379,7 +372,7 @@ namespace CommunicationServer
         public void HandlePartialSolutionMessages(ThreadPackage tp)
         {
 
-            XmlDocument message = tp.Message;
+            var message = tp.Message;
             var timeoutOccureds = message.GetElementsByTagName("TimeoutOccured");
             var taskIds = message.GetElementsByTagName("TaskId");
             var datas = message.GetElementsByTagName("Data");
@@ -388,7 +381,7 @@ namespace CommunicationServer
             var ss = new SolutionsSolution
             {
                 ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText),
-                Data = System.Text.Encoding.UTF8.GetBytes(datas[0].InnerText),
+                Data = Encoding.UTF8.GetBytes(datas[0].InnerText),
                 Type = SolutionsSolutionType.Partial,
                 TaskId = UInt64.Parse(taskIds[0].InnerText),
                 TaskIdSpecified = true
@@ -409,15 +402,15 @@ namespace CommunicationServer
         /// Converts two Messages of different types to the binary array data and sends them to component
         /// </summary>
         /// <typeparam name="T">Type of the first message</typeparam>
-        /// <typeparam name="S">Type of the second message</typeparam>
+        /// <typeparam name="TS">Type of the second message</typeparam>
         /// <param name="message1">First message</param>
         /// <param name="message2">Second message</param>
         /// <param name="handler">Socket handler of the component, that messages will be sent to</param>
-        public void ConvertAndSendTwoMessages<T,S>( T message1, S message2, Socket handler )
+        public void ConvertAndSendTwoMessages<T,TS>( T message1, TS message2, Socket handler )
         {
-            byte[] messageData1 = Serializers.ObjectToByteArray<T>(message1);
-            byte[] messageData2 = Serializers.ObjectToByteArray<S>(message2);
-            byte[] messageData = new byte[messageData1.Length + messageData2.Length + 1];
+            var messageData1 = Serializers.ObjectToByteArray(message1);
+            var messageData2 = Serializers.ObjectToByteArray(message2);
+            var messageData = new byte[messageData1.Length + messageData2.Length + 1];
             messageData1.CopyTo(messageData, 0);
             messageData[messageData1.Length] = 23;            
             messageData2.CopyTo(messageData, messageData1.Length + 1);
@@ -433,7 +426,7 @@ namespace CommunicationServer
         /// <param name="handler">Socket handler of the component, that message will be sent to</param>
         public void ConvertAndSendMessage<T>( T message, Socket handler )
         {
-            byte[] messageData = Serializers.ObjectToByteArray<T>(message);
+            var messageData = Serializers.ObjectToByteArray(message);
             SendMessage(handler, messageData);
         }
 
@@ -443,8 +436,8 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
         public void SendNoOperationMessage(ThreadPackage tp)
         {
-            var no = new NoOperation { };
-            ConvertAndSendMessage<NoOperation>(no, tp.Handler);
+            var no = new NoOperation();
+            ConvertAndSendMessage(no, tp.Handler);
         }
 
         /// <summary>
@@ -454,12 +447,12 @@ namespace CommunicationServer
         /// <returns></returns>
         public String[] CreateArrayFromXml(XmlNodeList xmlElementsList)
         {
-            int count = xmlElementsList.Count;
-            String[] array = new String[count];
+            var count = xmlElementsList.Count;
+            var array = new String[count];
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                String rp = xmlElementsList[i].InnerText;
+                var rp = xmlElementsList[i].InnerText;
                 array[i] = rp;
             }
             return array;
@@ -474,14 +467,7 @@ namespace CommunicationServer
         public String GetXmlElementInnerText(String s, XmlDocument doc)
         {
             var list = doc.GetElementsByTagName(s);
-            if (list.Count == 0)
-            {
-                return "";
-            }
-            else
-            {
-                return list[0].InnerText;
-            }
+            return list.Count == 0 ? "" : list[0].InnerText;
         }
 
         /// <summary>
@@ -492,13 +478,13 @@ namespace CommunicationServer
         /// <returns></returns>
         public ulong GetXmlElementInnerUlong(String s, XmlDocument doc)
         {
-            String number = GetXmlElementInnerText(s, doc);  
-            ulong value=0;
+            var number = GetXmlElementInnerText(s, doc);  
+            ulong value;
             try
             {
                 value = UInt64.Parse(number);            
             }
-            catch(FormatException ex)
+            catch(FormatException)
             {
                 return 0;
             }
@@ -513,34 +499,32 @@ namespace CommunicationServer
         /// <returns></returns>
         public byte[] GetXmlElementInnerByte(String s, XmlDocument doc)
         {
-            return System.Text.Encoding.UTF8.GetBytes(GetXmlElementInnerText(s, doc));
+            return Encoding.UTF8.GetBytes(GetXmlElementInnerText(s, doc));
         }
 
         /// <summary>
         /// Adds Parital Solution to the _partialSolutions list
         /// </summary>
         /// <param name="ss">PartialSolution that is added to the list</param>
-        /// <param name="listID">ID of _partialSolutions list</param>
-        public void AddPartialSolution(SolutionsSolution ss, ulong listID)
+        /// <param name="listId">ID of _partialSolutions list</param>
+        public void AddPartialSolution(SolutionsSolution ss, ulong listId)
         {       
-            if(_partialSolutions.Count<=(int)listID)
+            if(_partialSolutions.Count<=(int)listId)
             {
                 _partialSolutions.Add(new List<SolutionsSolution>());
             }
 
-            _partialSolutions[(int)listID].Add(ss);
+            _partialSolutions[(int)listId].Add(ss);
 
-            if (_partialSolutions[(int)listID].Count == 5)
+            if (_partialSolutions[(int) listId].Count != 5) return;
+
+            var s = new Solutions
             {
-                var s = new Solutions
-                {
-                    CommonData=new byte[1],
-                    ProblemType = "",
-                    Id = listID //, Solutions1 =_partialSolutions[(int)listID].ToArray()
-                };            
-                _messageList.Add(s);
-            }
-            
+                CommonData=new byte[1],
+                ProblemType = "",
+                Id = listId //, Solutions1 =_partialSolutions[(int)listID].ToArray()
+            };            
+            _messageList.Add(s);
         }
         /// <summary>
         /// Searches listed messages (SolveRequest and Solutions) for TaskManager
@@ -550,10 +534,10 @@ namespace CommunicationServer
         /// <returns></returns>
         public IClusterMessage SearchTaskManagerMessages(ulong id, Socket handler)
         {
-            int i = 0;
+            var i = 0;
             const int timeout = 2;
-            int time = 0;
-            ManualResetEvent ev = new ManualResetEvent(false);
+            var time = 0;
+            var ev = new ManualResetEvent(false);
 
             while (time <= timeout)
             {
@@ -609,10 +593,10 @@ namespace CommunicationServer
 
         public IClusterMessage SearchComputationalNodeMessages(Socket handler)
         {
-            int i = 0;
+            var i = 0;
             const int timeout = 2;
-            int time = 0;
-            ManualResetEvent ev = new ManualResetEvent(false);
+            var time = 0;
+            var ev = new ManualResetEvent(false);
             while (time<=timeout)
             {
                 while (_messageList.Count == 0 && time <=timeout)
@@ -628,10 +612,11 @@ namespace CommunicationServer
                         i = 0;
                         continue;
                     }
-                    if (_messageList[i] is SolvePartialProblems)
+                    var problems = _messageList[i] as SolvePartialProblems;
+                    if (problems != null)
                     {
-                        SolvePartialProblems spp = _messageList[i] as SolvePartialProblems;
-                        _messageList.Remove(_messageList[i]);
+                        var spp = problems;
+                        _messageList.Remove(problems);
                         return spp;
                     }
                 }
@@ -664,15 +649,14 @@ namespace CommunicationServer
             {
                 var bytesRead = handler.EndReceive(ar);
 
-                if (bytesRead > 0)
-                {
-                    state.ByteBuffer.AddRange(state.Buffer);
-                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+                if (bytesRead <= 0) return;
 
-                    ThreadPackage tp = new ThreadPackage(handler, message);
-                    Thread th = new Thread(new ParameterizedThreadStart(MessageReadThread));
-                    th.Start(tp);
-                }
+                state.ByteBuffer.AddRange(state.Buffer);
+                var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
+
+                var tp = new ThreadPackage(handler, message);
+                var th = new Thread(MessageReadThread);
+                th.Start(tp);
             }
             catch (SocketException se)
             {
