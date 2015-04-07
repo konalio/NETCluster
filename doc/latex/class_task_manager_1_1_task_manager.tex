@@ -1,0 +1,89 @@
+\hypertarget{class_task_manager_1_1_task_manager}{}\section{Task\+Manager.\+Task\+Manager Class Reference}
+\label{class_task_manager_1_1_task_manager}\index{Task\+Manager.\+Task\+Manager@{Task\+Manager.\+Task\+Manager}}
+
+
+Implementation of \hyperlink{class_task_manager_1_1_task_manager}{Task\+Manager}. Manager registeres to server and awaits for problems to divide or partial solutions to choose final solution.  
+
+
+Inheritance diagram for Task\+Manager.\+Task\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_task_manager_1_1_task_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_task_manager_1_1_task_manager_af3c362713451d2f2f38fcf615140daa6}{Task\+Manager} (\hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} config)
+\item 
+void \hyperlink{class_task_manager_1_1_task_manager_afd66af2649a0a2e6747258b73853c4aa}{Start} ()
+\begin{DoxyCompactList}\small\item\em Tries to register to server and starts sending status message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_task_manager_1_1_task_manager_aaf525b63d8bb2d1a91ae794ebd016e5b}{Process\+Messages} (I\+Enumerable$<$ Xml\+Document $>$ responses)
+\begin{DoxyCompactList}\small\item\em Method for handling all messages that given components may handle. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation of \hyperlink{class_task_manager_1_1_task_manager}{Task\+Manager}. Manager registeres to server and awaits for problems to divide or partial solutions to choose final solution. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_task_manager_1_1_task_manager_af3c362713451d2f2f38fcf615140daa6}{}\index{Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}!Task\+Manager@{Task\+Manager}}
+\index{Task\+Manager@{Task\+Manager}!Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}}
+\subsubsection[{Task\+Manager}]{\setlength{\rightskip}{0pt plus 5cm}Task\+Manager.\+Task\+Manager.\+Task\+Manager (
+\begin{DoxyParamCaption}
+\item[{{\bf Component\+Config}}]{config}
+\end{DoxyParamCaption}
+)}\label{class_task_manager_1_1_task_manager_af3c362713451d2f2f38fcf615140daa6}
+
+
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Server info from App.\+config and arguments.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_task_manager_1_1_task_manager_aaf525b63d8bb2d1a91ae794ebd016e5b}{}\index{Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}!Process\+Messages@{Process\+Messages}}
+\index{Process\+Messages@{Process\+Messages}!Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}}
+\subsubsection[{Process\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}override void Task\+Manager.\+Task\+Manager.\+Process\+Messages (
+\begin{DoxyParamCaption}
+\item[{I\+Enumerable$<$ Xml\+Document $>$}]{responses}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_task_manager_1_1_task_manager_aaf525b63d8bb2d1a91ae794ebd016e5b}
+
+
+Method for handling all messages that given components may handle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em responses} & Messages received from server.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{class_cluster_utils_1_1_registered_component_ad5ea6fe7d138e7c6bb457c7dca203040}{Cluster\+Utils.\+Registered\+Component}.
+
+\hypertarget{class_task_manager_1_1_task_manager_afd66af2649a0a2e6747258b73853c4aa}{}\index{Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}!Start@{Start}}
+\index{Start@{Start}!Task\+Manager\+::\+Task\+Manager@{Task\+Manager\+::\+Task\+Manager}}
+\subsubsection[{Start}]{\setlength{\rightskip}{0pt plus 5cm}void Task\+Manager.\+Task\+Manager.\+Start (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_task_manager_1_1_task_manager_afd66af2649a0a2e6747258b73853c4aa}
+
+
+Tries to register to server and starts sending status message. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Task\+Manager/Task\+Manager.\+cs\end{DoxyCompactItemize}

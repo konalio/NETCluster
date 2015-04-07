@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ComputationalClient</name>
+    </assembly>
+    <members>
+        <member name="T:ComputationalClient.ComputationalClient">
+            <summary>
+            Implementation of computational client.
+            Allows to send single problem instance to server and repeatedly ask for final solution.
+            </summary>
+        </member>
+        <member name="M:ComputationalClient.ComputationalClient.#ctor(ClusterUtils.ComponentConfig)">
+            <summary>
+            
+            </summary>
+            <param name="componentConfig">Server info from App.config and arguments.</param>
+        </member>
+        <member name="M:ComputationalClient.ComputationalClient.Start">
+            <summary>
+            Sends empty problem instance to server and starts awaiting for solution.
+            </summary>
+        </member>
+        <member name="M:ComputationalClient.ComputationalClient.WaitForSolution(System.UInt64)">
+            <summary>
+            Waiting loop for final solution. Allows user to repeatedly ask if solution is ready.
+            If final solution is received as response for query, client shuts down.
+            </summary>
+            <param name="problemId">Problem instance id to query for.</param>
+        </member>
+    </members>
+</doc>

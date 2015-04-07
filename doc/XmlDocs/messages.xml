@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClusterMessages</name>
+    </assembly>
+    <members>
+        <member name="T:ClusterMessages.IClusterMessage">
+            <summary>
+            General interface for message classes generated from Xml Schemas.
+            </summary>
+        </member>
+        <member name="T:DivideProblem">
+            <uwagi/>
+        </member>
+        <member name="P:DivideProblem.ProblemType">
+            <uwagi/>
+        </member>
+        <member name="P:DivideProblem.Id">
+            <uwagi/>
+        </member>
+        <member name="P:DivideProblem.Data">
+            <uwagi/>
+        </member>
+        <member name="P:DivideProblem.ComputationalNodes">
+            <uwagi/>
+        </member>
+        <member name="P:DivideProblem.NodeID">
+            <uwagi/>
+        </member>
+        <member name="T:NoOperation">
+            <uwagi/>
+        </member>
+        <member name="P:NoOperation.BackupCommunicationServers">
+            <uwagi/>
+        </member>
+        <member name="T:NoOperationBackupCommunicationServers">
+            <uwagi/>
+        </member>
+        <member name="P:NoOperationBackupCommunicationServers.BackupCommunicationServer">
+            <uwagi/>
+        </member>
+        <member name="T:NoOperationBackupCommunicationServersBackupCommunicationServer">
+            <uwagi/>
+        </member>
+        <member name="P:NoOperationBackupCommunicationServersBackupCommunicationServer.address">
+            <uwagi/>
+        </member>
+        <member name="P:NoOperationBackupCommunicationServersBackupCommunicationServer.port">
+            <uwagi/>
+        </member>
+        <member name="P:NoOperationBackupCommunicationServersBackupCommunicationServer.portSpecified">
+            <uwagi/>
+        </member>
+        <member name="T:SolvePartialProblems">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.ProblemType">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.Id">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.CommonData">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.SolvingTimeout">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.SolvingTimeoutSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblems.PartialProblems">
+            <uwagi/>
+        </member>
+        <member name="T:SolvePartialProblemsPartialProblem">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblemsPartialProblem.TaskId">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblemsPartialProblem.Data">
+            <uwagi/>
+        </member>
+        <member name="P:SolvePartialProblemsPartialProblem.NodeID">
+            <uwagi/>
+        </member>
+        <member name="T:Solutions">
+            <uwagi/>
+        </member>
+        <member name="P:Solutions.ProblemType">
+            <uwagi/>
+        </member>
+        <member name="P:Solutions.Id">
+            <uwagi/>
+        </member>
+        <member name="P:Solutions.CommonData">
+            <uwagi/>
+        </member>
+        <member name="P:Solutions.Solutions1">
+            <uwagi/>
+        </member>
+        <member name="T:SolutionsSolution">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.TaskId">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.TaskIdSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.TimeoutOccured">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.Type">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.ComputationsTime">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionsSolution.Data">
+            <uwagi/>
+        </member>
+        <member name="T:SolutionsSolutionType">
+            <uwagi/>
+        </member>
+        <member name="F:SolutionsSolutionType.Ongoing">
+            <uwagi/>
+        </member>
+        <member name="F:SolutionsSolutionType.Partial">
+            <uwagi/>
+        </member>
+        <member name="F:SolutionsSolutionType.Final">
+            <uwagi/>
+        </member>
+        <member name="T:SolutionRequest">
+            <uwagi/>
+        </member>
+        <member name="P:SolutionRequest.Id">
+            <uwagi/>
+        </member>
+        <member name="T:SolveRequest">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.ProblemType">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.SolvingTimeout">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.SolvingTimeoutSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.Data">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.Id">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequest.IdSpecified">
+            <uwagi/>
+        </member>
+        <member name="T:SolveRequestResponse">
+            <uwagi/>
+        </member>
+        <member name="P:SolveRequestResponse.Id">
+            <uwagi/>
+        </member>
+        <member name="T:Status">
+            <uwagi/>
+        </member>
+        <member name="P:Status.Id">
+            <uwagi/>
+        </member>
+        <member name="P:Status.Threads">
+            <uwagi/>
+        </member>
+        <member name="T:StatusThread">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.State">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.HowLong">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.HowLongSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.ProblemInstanceId">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.ProblemInstanceIdSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.TaskId">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.TaskIdSpecified">
+            <uwagi/>
+        </member>
+        <member name="P:StatusThread.ProblemType">
+            <uwagi/>
+        </member>
+        <member name="T:StatusThreadState">
+            <uwagi/>
+        </member>
+        <member name="F:StatusThreadState.Idle">
+            <uwagi/>
+        </member>
+        <member name="F:StatusThreadState.Busy">
+            <uwagi/>
+        </member>
+        <member name="T:ClusterMessages.MessageTypeResolver">
+            <summary>
+            Helper class for retreiving cluster message type from XmlDocument.
+            </summary>
+        </member>
+        <member name="M:ClusterMessages.MessageTypeResolver.GetMessageType(System.Xml.XmlDocument)">
+            <summary>
+            Returns appropriate type based on Xml message.
+            </summary>
+            <param name="message">Xml message.</param>
+            <returns>Message type.</returns>
+        </member>
+        <member name="T:Register">
+            <uwagi/>
+        </member>
+        <member name="P:Register.Type">
+            <uwagi/>
+        </member>
+        <member name="P:Register.ParallelThreads">
+            <uwagi/>
+        </member>
+        <member name="P:Register.Deregister">
+            <uwagi/>
+        </member>
+        <member name="P:Register.Id">
+            <uwagi/>
+        </member>
+        <member name="P:Register.SolvableProblems">
+            <uwagi/>
+        </member>
+        <member name="T:RegisterSolvableProblemsProblemName">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterSolvableProblemsProblemName.Value">
+            <uwagi/>
+        </member>
+        <member name="T:RegisterResponse">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterResponse.Id">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterResponse.Timeout">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterResponse.BackupCommunicationServers">
+            <uwagi/>
+        </member>
+        <member name="T:RegisterResponseBackupCommunicationServersBackupCommunicationServer">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterResponseBackupCommunicationServersBackupCommunicationServer.address">
+            <uwagi/>
+        </member>
+        <member name="P:RegisterResponseBackupCommunicationServersBackupCommunicationServer.port">
+            <uwagi/>
+        </member>
+        <member name="T:NewDataSet">
+            <uwagi/>
+        </member>
+        <member name="P:NewDataSet.Items">
+            <uwagi/>
+        </member>
+    </members>
+</doc>

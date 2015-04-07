@@ -1,0 +1,464 @@
+\hypertarget{class_communication_server_1_1_message_dispatcher}{}\section{Communication\+Server.\+Message\+Dispatcher Class Reference}
+\label{class_communication_server_1_1_message_dispatcher}\index{Communication\+Server.\+Message\+Dispatcher@{Communication\+Server.\+Message\+Dispatcher}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a4b2daf0a094e8477712b1fce3f6051f3}{}{\bfseries Message\+Dispatcher} (string listport, int timeout)\label{class_communication_server_1_1_message_dispatcher_a4b2daf0a094e8477712b1fce3f6051f3}
+
+\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_ab853c64f7c38ee8b4afbd0f02dbf4c49}{Begin\+Dispatching} ()
+\begin{DoxyCompactList}\small\item\em Starts listening thread \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a638aa74e23ab23176a4e23890e6beeb4}{Listening\+Thread} (Object o)
+\begin{DoxyCompactList}\small\item\em Listens for messages from other components \end{DoxyCompactList}\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a1b3d608182a9dc9a5c4faaced34bc104}{}void {\bfseries Message\+Read\+Thread} (Object obj)\label{class_communication_server_1_1_message_dispatcher_a1b3d608182a9dc9a5c4faaced34bc104}
+
+\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a52e2c5b8822535187f3b0bffcb591e55}{Analyze\+Message} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Analyzes different messages types \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a6b9ce154fa93df43deafb14853deda65}{Handle\+State\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles State Messages from components \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a95026cfe10919dc54b5e7c36fd914ac8}{Handle\+Register\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles \hyperlink{class_register}{Register} Messages from components \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_aa6b578088c880c0e53350a4a4f6eb885}{Handle\+Solve\+Request\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles \hyperlink{class_solve_request}{Solve\+Request} Messages from Client \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_aaa48feaa1ebb84f174cd5a750a3d63a6}{Handle\+Solution\+Request\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles \hyperlink{class_solution_request}{Solution\+Request} Messages from Client \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_ac49238ac7a476766ba98a653d4ed3871}{Handle\+Partial\+Problems\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles Solve\+Partial\+Problem Messages from components and sends \hyperlink{class_no_operation}{No\+Operation} response \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a8f18f2d10e25186d1880c1d3bc2f2310}{Handle\+Solution\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles Solution Messages from components and sends \hyperlink{class_no_operation}{No\+Operation} response. If Solution is Final, prepares it to send it to Client. If Solution is Partial, adds it to the \+\_\+partial\+Solutions list \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a0a7ba1a0e7cc4ad3cad9c8667783b3a1}{Handle\+Final\+Solution\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles Partial \hyperlink{class_solutions}{Solutions} Messages from components \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a89db15326a47cc13771a5108640cc231}{Handle\+Partial\+Solution\+Messages} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Handles Final Solution from components \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_afe7a90c6cf0a72550a2187f6c8e14f63}{Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$} (T message1, T\+S message2, Socket handler)
+\begin{DoxyCompactList}\small\item\em Converts two Messages of different types to the binary array data and sends them to component \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_afbb0bdc3da4c4f28575bea83dbbdfdcd}{Convert\+And\+Send\+Message$<$ T $>$} (T message, Socket handler)
+\begin{DoxyCompactList}\small\item\em Converts a message to binary array data and sends it to component \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a67a6a73f07f09f0fd7a3c081d58f034f}{Send\+No\+Operation\+Message} (\hyperlink{class_communication_server_1_1_thread_package}{Thread\+Package} tp)
+\begin{DoxyCompactList}\small\item\em Send \hyperlink{class_no_operation}{No\+Operation} message to component \end{DoxyCompactList}\item 
+String\mbox{[}$\,$\mbox{]} \hyperlink{class_communication_server_1_1_message_dispatcher_af80a513cfca1d67a3f255a1f66cc8da2}{Create\+Array\+From\+Xml} (Xml\+Node\+List xml\+Elements\+List)
+\begin{DoxyCompactList}\small\item\em Creates String array from Xml\+Node\+List element \end{DoxyCompactList}\item 
+String \hyperlink{class_communication_server_1_1_message_dispatcher_aaa3c65b929c052b2f7c12ff959e38b59}{Get\+Xml\+Element\+Inner\+Text} (String s, Xml\+Document doc)
+\begin{DoxyCompactList}\small\item\em Finds text value of the element in the Xml\+Document \end{DoxyCompactList}\item 
+ulong \hyperlink{class_communication_server_1_1_message_dispatcher_a9faadcb5411cd281c7d0c7e9e0ad547a}{Get\+Xml\+Element\+Inner\+Ulong} (String s, Xml\+Document doc)
+\begin{DoxyCompactList}\small\item\em Finds ulong value of the element in the Xml\+Document \end{DoxyCompactList}\item 
+byte\mbox{[}$\,$\mbox{]} \hyperlink{class_communication_server_1_1_message_dispatcher_a837b62b4f47be46c9f1a4ae3e8866820}{Get\+Xml\+Element\+Inner\+Byte} (String s, Xml\+Document doc)
+\begin{DoxyCompactList}\small\item\em Finds byte\mbox{[}\mbox{]} value of the element in the Xml\+Document \end{DoxyCompactList}\item 
+void \hyperlink{class_communication_server_1_1_message_dispatcher_a918d6101f88cf8116d6b919b7923bcba}{Add\+Partial\+Solution} (\hyperlink{class_solutions_solution}{Solutions\+Solution} ss, ulong list\+Id)
+\begin{DoxyCompactList}\small\item\em Adds Parital Solution to the \+\_\+partial\+Solutions list \end{DoxyCompactList}\item 
+\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} \hyperlink{class_communication_server_1_1_message_dispatcher_a20aa92ccb3e90d39e4b659e266004c3c}{Search\+Task\+Manager\+Messages} (ulong id, Socket handler)
+\begin{DoxyCompactList}\small\item\em Searches listed messages (\hyperlink{class_solve_request}{Solve\+Request} and \hyperlink{class_solutions}{Solutions}) for \hyperlink{namespace_task_manager}{Task\+Manager} \end{DoxyCompactList}\item 
+\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} \hyperlink{class_communication_server_1_1_message_dispatcher_a2164a41ee186aa26fe730826a933ce9b}{Search\+Computational\+Node\+Messages} (Socket handler)
+\begin{DoxyCompactList}\small\item\em Searches listed messages (\hyperlink{class_solve_partial_problems}{Solve\+Partial\+Problems}) for \hyperlink{namespace_computational_node}{Computational\+Node} \end{DoxyCompactList}\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a84feec90f6d26c683cdef194dc6d1ab6}{}void {\bfseries Accept\+Callback} (I\+Async\+Result ar)\label{class_communication_server_1_1_message_dispatcher_a84feec90f6d26c683cdef194dc6d1ab6}
+
+\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a76d857e8279155a0aeb7790f369ebaef}{}void {\bfseries Read\+Callback} (I\+Async\+Result ar)\label{class_communication_server_1_1_message_dispatcher_a76d857e8279155a0aeb7790f369ebaef}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a2a513401c100e0ce8d4bc658408137d0}{}static void {\bfseries Send\+Message} (Socket handler, byte\mbox{[}$\,$\mbox{]} byte\+Data)\label{class_communication_server_1_1_message_dispatcher_a2a513401c100e0ce8d4bc658408137d0}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_communication_server_1_1_message_dispatcher_a21a0b49ae2e477072964ae83645dff35}{}static Manual\+Reset\+Event {\bfseries All\+Done} = new Manual\+Reset\+Event(false)\label{class_communication_server_1_1_message_dispatcher_a21a0b49ae2e477072964ae83645dff35}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a918d6101f88cf8116d6b919b7923bcba}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Add\+Partial\+Solution@{Add\+Partial\+Solution}}
+\index{Add\+Partial\+Solution@{Add\+Partial\+Solution}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Add\+Partial\+Solution}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Add\+Partial\+Solution (
+\begin{DoxyParamCaption}
+\item[{{\bf Solutions\+Solution}}]{ss, }
+\item[{ulong}]{list\+Id}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a918d6101f88cf8116d6b919b7923bcba}
+
+
+Adds Parital Solution to the \+\_\+partial\+Solutions list 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ss} & Partial\+Solution that is added to the list\\
+\hline
+{\em list\+Id} & I\+D of \+\_\+partial\+Solutions list\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a52e2c5b8822535187f3b0bffcb591e55}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Analyze\+Message@{Analyze\+Message}}
+\index{Analyze\+Message@{Analyze\+Message}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Analyze\+Message}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Analyze\+Message (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a52e2c5b8822535187f3b0bffcb591e55}
+
+
+Analyzes different messages types 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_ab853c64f7c38ee8b4afbd0f02dbf4c49}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Begin\+Dispatching@{Begin\+Dispatching}}
+\index{Begin\+Dispatching@{Begin\+Dispatching}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Begin\+Dispatching}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Begin\+Dispatching (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_ab853c64f7c38ee8b4afbd0f02dbf4c49}
+
+
+Starts listening thread 
+
+\hypertarget{class_communication_server_1_1_message_dispatcher_afbb0bdc3da4c4f28575bea83dbbdfdcd}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Convert\+And\+Send\+Message$<$ T $>$@{Convert\+And\+Send\+Message$<$ T $>$}}
+\index{Convert\+And\+Send\+Message$<$ T $>$@{Convert\+And\+Send\+Message$<$ T $>$}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Convert\+And\+Send\+Message$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Convert\+And\+Send\+Message$<$ T $>$ (
+\begin{DoxyParamCaption}
+\item[{T}]{message, }
+\item[{Socket}]{handler}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_afbb0bdc3da4c4f28575bea83dbbdfdcd}
+
+
+Converts a message to binary array data and sends it to component 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the message\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message\\
+\hline
+{\em handler} & Socket handler of the component, that message will be sent to\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_afe7a90c6cf0a72550a2187f6c8e14f63}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$@{Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$}}
+\index{Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$@{Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Convert\+And\+Send\+Two\+Messages$<$ T, T\+S $>$ (
+\begin{DoxyParamCaption}
+\item[{T}]{message1, }
+\item[{T\+S}]{message2, }
+\item[{Socket}]{handler}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_afe7a90c6cf0a72550a2187f6c8e14f63}
+
+
+Converts two Messages of different types to the binary array data and sends them to component 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the first message\\
+\hline
+{\em T\+S} & Type of the second message\\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em message1} & First message\\
+\hline
+{\em message2} & Second message\\
+\hline
+{\em handler} & Socket handler of the component, that messages will be sent to\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_af80a513cfca1d67a3f255a1f66cc8da2}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Create\+Array\+From\+Xml@{Create\+Array\+From\+Xml}}
+\index{Create\+Array\+From\+Xml@{Create\+Array\+From\+Xml}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Create\+Array\+From\+Xml}]{\setlength{\rightskip}{0pt plus 5cm}String \mbox{[}$\,$\mbox{]} Communication\+Server.\+Message\+Dispatcher.\+Create\+Array\+From\+Xml (
+\begin{DoxyParamCaption}
+\item[{Xml\+Node\+List}]{xml\+Elements\+List}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_af80a513cfca1d67a3f255a1f66cc8da2}
+
+
+Creates String array from Xml\+Node\+List element 
+
+
+\begin{DoxyParams}{Parameters}
+{\em xml\+Elements\+List} & Xml\+Node\+List element\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a837b62b4f47be46c9f1a4ae3e8866820}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Get\+Xml\+Element\+Inner\+Byte@{Get\+Xml\+Element\+Inner\+Byte}}
+\index{Get\+Xml\+Element\+Inner\+Byte@{Get\+Xml\+Element\+Inner\+Byte}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Get\+Xml\+Element\+Inner\+Byte}]{\setlength{\rightskip}{0pt plus 5cm}byte \mbox{[}$\,$\mbox{]} Communication\+Server.\+Message\+Dispatcher.\+Get\+Xml\+Element\+Inner\+Byte (
+\begin{DoxyParamCaption}
+\item[{String}]{s, }
+\item[{Xml\+Document}]{doc}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a837b62b4f47be46c9f1a4ae3e8866820}
+
+
+Finds byte\mbox{[}\mbox{]} value of the element in the Xml\+Document 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & Name of the element\\
+\hline
+{\em doc} & Xml\+Document we are searching in\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_aaa3c65b929c052b2f7c12ff959e38b59}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Get\+Xml\+Element\+Inner\+Text@{Get\+Xml\+Element\+Inner\+Text}}
+\index{Get\+Xml\+Element\+Inner\+Text@{Get\+Xml\+Element\+Inner\+Text}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Get\+Xml\+Element\+Inner\+Text}]{\setlength{\rightskip}{0pt plus 5cm}String Communication\+Server.\+Message\+Dispatcher.\+Get\+Xml\+Element\+Inner\+Text (
+\begin{DoxyParamCaption}
+\item[{String}]{s, }
+\item[{Xml\+Document}]{doc}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_aaa3c65b929c052b2f7c12ff959e38b59}
+
+
+Finds text value of the element in the Xml\+Document 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & Name of the element\\
+\hline
+{\em doc} & Xml\+Document we are searching in\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a9faadcb5411cd281c7d0c7e9e0ad547a}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Get\+Xml\+Element\+Inner\+Ulong@{Get\+Xml\+Element\+Inner\+Ulong}}
+\index{Get\+Xml\+Element\+Inner\+Ulong@{Get\+Xml\+Element\+Inner\+Ulong}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Get\+Xml\+Element\+Inner\+Ulong}]{\setlength{\rightskip}{0pt plus 5cm}ulong Communication\+Server.\+Message\+Dispatcher.\+Get\+Xml\+Element\+Inner\+Ulong (
+\begin{DoxyParamCaption}
+\item[{String}]{s, }
+\item[{Xml\+Document}]{doc}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a9faadcb5411cd281c7d0c7e9e0ad547a}
+
+
+Finds ulong value of the element in the Xml\+Document 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & Name of the element\\
+\hline
+{\em doc} & Xml\+Document we are searching in\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a0a7ba1a0e7cc4ad3cad9c8667783b3a1}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Final\+Solution\+Messages@{Handle\+Final\+Solution\+Messages}}
+\index{Handle\+Final\+Solution\+Messages@{Handle\+Final\+Solution\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Final\+Solution\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Final\+Solution\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a0a7ba1a0e7cc4ad3cad9c8667783b3a1}
+
+
+Handles Partial \hyperlink{class_solutions}{Solutions} Messages from components 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_ac49238ac7a476766ba98a653d4ed3871}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Partial\+Problems\+Messages@{Handle\+Partial\+Problems\+Messages}}
+\index{Handle\+Partial\+Problems\+Messages@{Handle\+Partial\+Problems\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Partial\+Problems\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Partial\+Problems\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_ac49238ac7a476766ba98a653d4ed3871}
+
+
+Handles Solve\+Partial\+Problem Messages from components and sends \hyperlink{class_no_operation}{No\+Operation} response 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a89db15326a47cc13771a5108640cc231}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Partial\+Solution\+Messages@{Handle\+Partial\+Solution\+Messages}}
+\index{Handle\+Partial\+Solution\+Messages@{Handle\+Partial\+Solution\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Partial\+Solution\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Partial\+Solution\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a89db15326a47cc13771a5108640cc231}
+
+
+Handles Final Solution from components 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a95026cfe10919dc54b5e7c36fd914ac8}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Register\+Messages@{Handle\+Register\+Messages}}
+\index{Handle\+Register\+Messages@{Handle\+Register\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Register\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Register\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a95026cfe10919dc54b5e7c36fd914ac8}
+
+
+Handles \hyperlink{class_register}{Register} Messages from components 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a8f18f2d10e25186d1880c1d3bc2f2310}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Solution\+Messages@{Handle\+Solution\+Messages}}
+\index{Handle\+Solution\+Messages@{Handle\+Solution\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Solution\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Solution\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a8f18f2d10e25186d1880c1d3bc2f2310}
+
+
+Handles Solution Messages from components and sends \hyperlink{class_no_operation}{No\+Operation} response. If Solution is Final, prepares it to send it to Client. If Solution is Partial, adds it to the \+\_\+partial\+Solutions list 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_aaa48feaa1ebb84f174cd5a750a3d63a6}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Solution\+Request\+Messages@{Handle\+Solution\+Request\+Messages}}
+\index{Handle\+Solution\+Request\+Messages@{Handle\+Solution\+Request\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Solution\+Request\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Solution\+Request\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_aaa48feaa1ebb84f174cd5a750a3d63a6}
+
+
+Handles \hyperlink{class_solution_request}{Solution\+Request} Messages from Client 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_aa6b578088c880c0e53350a4a4f6eb885}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+Solve\+Request\+Messages@{Handle\+Solve\+Request\+Messages}}
+\index{Handle\+Solve\+Request\+Messages@{Handle\+Solve\+Request\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+Solve\+Request\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+Solve\+Request\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_aa6b578088c880c0e53350a4a4f6eb885}
+
+
+Handles \hyperlink{class_solve_request}{Solve\+Request} Messages from Client 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a6b9ce154fa93df43deafb14853deda65}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Handle\+State\+Messages@{Handle\+State\+Messages}}
+\index{Handle\+State\+Messages@{Handle\+State\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Handle\+State\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Handle\+State\+Messages (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a6b9ce154fa93df43deafb14853deda65}
+
+
+Handles State Messages from components 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a638aa74e23ab23176a4e23890e6beeb4}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Listening\+Thread@{Listening\+Thread}}
+\index{Listening\+Thread@{Listening\+Thread}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Listening\+Thread}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Listening\+Thread (
+\begin{DoxyParamCaption}
+\item[{Object}]{o}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a638aa74e23ab23176a4e23890e6beeb4}
+
+
+Listens for messages from other components 
+
+
+\begin{DoxyParams}{Parameters}
+{\em o} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a2164a41ee186aa26fe730826a933ce9b}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Search\+Computational\+Node\+Messages@{Search\+Computational\+Node\+Messages}}
+\index{Search\+Computational\+Node\+Messages@{Search\+Computational\+Node\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Search\+Computational\+Node\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}{\bf I\+Cluster\+Message} Communication\+Server.\+Message\+Dispatcher.\+Search\+Computational\+Node\+Messages (
+\begin{DoxyParamCaption}
+\item[{Socket}]{handler}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a2164a41ee186aa26fe730826a933ce9b}
+
+
+Searches listed messages (\hyperlink{class_solve_partial_problems}{Solve\+Partial\+Problems}) for \hyperlink{namespace_computational_node}{Computational\+Node} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Handler to the \hyperlink{namespace_computational_node}{Computational\+Node}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a20aa92ccb3e90d39e4b659e266004c3c}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Search\+Task\+Manager\+Messages@{Search\+Task\+Manager\+Messages}}
+\index{Search\+Task\+Manager\+Messages@{Search\+Task\+Manager\+Messages}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Search\+Task\+Manager\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}{\bf I\+Cluster\+Message} Communication\+Server.\+Message\+Dispatcher.\+Search\+Task\+Manager\+Messages (
+\begin{DoxyParamCaption}
+\item[{ulong}]{id, }
+\item[{Socket}]{handler}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a20aa92ccb3e90d39e4b659e266004c3c}
+
+
+Searches listed messages (\hyperlink{class_solve_request}{Solve\+Request} and \hyperlink{class_solutions}{Solutions}) for \hyperlink{namespace_task_manager}{Task\+Manager} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & \hyperlink{namespace_task_manager}{Task\+Manager} id\\
+\hline
+{\em handler} & Handler to the \hyperlink{namespace_task_manager}{Task\+Manager}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_message_dispatcher_a67a6a73f07f09f0fd7a3c081d58f034f}{}\index{Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}!Send\+No\+Operation\+Message@{Send\+No\+Operation\+Message}}
+\index{Send\+No\+Operation\+Message@{Send\+No\+Operation\+Message}!Communication\+Server\+::\+Message\+Dispatcher@{Communication\+Server\+::\+Message\+Dispatcher}}
+\subsubsection[{Send\+No\+Operation\+Message}]{\setlength{\rightskip}{0pt plus 5cm}void Communication\+Server.\+Message\+Dispatcher.\+Send\+No\+Operation\+Message (
+\begin{DoxyParamCaption}
+\item[{{\bf Thread\+Package}}]{tp}
+\end{DoxyParamCaption}
+)}\label{class_communication_server_1_1_message_dispatcher_a67a6a73f07f09f0fd7a3c081d58f034f}
+
+
+Send \hyperlink{class_no_operation}{No\+Operation} message to component 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tp} & Thread Package with Socket handler and Xml\+Document message\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Communication\+Server/Message\+Dispatcher.\+cs\end{DoxyCompactItemize}

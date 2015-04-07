@@ -1,0 +1,202 @@
+\hypertarget{class_cluster_utils_1_1_registered_component}{}\section{Cluster\+Utils.\+Registered\+Component Class Reference}
+\label{class_cluster_utils_1_1_registered_component}\index{Cluster\+Utils.\+Registered\+Component@{Cluster\+Utils.\+Registered\+Component}}
+
+
+General class for all components that register to main server\+:  
+
+
+Inheritance diagram for Cluster\+Utils.\+Registered\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_cluster_utils_1_1_registered_component}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_cluster_utils_1_1_registered_component_a23c088583fe9393f1aed7b4cbf83b449}{Keep\+Sending\+Status} (\hyperlink{class_status}{Status} message, int ms\+Cycle\+Time)
+\begin{DoxyCompactList}\small\item\em Method initializing status message timer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_cluster_utils_1_1_registered_component_a83b5d230bde822e0fb192b51ebbd2fbc}{Registered\+Component} (\hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} config, string type)
+\item 
+bool \hyperlink{class_cluster_utils_1_1_registered_component_a6d986609962aeed78b9a3d091ea5b61c}{Register} ()
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_register}{Register} to server and process register response message. \end{DoxyCompactList}\item 
+void \hyperlink{class_cluster_utils_1_1_registered_component_afb37c02d49d01aa9accfe203ba89f468}{Start\+Sending\+Status} ()
+\begin{DoxyCompactList}\small\item\em Creates status message and timer for status message sending. \end{DoxyCompactList}\item 
+void \hyperlink{class_cluster_utils_1_1_registered_component_a83cc1338969d8a9631d81900fc1ddec2}{Process\+No\+Operation\+Message} (Xml\+Document xml\+Message)
+\begin{DoxyCompactList}\small\item\em Method processing \hyperlink{class_no_operation}{No\+Operation} message. Retreives backup info. \end{DoxyCompactList}\item 
+void \hyperlink{class_cluster_utils_1_1_registered_component_aa06be104c5cf7315d1a6ace42e1e1fc8}{Send\+Message\+No\+Response} (\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} message)
+\begin{DoxyCompactList}\small\item\em Helper method for sending message where\textquotesingle{}s no response is expected. \end{DoxyCompactList}\item 
+abstract void \hyperlink{class_cluster_utils_1_1_registered_component_ad5ea6fe7d138e7c6bb457c7dca203040}{Process\+Messages} (I\+Enumerable$<$ Xml\+Document $>$ responses)
+\begin{DoxyCompactList}\small\item\em Method for handling all messages that given components may handle. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+uint \hyperlink{class_cluster_utils_1_1_registered_component_a0d238d34c162300a2aa7a3caf34689eb}{Id}
+\begin{DoxyCompactList}\small\item\em Id received from server after registration. \end{DoxyCompactList}\item 
+int \hyperlink{class_cluster_utils_1_1_registered_component_ac95b4af9a774f273a235e31215d6e7bc}{Server\+Timeout}
+\begin{DoxyCompactList}\small\item\em Timeout received after registration. \hyperlink{class_status}{Status} message is sent at least as frequent as Server\+Timeout. \end{DoxyCompactList}\item 
+readonly List$<$ \hyperlink{class_status_thread}{Status\+Thread} $>$ \hyperlink{class_cluster_utils_1_1_registered_component_a19bb76d070f24ca944bab753b1409b03}{Status\+Threads} = new List$<$\hyperlink{class_status_thread}{Status\+Thread}$>$()
+\begin{DoxyCompactList}\small\item\em Container for thread statuses. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+General class for all components that register to main server\+: 
+
+
+\begin{DoxyItemize}
+\item Node
+\item Manager
+\item Server as backup Adds support for component registration and sending status message. 
+\end{DoxyItemize}
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_cluster_utils_1_1_registered_component_a83b5d230bde822e0fb192b51ebbd2fbc}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Registered\+Component@{Registered\+Component}}
+\index{Registered\+Component@{Registered\+Component}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Registered\+Component}]{\setlength{\rightskip}{0pt plus 5cm}Cluster\+Utils.\+Registered\+Component.\+Registered\+Component (
+\begin{DoxyParamCaption}
+\item[{{\bf Component\+Config}}]{config, }
+\item[{string}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_a83b5d230bde822e0fb192b51ebbd2fbc}
+
+
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Server address and port.\\
+\hline
+{\em type} & \hyperlink{class_cluster_utils_1_1_component}{Component} type.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_cluster_utils_1_1_registered_component_a23c088583fe9393f1aed7b4cbf83b449}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Keep\+Sending\+Status@{Keep\+Sending\+Status}}
+\index{Keep\+Sending\+Status@{Keep\+Sending\+Status}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Keep\+Sending\+Status}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Registered\+Component.\+Keep\+Sending\+Status (
+\begin{DoxyParamCaption}
+\item[{{\bf Status}}]{message, }
+\item[{int}]{ms\+Cycle\+Time}
+\end{DoxyParamCaption}
+)}\label{class_cluster_utils_1_1_registered_component_a23c088583fe9393f1aed7b4cbf83b449}
+
+
+Method initializing status message timer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message to be sent.\\
+\hline
+{\em ms\+Cycle\+Time} & Sending loop time in miliseconds.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_cluster_utils_1_1_registered_component_ad5ea6fe7d138e7c6bb457c7dca203040}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Process\+Messages@{Process\+Messages}}
+\index{Process\+Messages@{Process\+Messages}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Process\+Messages}]{\setlength{\rightskip}{0pt plus 5cm}abstract void Cluster\+Utils.\+Registered\+Component.\+Process\+Messages (
+\begin{DoxyParamCaption}
+\item[{I\+Enumerable$<$ Xml\+Document $>$}]{responses}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [pure virtual]}}\label{class_cluster_utils_1_1_registered_component_ad5ea6fe7d138e7c6bb457c7dca203040}
+
+
+Method for handling all messages that given components may handle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em responses} & Messages received from server.\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{class_task_manager_1_1_task_manager_aaf525b63d8bb2d1a91ae794ebd016e5b}{Task\+Manager.\+Task\+Manager}, and \hyperlink{class_computational_node_1_1_computational_node_ae7e1583dbbdcdc24d4b342657c4e2d5e}{Computational\+Node.\+Computational\+Node}.
+
+\hypertarget{class_cluster_utils_1_1_registered_component_a83cc1338969d8a9631d81900fc1ddec2}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Process\+No\+Operation\+Message@{Process\+No\+Operation\+Message}}
+\index{Process\+No\+Operation\+Message@{Process\+No\+Operation\+Message}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Process\+No\+Operation\+Message}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Registered\+Component.\+Process\+No\+Operation\+Message (
+\begin{DoxyParamCaption}
+\item[{Xml\+Document}]{xml\+Message}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_a83cc1338969d8a9631d81900fc1ddec2}
+
+
+Method processing \hyperlink{class_no_operation}{No\+Operation} message. Retreives backup info. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em xml\+Message} & Received \hyperlink{class_no_operation}{No\+Operation} message.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_cluster_utils_1_1_registered_component_a6d986609962aeed78b9a3d091ea5b61c}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Register@{Register}}
+\index{Register@{Register}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Register}]{\setlength{\rightskip}{0pt plus 5cm}bool Cluster\+Utils.\+Registered\+Component.\+Register (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_a6d986609962aeed78b9a3d091ea5b61c}
+
+
+\hyperlink{class_register}{Register} to server and process register response message. 
+
+\begin{DoxyReturn}{Returns}
+True on registration success, false otherwise.
+\end{DoxyReturn}
+\hypertarget{class_cluster_utils_1_1_registered_component_aa06be104c5cf7315d1a6ace42e1e1fc8}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Send\+Message\+No\+Response@{Send\+Message\+No\+Response}}
+\index{Send\+Message\+No\+Response@{Send\+Message\+No\+Response}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Send\+Message\+No\+Response}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Registered\+Component.\+Send\+Message\+No\+Response (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Cluster\+Message}}]{message}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_aa06be104c5cf7315d1a6ace42e1e1fc8}
+
+
+Helper method for sending message where\textquotesingle{}s no response is expected. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message to be sent.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_cluster_utils_1_1_registered_component_afb37c02d49d01aa9accfe203ba89f468}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Start\+Sending\+Status@{Start\+Sending\+Status}}
+\index{Start\+Sending\+Status@{Start\+Sending\+Status}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Start\+Sending\+Status}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Registered\+Component.\+Start\+Sending\+Status (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_afb37c02d49d01aa9accfe203ba89f468}
+
+
+Creates status message and timer for status message sending. 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_cluster_utils_1_1_registered_component_a0d238d34c162300a2aa7a3caf34689eb}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Id@{Id}}
+\index{Id@{Id}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Id}]{\setlength{\rightskip}{0pt plus 5cm}uint Cluster\+Utils.\+Registered\+Component.\+Id\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_a0d238d34c162300a2aa7a3caf34689eb}
+
+
+Id received from server after registration. 
+
+\hypertarget{class_cluster_utils_1_1_registered_component_ac95b4af9a774f273a235e31215d6e7bc}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Server\+Timeout@{Server\+Timeout}}
+\index{Server\+Timeout@{Server\+Timeout}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Server\+Timeout}]{\setlength{\rightskip}{0pt plus 5cm}int Cluster\+Utils.\+Registered\+Component.\+Server\+Timeout\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_ac95b4af9a774f273a235e31215d6e7bc}
+
+
+Timeout received after registration. \hyperlink{class_status}{Status} message is sent at least as frequent as Server\+Timeout. 
+
+\hypertarget{class_cluster_utils_1_1_registered_component_a19bb76d070f24ca944bab753b1409b03}{}\index{Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}!Status\+Threads@{Status\+Threads}}
+\index{Status\+Threads@{Status\+Threads}!Cluster\+Utils\+::\+Registered\+Component@{Cluster\+Utils\+::\+Registered\+Component}}
+\subsubsection[{Status\+Threads}]{\setlength{\rightskip}{0pt plus 5cm}readonly List$<${\bf Status\+Thread}$>$ Cluster\+Utils.\+Registered\+Component.\+Status\+Threads = new List$<${\bf Status\+Thread}$>$()\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_registered_component_a19bb76d070f24ca944bab753b1409b03}
+
+
+Container for thread statuses. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Cluster\+Utils/Registered\+Component.\+cs\end{DoxyCompactItemize}

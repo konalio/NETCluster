@@ -1,0 +1,91 @@
+\hypertarget{class_cluster_utils_1_1_communication_1_1_connection_client}{}\section{Cluster\+Utils.\+Communication.\+Connection\+Client Class Reference}
+\label{class_cluster_utils_1_1_communication_1_1_connection_client}\index{Cluster\+Utils.\+Communication.\+Connection\+Client@{Cluster\+Utils.\+Communication.\+Connection\+Client}}
+
+
+Helper class for components to communicate with server. When instance of \hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client}{Connection\+Client} is created, component may open connection with server. Than component may send messages to server and wait for response/responses. Than connection is closed manually by component.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client_a5a9bddaca9c5264f760e8b5e51abbd44}{Connection\+Client} (\hyperlink{class_cluster_utils_1_1_server_info}{Server\+Info} server\+Info)
+\item 
+void \hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client_a29d7584137a1f37fca15882812940899}{Connect} ()
+\begin{DoxyCompactList}\small\item\em Connects client with server. \end{DoxyCompactList}\item 
+List$<$ Xml\+Document $>$ \hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client_a0c3e47e7c669479d4804c240bc9c87ff}{Send\+And\+Wait\+For\+Responses} (\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} message)
+\begin{DoxyCompactList}\small\item\em Sends message to server and waits for responses. \end{DoxyCompactList}\item 
+void \hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client_a6a2134ebda6076f29968e0216c25c132}{Close} ()
+\begin{DoxyCompactList}\small\item\em Closes sockets between server and client. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Helper class for components to communicate with server. When instance of \hyperlink{class_cluster_utils_1_1_communication_1_1_connection_client}{Connection\+Client} is created, component may open connection with server. Than component may send messages to server and wait for response/responses. Than connection is closed manually by component. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_cluster_utils_1_1_communication_1_1_connection_client_a5a9bddaca9c5264f760e8b5e51abbd44}{}\index{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}!Connection\+Client@{Connection\+Client}}
+\index{Connection\+Client@{Connection\+Client}!Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}}
+\subsubsection[{Connection\+Client}]{\setlength{\rightskip}{0pt plus 5cm}Cluster\+Utils.\+Communication.\+Connection\+Client.\+Connection\+Client (
+\begin{DoxyParamCaption}
+\item[{{\bf Server\+Info}}]{server\+Info}
+\end{DoxyParamCaption}
+)}\label{class_cluster_utils_1_1_communication_1_1_connection_client_a5a9bddaca9c5264f760e8b5e51abbd44}
+
+
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em server\+Info} & Server address and port.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_cluster_utils_1_1_communication_1_1_connection_client_a6a2134ebda6076f29968e0216c25c132}{}\index{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}!Close@{Close}}
+\index{Close@{Close}!Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}}
+\subsubsection[{Close}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Communication.\+Connection\+Client.\+Close (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_cluster_utils_1_1_communication_1_1_connection_client_a6a2134ebda6076f29968e0216c25c132}
+
+
+Closes sockets between server and client. 
+
+\hypertarget{class_cluster_utils_1_1_communication_1_1_connection_client_a29d7584137a1f37fca15882812940899}{}\index{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}!Connect@{Connect}}
+\index{Connect@{Connect}!Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}}
+\subsubsection[{Connect}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Communication.\+Connection\+Client.\+Connect (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_cluster_utils_1_1_communication_1_1_connection_client_a29d7584137a1f37fca15882812940899}
+
+
+Connects client with server. 
+
+\hypertarget{class_cluster_utils_1_1_communication_1_1_connection_client_a0c3e47e7c669479d4804c240bc9c87ff}{}\index{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}!Send\+And\+Wait\+For\+Responses@{Send\+And\+Wait\+For\+Responses}}
+\index{Send\+And\+Wait\+For\+Responses@{Send\+And\+Wait\+For\+Responses}!Cluster\+Utils\+::\+Communication\+::\+Connection\+Client@{Cluster\+Utils\+::\+Communication\+::\+Connection\+Client}}
+\subsubsection[{Send\+And\+Wait\+For\+Responses}]{\setlength{\rightskip}{0pt plus 5cm}List$<$Xml\+Document$>$ Cluster\+Utils.\+Communication.\+Connection\+Client.\+Send\+And\+Wait\+For\+Responses (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Cluster\+Message}}]{message}
+\end{DoxyParamCaption}
+)}\label{class_cluster_utils_1_1_communication_1_1_connection_client_a0c3e47e7c669479d4804c240bc9c87ff}
+
+
+Sends message to server and waits for responses. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message to be sent.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+All possible responses.
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Cluster\+Utils/\+Communication/Connection\+Client.\+cs\end{DoxyCompactItemize}

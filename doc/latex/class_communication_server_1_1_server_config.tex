@@ -1,0 +1,93 @@
+\hypertarget{class_communication_server_1_1_server_config}{}\section{Communication\+Server.\+Server\+Config Class Reference}
+\label{class_communication_server_1_1_server_config}\index{Communication\+Server.\+Server\+Config@{Communication\+Server.\+Server\+Config}}
+
+
+Container for server configuration info -\/ listening port, backup/no backup, timeout for components.  
+
+
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_communication_server_1_1_server_config}{Server\+Config} \hyperlink{class_communication_server_1_1_server_config_a9dbbd02ff0f943fa1f7dead38726044c}{Load\+From\+App\+Config} ()
+\begin{DoxyCompactList}\small\item\em Retreives configuration from App.\+config file. \end{DoxyCompactList}\item 
+static \hyperlink{class_communication_server_1_1_server_config}{Server\+Config} \hyperlink{class_communication_server_1_1_server_config_a9f2f4705596c36cc3a07a9ee09a48bcc}{Load\+From\+Arguments} (string\mbox{[}$\,$\mbox{]} arguments)
+\begin{DoxyCompactList}\small\item\em Retreives configuration from command line arguments. \end{DoxyCompactList}\item 
+static \hyperlink{class_communication_server_1_1_server_config}{Server\+Config} \hyperlink{class_communication_server_1_1_server_config_adfbc64c9c40c2d78db84dd4a02d759fc}{Get\+Server\+Config} (string\mbox{[}$\,$\mbox{]} arguments)
+\begin{DoxyCompactList}\small\item\em Retreives config from both App.\+config and command line. Command line arguments supress App.\+config settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_communication_server_1_1_server_config_a64caffe66540807b6f8cd84c699ba677}{}string {\bfseries Server\+Port}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_communication_server_1_1_server_config_a64caffe66540807b6f8cd84c699ba677}
+
+\item 
+\hypertarget{class_communication_server_1_1_server_config_ac221ca4c04890014733fda564647b03f}{}bool {\bfseries Is\+Backup}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_communication_server_1_1_server_config_ac221ca4c04890014733fda564647b03f}
+
+\item 
+\hypertarget{class_communication_server_1_1_server_config_a9e03b07151cc28c57d8fab75b66d3aeb}{}int {\bfseries Component\+Timeout}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_communication_server_1_1_server_config_a9e03b07151cc28c57d8fab75b66d3aeb}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Container for server configuration info -\/ listening port, backup/no backup, timeout for components. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_communication_server_1_1_server_config_adfbc64c9c40c2d78db84dd4a02d759fc}{}\index{Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}!Get\+Server\+Config@{Get\+Server\+Config}}
+\index{Get\+Server\+Config@{Get\+Server\+Config}!Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}}
+\subsubsection[{Get\+Server\+Config}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Server\+Config} Communication\+Server.\+Server\+Config.\+Get\+Server\+Config (
+\begin{DoxyParamCaption}
+\item[{string\mbox{[}$\,$\mbox{]}}]{arguments}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_communication_server_1_1_server_config_adfbc64c9c40c2d78db84dd4a02d759fc}
+
+
+Retreives config from both App.\+config and command line. Command line arguments supress App.\+config settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arguments} & Command line arguments.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Actual server config.
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_server_config_a9dbbd02ff0f943fa1f7dead38726044c}{}\index{Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}!Load\+From\+App\+Config@{Load\+From\+App\+Config}}
+\index{Load\+From\+App\+Config@{Load\+From\+App\+Config}!Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}}
+\subsubsection[{Load\+From\+App\+Config}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Server\+Config} Communication\+Server.\+Server\+Config.\+Load\+From\+App\+Config (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_communication_server_1_1_server_config_a9dbbd02ff0f943fa1f7dead38726044c}
+
+
+Retreives configuration from App.\+config file. 
+
+\begin{DoxyReturn}{Returns}
+Config from App.\+config
+\end{DoxyReturn}
+\hypertarget{class_communication_server_1_1_server_config_a9f2f4705596c36cc3a07a9ee09a48bcc}{}\index{Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}!Load\+From\+Arguments@{Load\+From\+Arguments}}
+\index{Load\+From\+Arguments@{Load\+From\+Arguments}!Communication\+Server\+::\+Server\+Config@{Communication\+Server\+::\+Server\+Config}}
+\subsubsection[{Load\+From\+Arguments}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Server\+Config} Communication\+Server.\+Server\+Config.\+Load\+From\+Arguments (
+\begin{DoxyParamCaption}
+\item[{string\mbox{[}$\,$\mbox{]}}]{arguments}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_communication_server_1_1_server_config_a9f2f4705596c36cc3a07a9ee09a48bcc}
+
+
+Retreives configuration from command line arguments. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arguments} & Command line args.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Config from command line args.
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Communication\+Server/Server\+Config.\+cs\end{DoxyCompactItemize}

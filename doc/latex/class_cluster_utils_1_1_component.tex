@@ -1,0 +1,140 @@
+\hypertarget{class_cluster_utils_1_1_component}{}\section{Cluster\+Utils.\+Component Class Reference}
+\label{class_cluster_utils_1_1_component}\index{Cluster\+Utils.\+Component@{Cluster\+Utils.\+Component}}
+
+
+General class for components\+:  
+
+
+Inheritance diagram for Cluster\+Utils.\+Component\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.276423cm]{class_cluster_utils_1_1_component}
+\end{center}
+\end{figure}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_cluster_utils_1_1_component_aa9235e09af855b4d29259ca086a1432f}{Component} (\hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} config, string type)
+\item 
+void \hyperlink{class_cluster_utils_1_1_component_a55dbb672ff63763256586cf481762dcb}{Log\+Runtime\+Info} ()
+\begin{DoxyCompactList}\small\item\em Method logging components type and server info. \end{DoxyCompactList}\item 
+Xml\+Document \hyperlink{class_cluster_utils_1_1_component_affb25647a4c013dee3ab2b6f82239238}{Send\+Message\+Single\+Response} (\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} message)
+\begin{DoxyCompactList}\small\item\em Sends single message to server and waits for single response. \end{DoxyCompactList}\item 
+List$<$ Xml\+Document $>$ \hyperlink{class_cluster_utils_1_1_component_a559397a5cfeeb494a19da1bdd02f8ac0}{Send\+Message} (\hyperlink{interface_cluster_messages_1_1_i_cluster_message}{I\+Cluster\+Message} message)
+\begin{DoxyCompactList}\small\item\em General method for sending messages. Sends single message to server and waits for any responses. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_cluster_utils_1_1_server_info}{Server\+Info} \hyperlink{class_cluster_utils_1_1_component_aeeee4fbcca79664db5e301f3d5048dae}{Server\+Info}
+\begin{DoxyCompactList}\small\item\em Address and port of server that this component is bound to. \end{DoxyCompactList}\item 
+string \hyperlink{class_cluster_utils_1_1_component_a6ce36edcda387dbfa14f642e61f9275e}{Type}
+\begin{DoxyCompactList}\small\item\em Type of component. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+General class for components\+: 
+
+
+\begin{DoxyItemize}
+\item Node
+\item Manager
+\item Client
+\item Server as backup
+\end{DoxyItemize}
+
+Contains type and server info, and common methods for sending I\+Cluster\+Message to Server.
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_cluster_utils_1_1_component_aa9235e09af855b4d29259ca086a1432f}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Component@{Component}}
+\index{Component@{Component}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Component}]{\setlength{\rightskip}{0pt plus 5cm}Cluster\+Utils.\+Component.\+Component (
+\begin{DoxyParamCaption}
+\item[{{\bf Component\+Config}}]{config, }
+\item[{string}]{type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_aa9235e09af855b4d29259ca086a1432f}
+
+
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Config instance containing server info.\\
+\hline
+{\em type} & Type of component\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_cluster_utils_1_1_component_a55dbb672ff63763256586cf481762dcb}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Log\+Runtime\+Info@{Log\+Runtime\+Info}}
+\index{Log\+Runtime\+Info@{Log\+Runtime\+Info}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Log\+Runtime\+Info}]{\setlength{\rightskip}{0pt plus 5cm}void Cluster\+Utils.\+Component.\+Log\+Runtime\+Info (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_a55dbb672ff63763256586cf481762dcb}
+
+
+Method logging components type and server info. 
+
+\hypertarget{class_cluster_utils_1_1_component_a559397a5cfeeb494a19da1bdd02f8ac0}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Send\+Message@{Send\+Message}}
+\index{Send\+Message@{Send\+Message}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Send\+Message}]{\setlength{\rightskip}{0pt plus 5cm}List$<$Xml\+Document$>$ Cluster\+Utils.\+Component.\+Send\+Message (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Cluster\+Message}}]{message}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_a559397a5cfeeb494a19da1bdd02f8ac0}
+
+
+General method for sending messages. Sends single message to server and waits for any responses. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message to be sent.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+All received messages as X\+M\+L\+Documents.
+\end{DoxyReturn}
+\hypertarget{class_cluster_utils_1_1_component_affb25647a4c013dee3ab2b6f82239238}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Send\+Message\+Single\+Response@{Send\+Message\+Single\+Response}}
+\index{Send\+Message\+Single\+Response@{Send\+Message\+Single\+Response}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Send\+Message\+Single\+Response}]{\setlength{\rightskip}{0pt plus 5cm}Xml\+Document Cluster\+Utils.\+Component.\+Send\+Message\+Single\+Response (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Cluster\+Message}}]{message}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_affb25647a4c013dee3ab2b6f82239238}
+
+
+Sends single message to server and waits for single response. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message to be sent.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Response from server.
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_cluster_utils_1_1_component_aeeee4fbcca79664db5e301f3d5048dae}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Server\+Info@{Server\+Info}}
+\index{Server\+Info@{Server\+Info}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Server\+Info}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Server\+Info} Cluster\+Utils.\+Component.\+Server\+Info\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_aeeee4fbcca79664db5e301f3d5048dae}
+
+
+Address and port of server that this component is bound to. 
+
+\hypertarget{class_cluster_utils_1_1_component_a6ce36edcda387dbfa14f642e61f9275e}{}\index{Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}!Type@{Type}}
+\index{Type@{Type}!Cluster\+Utils\+::\+Component@{Cluster\+Utils\+::\+Component}}
+\subsubsection[{Type}]{\setlength{\rightskip}{0pt plus 5cm}string Cluster\+Utils.\+Component.\+Type\hspace{0.3cm}{\ttfamily [protected]}}\label{class_cluster_utils_1_1_component_a6ce36edcda387dbfa14f642e61f9275e}
+
+
+Type of component. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Cluster\+Utils/Component.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CommunicationServer</name>
+    </assembly>
+    <members>
+        <member name="T:CommunicationServer.CommunicationsServer">
+            <summary>
+            Implementation of Communications Server.
+            Supports processing all kinds of messages with no backup server.
+            </summary>
+        </member>
+        <member name="M:CommunicationServer.CommunicationsServer.#ctor(CommunicationServer.ServerConfig)">
+            <summary>
+            
+            </summary>
+            <param name="configuration">Server config from App.config and arguments.</param>
+        </member>
+        <member name="M:CommunicationServer.CommunicationsServer.Start">
+            <summary>
+            Starts listening and dispatching messages from components.
+            </summary>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.BeginDispatching">
+            <summary>
+            Starts listening thread
+            </summary>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.ListeningThread(System.Object)">
+            <summary>
+            Listens for messages from other components
+            </summary>
+            <param name="o"></param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.AnalyzeMessage(CommunicationServer.ThreadPackage)">
+            <summary>
+            Analyzes different messages types
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleStateMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles State Messages from components
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleRegisterMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles Register Messages from components
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleSolveRequestMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles SolveRequest Messages from Client
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleSolutionRequestMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles SolutionRequest Messages from Client
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandlePartialProblemsMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles SolvePartialProblem Messages from components and sends NoOperation response
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleSolutionMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles Solution Messages from components and sends NoOperation response. If Solution is Final, prepares it to send it to Client. 
+            If Solution is Partial, adds it to the _partialSolutions list
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandleFinalSolutionMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles Partial Solutions Messages from components
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.HandlePartialSolutionMessages(CommunicationServer.ThreadPackage)">
+            <summary>
+            Handles Final Solution from components
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.ConvertAndSendTwoMessages``2(``0,``1,System.Net.Sockets.Socket)">
+            <summary>
+            Converts two Messages of different types to the binary array data and sends them to component
+            </summary>
+            <typeparam name="T">Type of the first message</typeparam>
+            <typeparam name="TS">Type of the second message</typeparam>
+            <param name="message1">First message</param>
+            <param name="message2">Second message</param>
+            <param name="handler">Socket handler of the component, that messages will be sent to</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.ConvertAndSendMessage``1(``0,System.Net.Sockets.Socket)">
+            <summary>
+            Converts a message to binary array data and sends it to component
+            </summary>
+            <typeparam name="T">Type of the message</typeparam>
+            <param name="message">Message</param>
+            <param name="handler">Socket handler of the component, that message will be sent to</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.SendNoOperationMessage(CommunicationServer.ThreadPackage)">
+            <summary>
+            Send NoOperation message to component
+            </summary>
+            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.CreateArrayFromXml(System.Xml.XmlNodeList)">
+            <summary>
+            Creates String array from XmlNodeList element
+            </summary>
+            <param name="xmlElementsList">XmlNodeList element</param>
+            <returns></returns>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerText(System.String,System.Xml.XmlDocument)">
+            <summary>
+            Finds text value of the element in the XmlDocument
+            </summary>
+            <param name="s">Name of the element</param>
+            <param name="doc">XmlDocument we are searching in</param>
+            <returns></returns>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerUlong(System.String,System.Xml.XmlDocument)">
+            <summary>
+            Finds ulong value of the element in the XmlDocument
+            </summary>
+            <param name="s">Name of the element</param>
+            <param name="doc">XmlDocument we are searching in</param>
+            <returns></returns>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerByte(System.String,System.Xml.XmlDocument)">
+            <summary>
+            Finds byte[] value of the element in the XmlDocument
+            </summary>
+            <param name="s">Name of the element</param>
+            <param name="doc">XmlDocument we are searching in</param>
+            <returns></returns>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.AddPartialSolution(SolutionsSolution,System.UInt64)">
+            <summary>
+            Adds Parital Solution to the _partialSolutions list
+            </summary>
+            <param name="ss">PartialSolution that is added to the list</param>
+            <param name="listId">ID of _partialSolutions list</param>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.SearchTaskManagerMessages(System.UInt64,System.Net.Sockets.Socket)">
+            <summary>
+            Searches listed messages (SolveRequest and Solutions) for TaskManager
+            </summary>
+            <param name="id">TaskManager id</param>
+            <param name="handler">Handler to the TaskManager</param>
+            <returns></returns>
+        </member>
+        <member name="M:CommunicationServer.MessageDispatcher.SearchComputationalNodeMessages(System.Net.Sockets.Socket)">
+            <summary>
+            Searches listed messages (SolvePartialProblems) for ComputationalNode
+            </summary>
+            <param name="handler">Handler to the ComputationalNode</param>
+            <returns></returns>
+        </member>
+        <member name="T:CommunicationServer.ServerConfig">
+            <summary>
+            Container for server configuration info - listening port, backup/no backup, timeout for components.
+            </summary>
+        </member>
+        <member name="M:CommunicationServer.ServerConfig.LoadFromAppConfig">
+            <summary>
+            Retreives configuration from App.config file.
+            </summary>
+            <returns>Config from App.config</returns>
+        </member>
+        <member name="M:CommunicationServer.ServerConfig.LoadFromArguments(System.String[])">
+            <summary>
+            Retreives configuration from command line arguments.
+            </summary>
+            <param name="arguments">Command line args.</param>
+            <returns>Config from command line args.</returns>
+        </member>
+        <member name="M:CommunicationServer.ServerConfig.GetServerConfig(System.String[])">
+            <summary>
+            Retreives config from both App.config and command line.
+            Command line arguments supress App.config settings.
+            </summary>
+            <param name="arguments">Command line arguments.</param>
+            <returns>Actual server config.</returns>
+        </member>
+    </members>
+</doc>

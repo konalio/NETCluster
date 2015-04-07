@@ -1,0 +1,90 @@
+\hypertarget{class_cluster_utils_1_1_component_config}{}\section{Cluster\+Utils.\+Component\+Config Class Reference}
+\label{class_cluster_utils_1_1_component_config}\index{Cluster\+Utils.\+Component\+Config@{Cluster\+Utils.\+Component\+Config}}
+
+
+Container for components\textquotesingle{} configuration info -\/ server\textquotesingle{}s address and port.  
+
+
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} \hyperlink{class_cluster_utils_1_1_component_config_ae36297e732a493febbf8aa40c053adec}{Get\+Config\+From\+App\+Config} ()
+\begin{DoxyCompactList}\small\item\em Retreives configuration from App.\+config file. \end{DoxyCompactList}\item 
+static \hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} \hyperlink{class_cluster_utils_1_1_component_config_ac42b1e1da19f5ed827390e415e15ac0e}{Get\+Config\+From\+Args} (string\mbox{[}$\,$\mbox{]} arguments)
+\begin{DoxyCompactList}\small\item\em Retreives configuration from command line arguments. \end{DoxyCompactList}\item 
+static \hyperlink{class_cluster_utils_1_1_component_config}{Component\+Config} \hyperlink{class_cluster_utils_1_1_component_config_a5b2af6e5713a53c6cdaaf5da8d3231c5}{Get\+Component\+Config} (string\mbox{[}$\,$\mbox{]} arguments)
+\begin{DoxyCompactList}\small\item\em Retreives config from both App.\+config and command line. Command line arguments supress App.\+config settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_cluster_utils_1_1_component_config_ad0746faaef10fe71f317940febd79510}{}string {\bfseries Server\+Address}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_cluster_utils_1_1_component_config_ad0746faaef10fe71f317940febd79510}
+
+\item 
+\hypertarget{class_cluster_utils_1_1_component_config_a0479748cb87919bc45df18420b5b6395}{}string {\bfseries Server\+Port}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_cluster_utils_1_1_component_config_a0479748cb87919bc45df18420b5b6395}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Container for components\textquotesingle{} configuration info -\/ server\textquotesingle{}s address and port. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_cluster_utils_1_1_component_config_a5b2af6e5713a53c6cdaaf5da8d3231c5}{}\index{Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}!Get\+Component\+Config@{Get\+Component\+Config}}
+\index{Get\+Component\+Config@{Get\+Component\+Config}!Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}}
+\subsubsection[{Get\+Component\+Config}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Component\+Config} Cluster\+Utils.\+Component\+Config.\+Get\+Component\+Config (
+\begin{DoxyParamCaption}
+\item[{string\mbox{[}$\,$\mbox{]}}]{arguments}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_cluster_utils_1_1_component_config_a5b2af6e5713a53c6cdaaf5da8d3231c5}
+
+
+Retreives config from both App.\+config and command line. Command line arguments supress App.\+config settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arguments} & Command line arguments.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Actual component config.
+\end{DoxyReturn}
+\hypertarget{class_cluster_utils_1_1_component_config_ae36297e732a493febbf8aa40c053adec}{}\index{Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}!Get\+Config\+From\+App\+Config@{Get\+Config\+From\+App\+Config}}
+\index{Get\+Config\+From\+App\+Config@{Get\+Config\+From\+App\+Config}!Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}}
+\subsubsection[{Get\+Config\+From\+App\+Config}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Component\+Config} Cluster\+Utils.\+Component\+Config.\+Get\+Config\+From\+App\+Config (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_cluster_utils_1_1_component_config_ae36297e732a493febbf8aa40c053adec}
+
+
+Retreives configuration from App.\+config file. 
+
+\begin{DoxyReturn}{Returns}
+Config from App.\+config
+\end{DoxyReturn}
+\hypertarget{class_cluster_utils_1_1_component_config_ac42b1e1da19f5ed827390e415e15ac0e}{}\index{Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}!Get\+Config\+From\+Args@{Get\+Config\+From\+Args}}
+\index{Get\+Config\+From\+Args@{Get\+Config\+From\+Args}!Cluster\+Utils\+::\+Component\+Config@{Cluster\+Utils\+::\+Component\+Config}}
+\subsubsection[{Get\+Config\+From\+Args}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Component\+Config} Cluster\+Utils.\+Component\+Config.\+Get\+Config\+From\+Args (
+\begin{DoxyParamCaption}
+\item[{string\mbox{[}$\,$\mbox{]}}]{arguments}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_cluster_utils_1_1_component_config_ac42b1e1da19f5ed827390e415e15ac0e}
+
+
+Retreives configuration from command line arguments. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arguments} & Command line args.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Config from command line args.
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Cluster\+Utils/Component\+Config.\+cs\end{DoxyCompactItemize}

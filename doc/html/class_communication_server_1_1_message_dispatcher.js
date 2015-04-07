@@ -1,0 +1,28 @@
+var class_communication_server_1_1_message_dispatcher =
+[
+    [ "MessageDispatcher", "class_communication_server_1_1_message_dispatcher.html#a4b2daf0a094e8477712b1fce3f6051f3", null ],
+    [ "AcceptCallback", "class_communication_server_1_1_message_dispatcher.html#a84feec90f6d26c683cdef194dc6d1ab6", null ],
+    [ "AddPartialSolution", "class_communication_server_1_1_message_dispatcher.html#a918d6101f88cf8116d6b919b7923bcba", null ],
+    [ "AnalyzeMessage", "class_communication_server_1_1_message_dispatcher.html#a52e2c5b8822535187f3b0bffcb591e55", null ],
+    [ "BeginDispatching", "class_communication_server_1_1_message_dispatcher.html#ab853c64f7c38ee8b4afbd0f02dbf4c49", null ],
+    [ "ConvertAndSendMessage< T >", "class_communication_server_1_1_message_dispatcher.html#afbb0bdc3da4c4f28575bea83dbbdfdcd", null ],
+    [ "ConvertAndSendTwoMessages< T, TS >", "class_communication_server_1_1_message_dispatcher.html#afe7a90c6cf0a72550a2187f6c8e14f63", null ],
+    [ "CreateArrayFromXml", "class_communication_server_1_1_message_dispatcher.html#af80a513cfca1d67a3f255a1f66cc8da2", null ],
+    [ "GetXmlElementInnerByte", "class_communication_server_1_1_message_dispatcher.html#a837b62b4f47be46c9f1a4ae3e8866820", null ],
+    [ "GetXmlElementInnerText", "class_communication_server_1_1_message_dispatcher.html#aaa3c65b929c052b2f7c12ff959e38b59", null ],
+    [ "GetXmlElementInnerUlong", "class_communication_server_1_1_message_dispatcher.html#a9faadcb5411cd281c7d0c7e9e0ad547a", null ],
+    [ "HandleFinalSolutionMessages", "class_communication_server_1_1_message_dispatcher.html#a0a7ba1a0e7cc4ad3cad9c8667783b3a1", null ],
+    [ "HandlePartialProblemsMessages", "class_communication_server_1_1_message_dispatcher.html#ac49238ac7a476766ba98a653d4ed3871", null ],
+    [ "HandlePartialSolutionMessages", "class_communication_server_1_1_message_dispatcher.html#a89db15326a47cc13771a5108640cc231", null ],
+    [ "HandleRegisterMessages", "class_communication_server_1_1_message_dispatcher.html#a95026cfe10919dc54b5e7c36fd914ac8", null ],
+    [ "HandleSolutionMessages", "class_communication_server_1_1_message_dispatcher.html#a8f18f2d10e25186d1880c1d3bc2f2310", null ],
+    [ "HandleSolutionRequestMessages", "class_communication_server_1_1_message_dispatcher.html#aaa48feaa1ebb84f174cd5a750a3d63a6", null ],
+    [ "HandleSolveRequestMessages", "class_communication_server_1_1_message_dispatcher.html#aa6b578088c880c0e53350a4a4f6eb885", null ],
+    [ "HandleStateMessages", "class_communication_server_1_1_message_dispatcher.html#a6b9ce154fa93df43deafb14853deda65", null ],
+    [ "ListeningThread", "class_communication_server_1_1_message_dispatcher.html#a638aa74e23ab23176a4e23890e6beeb4", null ],
+    [ "MessageReadThread", "class_communication_server_1_1_message_dispatcher.html#a1b3d608182a9dc9a5c4faaced34bc104", null ],
+    [ "ReadCallback", "class_communication_server_1_1_message_dispatcher.html#a76d857e8279155a0aeb7790f369ebaef", null ],
+    [ "SearchComputationalNodeMessages", "class_communication_server_1_1_message_dispatcher.html#a2164a41ee186aa26fe730826a933ce9b", null ],
+    [ "SearchTaskManagerMessages", "class_communication_server_1_1_message_dispatcher.html#a20aa92ccb3e90d39e4b659e266004c3c", null ],
+    [ "SendNoOperationMessage", "class_communication_server_1_1_message_dispatcher.html#a67a6a73f07f09f0fd7a3c081d58f034f", null ]
+];

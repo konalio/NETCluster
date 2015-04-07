@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ComputationalNode</name>
+    </assembly>
+    <members>
+        <member name="M:ComputationalNode.ComputationalNode.#ctor(ClusterUtils.ComponentConfig)">
+            <summary>
+            
+            </summary>
+            <param name="componentConfig">Server info from App.config and arguments.</param>
+        </member>
+        <member name="M:ComputationalNode.ComputationalNode.ProcessPartialProblemsMessage(System.Xml.XmlDocument)">
+            <summary>
+            Support for handling Partial Problems message.
+            Node mocks working on partial problem and sends partial solution to server.
+            </summary>
+            <param name="xmlMessage"></param>
+        </member>
+    </members>
+</doc>
