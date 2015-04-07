@@ -6,10 +6,21 @@ using ClusterUtils;
 
 namespace TaskManager
 {
+    /// <summary>
+    /// Implementation of TaskManager.
+    /// Manager registeres to server and awaits for problems to divide or partial solutions to choose final solution.
+    /// </summary>
     public class TaskManager : RegisteredComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">Server info from App.config and arguments.</param>
         public TaskManager(ComponentConfig config) : base(config, "TaskManager") { } 
 
+        /// <summary>
+        /// Tries to register to server and starts sending status message.
+        /// </summary>
         public void Start()
         {
             LogRuntimeInfo();
@@ -37,6 +48,12 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Support for processing solutions messages. 
+        /// After receiving Solutions, final solution is chosen from all solutions and is sent back to server.
+        /// Currently choosing final solution is random.
+        /// </summary>
+        /// <param name="xmlMessage">Solutions message to be processed.</param>
         private void ProcessSolutions(XmlDocument xmlMessage)
         {
             var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);
@@ -82,6 +99,11 @@ namespace TaskManager
             SendMessageNoResponse(solution);
         }
 
+        /// <summary>
+        /// Support for processing DivideProblem message.
+        /// Currently, method creates 5 partial problems for each problem instance and sends them to server.
+        /// </summary>
+        /// <param name="xmlMessage">Divide problem message to be processed.</param>
         private void ProcessDivideProblem(XmlDocument xmlMessage)
         {
             var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);

@@ -8,7 +8,10 @@ namespace ComputationalNode
 {
     class ComputationalNode : RegisteredComponent
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="componentConfig">Server info from App.config and arguments.</param>
         public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") {}
 
         public void Start()
@@ -34,6 +37,11 @@ namespace ComputationalNode
             }
         }
 
+        /// <summary>
+        /// Support for handling Partial Problems message.
+        /// Node mocks working on partial problem and sends partial solution to server.
+        /// </summary>
+        /// <param name="xmlMessage"></param>
         private void ProcessPartialProblemsMessage(XmlDocument xmlMessage)
         {
             var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);
