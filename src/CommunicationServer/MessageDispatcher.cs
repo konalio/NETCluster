@@ -153,6 +153,8 @@ namespace CommunicationServer
             //{
                 if (_components[(int)id].type == "TaskManager")
                 {
+                    
+
                     IClusterMessage cm = SearchTaskManagerMessages(id, tp.handler);
 
                     if (cm!=null && cm.GetType() == typeof(DivideProblem))
@@ -241,12 +243,9 @@ namespace CommunicationServer
                 
             };
 
-            if (_partialSolutions!=null && _partialSolutions.Count>(int)id && _partialSolutions[(int)id].Count == 5)
+            if (_partialSolutions!=null && _partialSolutions.Count>(int)id && _partialSolutions[(int) id][0].Type== SolutionsSolutionType.Final )//_partialSolutions[(int)id].Count == 5)
             {
-                solutions[0] = new SolutionsSolution
-                {
-                    Type = SolutionsSolutionType.Final
-                };
+                solutions[0] = _partialSolutions[(int)id][0];
             }
             else
             {
@@ -262,9 +261,7 @@ namespace CommunicationServer
 
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
-            XmlDocument message = tp.message;
-            
-
+            XmlDocument message = tp.message;           
             var problemType = GetXmlElementInnerText("ProblemType", message);
             var commonData = GetXmlElementInnerByte("CommonData", message);
             var timeout = message.GetElementsByTagName("SolvingTimeout");
@@ -333,7 +330,17 @@ namespace CommunicationServer
 
             if (types[0].InnerText == "Final")
             {
-                //wyslac do CC
+                var ss = new SolutionsSolution
+                {
+                    ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText),
+                    Data = System.Text.Encoding.UTF8.GetBytes(datas[0].InnerText),
+                    Type = SolutionsSolutionType.Final,
+                    TaskId = UInt64.Parse(taskIds[0].InnerText),
+                    TaskIdSpecified = true
+                };
+                _partialSolutions[(int)id].Clear();
+                _partialSolutions[(int)id].Add(ss);
+
             }
             else if (types[0].InnerText == "Partial")
             {                
@@ -347,7 +354,7 @@ namespace CommunicationServer
                     TaskIdSpecified=true
                 };
 
-                if (timeoutOccureds[0].InnerText == "true")
+                if (timeoutOccureds.Count>0 && timeoutOccureds[0].InnerText == "true")
                 {
                     ss.TimeoutOccured = true;
                 }
@@ -435,13 +442,12 @@ namespace CommunicationServer
             _partialSolutions[(int)listID].Add(ss);
 
             if (_partialSolutions[(int)listID].Count == 5)
-            {                
+            {
                 var s = new Solutions
                 {
                     CommonData=new byte[1],
                     ProblemType = "",
-                    Id = listID,
-                    Solutions1 = _partialSolutions[(int)listID].ToArray()
+                    Id = listID //, Solutions1 =_partialSolutions[(int)listID].ToArray()
                 };            
                 _messageList.Add(s);
             }
