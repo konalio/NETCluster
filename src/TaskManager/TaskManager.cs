@@ -15,6 +15,7 @@ namespace TaskManager
             LogRuntimeInfo();
             Register();
             StartSendingStatus();
+            Console.ReadLine();
         }
         
         protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
