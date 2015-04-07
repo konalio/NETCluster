@@ -36,46 +36,9 @@ namespace CommunicationServer
 
         public void Start()
         {
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
             MessageDispatcher md = new MessageDispatcher(_listeningPort, _componentTimeout);
             md.BeginDispatching();
-            /*
-            LogServerInfo();
-
-            var localEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(_listeningPort));
-            Console.WriteLine("Address: {0}", localEndPoint.Address.ToString());
-            var listener = new Socket(AddressFamily.InterNetwork,
-                SocketType.Stream, ProtocolType.Tcp);
-
-            try
-            {
-                listener.Bind(localEndPoint);
-                listener.Listen(100);
-
-                while (true)
-                {
-                    AllDone.Reset();
-
-                    Console.WriteLine("Waiting for a connection...");
-
-                    //TODO Consider moving BeginAccept to AcceptCallback
-
-                    listener.BeginAccept(
-                        AcceptCallback,
-                        listener);
-
-                    AllDone.WaitOne();
-                }
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();*/
+            
         }
 
         public static void AcceptCallback(IAsyncResult ar)
