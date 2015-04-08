@@ -16,6 +16,14 @@
             </summary>
             <param name="configuration">Server config from App.config and arguments.</param>
         </member>
+        <member name="M:CommunicationServer.CommunicationsServer.LogServerInfo">
+            <summary>
+            Prints info about the server:
+            - Server mode (primary/backup),
+            - Port that the server is listening on,
+            - Component timeout.
+            </summary>
+        </member>
         <member name="M:CommunicationServer.CommunicationsServer.Start">
             <summary>
             Starts listening and dispatching messages from components.

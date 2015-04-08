@@ -10,6 +10,20 @@
             </summary>
             <param name="componentConfig">Server info from App.config and arguments.</param>
         </member>
+        <member name="M:ComputationalNode.ComputationalNode.Start">
+            <summary>
+            Starts the Node:
+            - Prints info about the Server,
+            - Attempts to register to the Server,
+            - Starts sending Status messages to the Server.
+            </summary>
+        </member>
+        <member name="M:ComputationalNode.ComputationalNode.ProcessMessages(System.Collections.Generic.IEnumerable{System.Xml.XmlDocument})">
+            <summary>
+            Processes messages received from Server.
+            </summary>
+            <param name="responses">All received messages.</param>
+        </member>
         <member name="M:ComputationalNode.ComputationalNode.ProcessPartialProblemsMessage(System.Xml.XmlDocument)">
             <summary>
             Support for handling Partial Problems message.
