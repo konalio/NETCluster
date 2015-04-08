@@ -23,6 +23,12 @@ namespace CommunicationServer
             _componentTimeout = configuration.ComponentTimeout;
         }
 
+        /// <summary>
+        /// Prints info about the server:
+        /// - Server mode (primary/backup),
+        /// - Port that the server is listening on,
+        /// - Component timeout.
+        /// </summary>
         private void LogServerInfo()
         {
             Console.WriteLine("Server is running in {0} mode.", _backupMode ? "backup" : "primary");

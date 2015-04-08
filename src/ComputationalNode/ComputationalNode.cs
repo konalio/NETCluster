@@ -14,6 +14,12 @@ namespace ComputationalNode
         /// <param name="componentConfig">Server info from App.config and arguments.</param>
         public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") {}
 
+        /// <summary>
+        /// Starts the Node:
+        /// - Prints info about the Server,
+        /// - Attempts to register to the Server,
+        /// - Starts sending Status messages to the Server.
+        /// </summary>
         public void Start()
         {
             LogRuntimeInfo();
@@ -21,6 +27,10 @@ namespace ComputationalNode
             StartSendingStatus();
         }
 
+        /// <summary>
+        /// Processes messages received from Server.
+        /// </summary>
+        /// <param name="responses">All received messages.</param>
         protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
         {
             foreach (var xmlMessage in responses)
