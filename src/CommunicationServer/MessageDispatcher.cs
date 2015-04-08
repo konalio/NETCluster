@@ -15,7 +15,7 @@ namespace CommunicationServer
     class MessageDispatcher
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
-
+        private ulong _problemsCount;
         private ulong _componentCount;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
@@ -61,8 +61,7 @@ namespace CommunicationServer
 
                 while (true)
                 {
-                    AllDone.Reset();
-                    Console.WriteLine("Waiting for a connection...");                  
+                    AllDone.Reset();                         
                     listener.BeginAccept(
                         AcceptCallback,
                         listener);
@@ -93,7 +92,7 @@ namespace CommunicationServer
         public void AnalyzeMessage(ThreadPackage tp)
         {
             var messageType = MessageTypeResolver.GetMessageType(tp.Message);
-
+            WriteMessageHandling(messageType);
             switch (messageType)
             {
                 case MessageTypeResolver.MessageType.Status:
@@ -117,6 +116,10 @@ namespace CommunicationServer
             }
         }
 
+        public void WriteMessageHandling(MessageTypeResolver.MessageType message)
+        {
+            Console.WriteLine("Handling message type: " + message.ToString());
+        }
         /// <summary>
         /// Handles State Messages from components
         /// </summary>
@@ -213,8 +216,7 @@ namespace CommunicationServer
             var problemType = GetXmlElementInnerText("ProblemType", tp.Message);
             var timeout = GetXmlElementInnerUlong("SolvingTimeout", tp.Message);
             var data = GetXmlElementInnerByte("Data", tp.Message);
-            var id = GetXmlElementInnerUlong("Id", tp.Message);
-
+            var id = _problemsCount++;
             var sr = new SolveRequest
             {
                  Id = id,
