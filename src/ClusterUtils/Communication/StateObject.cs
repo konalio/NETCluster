@@ -7,7 +7,7 @@ namespace ClusterUtils.Communication
     {
         public Socket WorkSocket = null;
 
-        public const int BufferSize = 1024;
+        public const int BufferSize = 2048;
 
         public byte[] Buffer = new byte[BufferSize];
 

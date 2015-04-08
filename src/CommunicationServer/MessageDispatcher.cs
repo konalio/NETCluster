@@ -651,14 +651,15 @@ namespace CommunicationServer
             {
                 var bytesRead = handler.EndReceive(ar);
 
-                if (bytesRead <= 0) return;
+                if (bytesRead > 0)
+                {
+                    state.ByteBuffer.AddRange(state.Buffer);
+                    var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
 
-                state.ByteBuffer.AddRange(state.Buffer);
-                var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-
-                var tp = new ThreadPackage(handler, message);
-                var th = new Thread(MessageReadThread);
-                th.Start(tp);
+                    var tp = new ThreadPackage(handler, message);
+                    var th = new Thread(MessageReadThread);
+                    th.Start(tp);
+                }
             }
             catch (SocketException se)
             {
