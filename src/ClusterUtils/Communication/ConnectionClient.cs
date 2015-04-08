@@ -127,8 +127,9 @@ namespace ClusterUtils.Communication
 
                     if (bytesRead > 0)
                     {
-                        foreach (var receivedByte in state.Buffer.TakeWhile(receivedByte => receivedByte != 0))
+                        for (var index = 0; index < bytesRead; index++)
                         {
+                            var receivedByte = state.Buffer[index];
                             if (receivedByte == 23)
                             {
                                 ExtractSingleResponse(state);
