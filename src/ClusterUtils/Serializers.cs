@@ -19,7 +19,7 @@ namespace ClusterUtils
         {
             using (var ms = new MemoryStream())
             {
-                var streamWriter = new StreamWriter(ms, Encoding.UTF8);
+                var streamWriter = new StreamWriter(ms, Encoding.Unicode);
                 var xmlS = new XmlSerializer(obj.GetType());
                 xmlS.Serialize(streamWriter, obj);
 
@@ -36,6 +36,7 @@ namespace ClusterUtils
         {
             using (var ms = new MemoryStream(bObj))
             {
+                var streamWriter = new StreamReader(ms, Encoding.Unicode);
                 var xmlS = new XmlSerializer(typeof(T));
                 return (T)xmlS.Deserialize(ms);
             }

@@ -303,7 +303,7 @@ namespace CommunicationServer
                     spp.SolvingTimeoutSpecified = false;
                 }
 
-                var data = Encoding.UTF8.GetBytes(partialProblemDatas[i].InnerText);
+                var data = Encoding.Unicode.GetBytes(partialProblemDatas[i].InnerText);
                 var tId = UInt64.Parse(partialProblemTaskIds[i].InnerText);
                 var nId = UInt64.Parse(partialProblemNodeIds[i].InnerText);
                 
@@ -383,7 +383,7 @@ namespace CommunicationServer
             var ss = new SolutionsSolution
             {
                 ComputationsTime = UInt64.Parse(computationsTimes[0].InnerText),
-                Data = Encoding.UTF8.GetBytes(datas[0].InnerText),
+                Data = Encoding.Unicode.GetBytes(datas[0].InnerText),
                 Type = SolutionsSolutionType.Partial,
                 TaskId = UInt64.Parse(taskIds[0].InnerText),
                 TaskIdSpecified = true
@@ -501,7 +501,7 @@ namespace CommunicationServer
         /// <returns></returns>
         public byte[] GetXmlElementInnerByte(String s, XmlDocument doc)
         {
-            return Encoding.UTF8.GetBytes(GetXmlElementInnerText(s, doc));
+            return Encoding.Unicode.GetBytes(GetXmlElementInnerText(s, doc));
         }
 
         /// <summary>
