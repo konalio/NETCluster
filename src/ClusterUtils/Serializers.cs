@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -34,12 +35,36 @@ namespace ClusterUtils
         /// <returns>Deserialized object.</returns>
         public static T ByteArrayObject<T>(Byte[] bObj)
         {
+            bObj = RemoveETBIfPresent(bObj);
+
             using (var ms = new MemoryStream(bObj))
             {
                 var streamWriter = new StreamReader(ms, Encoding.UTF8);
                 var xmlS = new XmlSerializer(typeof(T));
                 return (T)xmlS.Deserialize(ms);
             }
+        }
+
+        private static byte[] RemoveETBIfPresent(Byte[] bObj)
+        {
+            var byteLength = bObj.Length;
+
+            if (bObj[byteLength - 1] == 23)
+            {
+                bObj = RemoveETB(bObj, byteLength);
+            }
+            return bObj;
+        }
+
+        private static byte[] RemoveETB(Byte[] bObj, int byteLength)
+        {
+            var buffer = new List<byte>();
+            for (var i = 0; i < byteLength - 1; i++)
+            {
+                buffer.Add(bObj[i]);
+            }
+            bObj = buffer.ToArray();
+            return bObj;
         }
     }
 }

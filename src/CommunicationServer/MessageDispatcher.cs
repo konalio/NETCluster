@@ -11,7 +11,6 @@ using ClusterUtils.Communication;
 
 namespace CommunicationServer
 {
-
     class MessageDispatcher
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
@@ -654,6 +653,11 @@ namespace CommunicationServer
                 if (bytesRead > 0)
                 {
                     state.ByteBuffer.AddRange(state.Buffer);
+                    state.Buffer = new byte[StateObject.BufferSize];
+                    handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReadCallback, state);
+                }
+                else if (bytesRead == 0)
+                {
                     var message = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
 
                     var tp = new ThreadPackage(handler, message);
