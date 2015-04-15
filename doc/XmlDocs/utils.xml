@@ -210,6 +210,31 @@
             <param name="bObj">Object as bytes array.</param>
             <returns>Deserialized object.</returns>
         </member>
+        <member name="T:ClusterUtils.Communication.StateObject">
+            <summary>
+            Helper class for asynchronous sockets processing.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.Communication.StateObject.BufferSize">
+            <summary>
+            Size of message buffer.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.Communication.StateObject.WorkSocket">
+            <summary>
+            Remote endpoint socket.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.Communication.StateObject.Buffer">
+            <summary>
+            MessageBuffer.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.Communication.StateObject.ByteBuffer">
+            <summary>
+            Byte buffer accumulating multiple message parts.
+            </summary>
+        </member>
         <member name="T:ClusterUtils.ServerInfo">
             <summary>
             Simple container for basic server informations.

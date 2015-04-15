@@ -179,12 +179,9 @@ namespace ClusterUtils.Communication
             try
             {
                 var client = (Socket)ar.AsyncState;
-
                 var bytesSent = client.EndSend(ar);
-                
-                if (bytesSent == 0)
-                    _client.Shutdown(SocketShutdown.Send);
 
+                _client.Shutdown(SocketShutdown.Send);
                 _sendDone.Set();
             }
             catch (Exception e)

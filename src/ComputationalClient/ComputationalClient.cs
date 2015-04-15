@@ -45,6 +45,7 @@ namespace ComputationalClient
 
                 if (status.InnerText == "Final")
                 {
+                    Console.WriteLine("Received final solution.");
                     break;
                 }
             }
