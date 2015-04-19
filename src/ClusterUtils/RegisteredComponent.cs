@@ -47,7 +47,11 @@ namespace ClusterUtils
         {
             var registerMessage = new Register
             {
-                Type = Type
+                Type = Type,
+                SolvableProblems = new []{new RegisterSolvableProblemsProblemName
+                {
+                    Value = "DVRP"
+                }}
             };
 
             var response = SendMessageSingleResponse(registerMessage);
