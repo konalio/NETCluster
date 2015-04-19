@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ClusterMessage.cs" />
     <Compile Include="GeneratedMessages\DivideProblem.cs" />
+    <Compile Include="GeneratedMessages\Error.cs" />
     <Compile Include="GeneratedMessages\NoOperation.cs" />
     <Compile Include="GeneratedMessages\PartialProblems.cs" />
     <Compile Include="GeneratedMessages\Solution.cs" />

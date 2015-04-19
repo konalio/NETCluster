@@ -27,6 +27,27 @@
         <member name="P:DivideProblem.NodeID">
             <uwagi/>
         </member>
+        <member name="T:Error">
+            <uwagi/>
+        </member>
+        <member name="P:Error.ErrorType">
+            <uwagi/>
+        </member>
+        <member name="P:Error.ErrorMessage">
+            <uwagi/>
+        </member>
+        <member name="T:ErrorErrorType">
+            <uwagi/>
+        </member>
+        <member name="F:ErrorErrorType.UnknownSender">
+            <uwagi/>
+        </member>
+        <member name="F:ErrorErrorType.InvalidOperation">
+            <uwagi/>
+        </member>
+        <member name="F:ErrorErrorType.ExceptionOccured">
+            <uwagi/>
+        </member>
         <member name="T:NoOperation">
             <uwagi/>
         </member>
