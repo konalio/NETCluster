@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils.Communication;
 
@@ -52,9 +51,9 @@ namespace ClusterUtils
         /// <summary>
         /// Sends single message to server and waits for single response.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <returns>Response from server.</returns>
-        protected XmlDocument SendMessageSingleResponse(IClusterMessage message)
+        protected MessagePackage SendMessageSingleResponse(IClusterMessage message)
         {
             var responses = SendMessage(message);
             return responses[0];
@@ -63,9 +62,9 @@ namespace ClusterUtils
         /// <summary>
         /// General method for sending messages. Sends single message to server and waits for any responses.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <returns>All received messages as XMLDocuments.</returns>
-        protected List<XmlDocument> SendMessage(IClusterMessage message)
+        protected List<MessagePackage> SendMessage(IClusterMessage message)
         {
             var tcpClient = new ConnectionClient(ServerInfo);
 

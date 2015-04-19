@@ -385,7 +385,7 @@ namespace CommunicationServer
         /// Converts a message to binary array data and sends it to component
         /// </summary>
         /// <typeparam name="T">Type of the message</typeparam>
-        /// <param name="message">Message</param>
+        /// <param name="message">XmlMessage</param>
         /// <param name="handler">Socket handler of the component, that message will be sent to</param>
         public void ConvertAndSendMessage<T>(T message, Socket handler)
         {

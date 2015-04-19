@@ -110,7 +110,7 @@
             Converts a message to binary array data and sends it to component
             </summary>
             <typeparam name="T">Type of the message</typeparam>
-            <param name="message">Message</param>
+            <param name="message">XmlMessage</param>
             <param name="handler">Socket handler of the component, that message will be sent to</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.SendNoOperationMessage(CommunicationServer.ThreadPackage)">
@@ -118,37 +118,6 @@
             Send NoOperation message to component
             </summary>
             <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
-        </member>
-        <member name="M:CommunicationServer.MessageDispatcher.CreateArrayFromXml(System.Xml.XmlNodeList)">
-            <summary>
-            Creates String array from XmlNodeList element
-            </summary>
-            <param name="xmlElementsList">XmlNodeList element</param>
-            <returns></returns>
-        </member>
-        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerText(System.String,System.Xml.XmlDocument)">
-            <summary>
-            Finds text value of the element in the XmlDocument
-            </summary>
-            <param name="s">Name of the element</param>
-            <param name="doc">XmlDocument we are searching in</param>
-            <returns></returns>
-        </member>
-        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerUlong(System.String,System.Xml.XmlDocument)">
-            <summary>
-            Finds ulong value of the element in the XmlDocument
-            </summary>
-            <param name="s">Name of the element</param>
-            <param name="doc">XmlDocument we are searching in</param>
-            <returns></returns>
-        </member>
-        <member name="M:CommunicationServer.MessageDispatcher.GetXmlElementInnerByte(System.String,System.Xml.XmlDocument)">
-            <summary>
-            Finds byte[] value of the element in the XmlDocument
-            </summary>
-            <param name="s">Name of the element</param>
-            <param name="doc">XmlDocument we are searching in</param>
-            <returns></returns>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.AddPartialSolution(SolutionsSolution,System.UInt64)">
             <summary>

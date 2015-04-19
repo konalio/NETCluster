@@ -42,14 +42,14 @@
             <summary>
             Sends single message to server and waits for single response.
             </summary>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
             <returns>Response from server.</returns>
         </member>
         <member name="M:ClusterUtils.Component.SendMessage(ClusterMessages.IClusterMessage)">
             <summary>
             General method for sending messages. Sends single message to server and waits for any responses.
             </summary>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
             <returns>All received messages as XMLDocuments.</returns>
         </member>
         <member name="T:ClusterUtils.ComponentConfig">
@@ -101,7 +101,7 @@
             <summary>
             Sends message to server and waits for responses.
             </summary>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
             <returns>All possible responses.</returns>
         </member>
         <member name="M:ClusterUtils.Communication.ConnectionClient.Close">
@@ -146,7 +146,7 @@
             </summary>
             <returns>True on registration success, false otherwise.</returns>
         </member>
-        <member name="M:ClusterUtils.RegisteredComponent.ProcessRegisterResponse(System.Xml.XmlDocument)">
+        <member name="M:ClusterUtils.RegisteredComponent.ProcessRegisterResponse(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Process registration response - retreive Id assigned by server and timeout.
             </summary>
@@ -159,13 +159,13 @@
             </summary>
             <param name="sender">ignored</param>
             <param name="e">ignored</param>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
         </member>
         <member name="M:ClusterUtils.RegisteredComponent.KeepSendingStatus(Status,System.Int32)">
             <summary>
             Method initializing status message timer.
             </summary>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
             <param name="msCycleTime">Sending loop time in miliseconds.</param>
         </member>
         <member name="M:ClusterUtils.RegisteredComponent.StartSendingStatus">
@@ -173,19 +173,19 @@
             Creates status message and timer for status message sending.
             </summary>
         </member>
-        <member name="M:ClusterUtils.RegisteredComponent.ProcessNoOperationMessage(System.Xml.XmlDocument)">
+        <member name="M:ClusterUtils.RegisteredComponent.ProcessNoOperationMessage(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Method processing NoOperation message. Retreives backup info.
             </summary>
-            <param name="xmlMessage">Received NoOperation message.</param>
+            <param name="package">Received NoOperation message.</param>
         </member>
         <member name="M:ClusterUtils.RegisteredComponent.SendMessageNoResponse(ClusterMessages.IClusterMessage)">
             <summary>
             Helper method for sending message where's no response is expected.
             </summary>
-            <param name="message">Message to be sent.</param>
+            <param name="message">XmlMessage to be sent.</param>
         </member>
-        <member name="M:ClusterUtils.RegisteredComponent.ProcessMessages(System.Collections.Generic.IEnumerable{System.Xml.XmlDocument})">
+        <member name="M:ClusterUtils.RegisteredComponent.ProcessMessages(System.Collections.Generic.IEnumerable{ClusterUtils.Communication.MessagePackage})">
             <summary>
             Method for handling all messages that given components may handle.
             </summary>

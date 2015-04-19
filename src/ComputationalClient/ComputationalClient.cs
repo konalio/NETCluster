@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace ComputationalClient
 {
@@ -39,19 +40,22 @@ namespace ComputationalClient
                 Console.Read();
 
                 var response = AskForSolution(problemId);
-                var status = response.GetElementsByTagName("Type")[0];
+                var message = Serializers.ByteArrayObject<Solutions>(response.MessageBytes);
+                var status = message.Solutions1[0].Type;
 
-                Console.WriteLine("Problem status: {0}.", status.InnerText);
-
-                if (status.InnerText == "Final")
+                if (status == SolutionsSolutionType.Final)
                 {
                     Console.WriteLine("Received final solution.");
                     break;
                 }
+                else
+                {
+                    Console.WriteLine("Computations ongoing");
+                }
             }
         }
 
-        private XmlDocument AskForSolution(ulong problemId)
+        private MessagePackage AskForSolution(ulong problemId)
         {
             var request = new SolutionRequest
             {
@@ -69,7 +73,8 @@ namespace ComputationalClient
                 Data = new byte[0]
             };
             var response = SendMessageSingleResponse(request);
-            return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
+            var message = Serializers.ByteArrayObject<SolveRequestResponse>(response.MessageBytes);
+            return message.Id;
         }
     }
 }
