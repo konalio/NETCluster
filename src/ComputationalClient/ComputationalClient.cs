@@ -40,7 +40,7 @@ namespace ComputationalClient
                 Console.Read();
 
                 var response = AskForSolution(problemId);
-                var message = Serializers.ByteArrayObject<Solutions>(response.MessageBytes);
+                var message = (Solutions) response.ClusterMessage;
                 var status = message.Solutions1[0].Type;
 
                 if (status == SolutionsSolutionType.Final)
@@ -73,7 +73,7 @@ namespace ComputationalClient
                 Data = new byte[0]
             };
             var response = SendMessageSingleResponse(request);
-            var message = Serializers.ByteArrayObject<SolveRequestResponse>(response.MessageBytes);
+            var message = (SolveRequestResponse) response.ClusterMessage;
             return message.Id;
         }
     }

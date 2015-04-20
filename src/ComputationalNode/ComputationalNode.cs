@@ -54,7 +54,7 @@ namespace ComputationalNode
         /// <param name="package"></param>
         private void ProcessPartialProblemsMessage(MessagePackage package)
         {
-            var message = Serializers.ByteArrayObject<SolvePartialProblems>(package.MessageBytes);
+            var message = (SolvePartialProblems) package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             var partialProblem = message.PartialProblems[0];

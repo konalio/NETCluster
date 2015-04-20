@@ -66,7 +66,7 @@ namespace ClusterUtils
         /// <returns>True on registration success, false otherwise.</returns>
         private bool ProcessRegisterResponse(MessagePackage response)
         {
-            var message = Serializers.ByteArrayObject<RegisterResponse>(response.MessageBytes);
+            var message = (RegisterResponse) response.ClusterMessage;
             Id = uint.Parse(message.Id);
             ServerTimeout = int.Parse(message.Timeout);
             ServerTimeout *= 1000;

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
@@ -50,7 +49,7 @@ namespace CommunicationServer
         public void ListeningThread(Object o)
         {
             var localEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(_listeningPort));
-            Console.WriteLine("Address: {0}", localEndPoint.Address.ToString());
+            Console.WriteLine("Address: {0}", localEndPoint.Address);
             var listener = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
             try
@@ -87,10 +86,10 @@ namespace CommunicationServer
         /// <summary>
         /// Analyzes different messages types
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void AnalyzeMessage(ThreadPackage tp)
         {
-            var messageType = MessageTypeResolver.GetMessageType(tp.Message);
+            var messageType = MessageTypeResolver.GetMessageType(tp.Message.XmlMessage);
             WriteMessageHandling(messageType);
             switch (messageType)
             {
@@ -117,15 +116,15 @@ namespace CommunicationServer
 
         public void WriteMessageHandling(MessageTypeResolver.MessageType message)
         {
-            Console.WriteLine("Handling message type: " + message.ToString());
+            Console.WriteLine("Handling ClusterMessage type: " + message.ToString());
         }
         /// <summary>
         /// Handles State Messages from components
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleStateMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<Status>(tp.MessageBytes);
+            var message = (Status) tp.Message.ClusterMessage;
             var id = message.Id;
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
@@ -183,10 +182,10 @@ namespace CommunicationServer
         /// <summary>
         /// Handles Register Messages from components
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleRegisterMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<Register>(tp.MessageBytes);
+            var message = (Register) tp.Message.ClusterMessage;
 
             var registeredComponent = new ComponentStatus(
                 _componentCount++,
@@ -207,10 +206,10 @@ namespace CommunicationServer
         /// <summary>
         /// Handles SolveRequest Messages from Client
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleSolveRequestMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<SolveRequest>(tp.MessageBytes);
+            var message = (SolveRequest) tp.Message.ClusterMessage;
 
             var sr = new SolveRequest
             {
@@ -231,10 +230,11 @@ namespace CommunicationServer
         /// <summary>
         /// Handles SolutionRequest Messages from Client
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleSolutionRequestMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<SolutionRequest>(tp.MessageBytes);
+            var message = (SolutionRequest)tp.Message.ClusterMessage;
+
             var id = message.Id;
             var solutions = new SolutionsSolution[1];
 
@@ -261,10 +261,10 @@ namespace CommunicationServer
         /// <summary>
         /// Handles SolvePartialProblem Messages from components and sends NoOperation response
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<SolvePartialProblems>(tp.MessageBytes);
+            var message = (SolvePartialProblems) tp.Message.ClusterMessage;
 
             var partialProblems = message.PartialProblems;
 
@@ -299,10 +299,10 @@ namespace CommunicationServer
         /// Handles Solution Messages from components and sends NoOperation response. If Solution is Final, prepares it to send it to Client. 
         /// If Solution is Partial, adds it to the _partialSolutions list
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleSolutionMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<Solutions>(tp.MessageBytes);
+            var message = (Solutions) tp.Message.ClusterMessage;
             var type = message.Solutions1[0].Type;
 
             switch (type)
@@ -319,10 +319,10 @@ namespace CommunicationServer
         /// <summary>
         /// Handles Partial Solutions Messages from components
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleFinalSolutionMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<Solutions>(tp.MessageBytes);
+            var message = (Solutions) tp.Message.ClusterMessage;
 
             var finalSolution = message.Solutions1[0];
             var id = message.Id;
@@ -342,10 +342,10 @@ namespace CommunicationServer
         /// <summary>
         /// Handles Final Solution from components
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandlePartialSolutionMessages(ThreadPackage tp)
         {
-            var message = Serializers.ByteArrayObject<Solutions>(tp.MessageBytes);
+            var message = (Solutions) tp.Message.ClusterMessage;
             var partialSolution = message.Solutions1[0];
 
             var ss = new SolutionsSolution
@@ -364,10 +364,10 @@ namespace CommunicationServer
         /// <summary>
         /// Converts two Messages of different types to the binary array data and sends them to component
         /// </summary>
-        /// <typeparam name="T">Type of the first message</typeparam>
-        /// <typeparam name="TS">Type of the second message</typeparam>
-        /// <param name="message1">First message</param>
-        /// <param name="message2">Second message</param>
+        /// <typeparam name="T">Type of the first ClusterMessage</typeparam>
+        /// <typeparam name="TS">Type of the second ClusterMessage</typeparam>
+        /// <param name="message1">First ClusterMessage</param>
+        /// <param name="message2">Second ClusterMessage</param>
         /// <param name="handler">Socket handler of the component, that messages will be sent to</param>
         public void ConvertAndSendTwoMessages<T, TS>(T message1, TS message2, Socket handler)
         {
@@ -382,11 +382,11 @@ namespace CommunicationServer
         }
 
         /// <summary>
-        /// Converts a message to binary array data and sends it to component
+        /// Converts a ClusterMessage to binary array data and sends it to component
         /// </summary>
-        /// <typeparam name="T">Type of the message</typeparam>
+        /// <typeparam name="T">Type of the ClusterMessage</typeparam>
         /// <param name="message">XmlMessage</param>
-        /// <param name="handler">Socket handler of the component, that message will be sent to</param>
+        /// <param name="handler">Socket handler of the component, that ClusterMessage will be sent to</param>
         public void ConvertAndSendMessage<T>(T message, Socket handler)
         {
             var messageData = Serializers.ObjectToByteArray(message);
@@ -394,9 +394,9 @@ namespace CommunicationServer
         }
 
         /// <summary>
-        /// Send NoOperation message to component
+        /// Send NoOperation ClusterMessage to component
         /// </summary>
-        /// <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+        /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void SendNoOperationMessage(ThreadPackage tp)
         {
             var no = new NoOperation();
@@ -558,12 +558,10 @@ namespace CommunicationServer
                 } else if (bytesRead == 0)
                 {
                     var bytes = state.ByteBuffer.ToArray();
-                    var message = Serializers.ByteArrayObject<XmlDocument>(bytes);
                     var tp = new ThreadPackage()
                     {
                         Handler = handler,
-                        Message = message,
-                        MessageBytes = bytes
+                        Message = Serializers.MessageFromByteArray(bytes)
                     };
                     var th = new Thread(MessageReadThread);
                     th.Start(tp);

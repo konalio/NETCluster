@@ -57,7 +57,7 @@ namespace TaskManager
         /// <param name="package">Solutions message to be processed.</param>
         private void ProcessSolutions(MessagePackage package)
         {
-            var message = Serializers.ByteArrayObject<Solutions>(package.MessageBytes);
+            var message = (Solutions) package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             Console.WriteLine("Received partial solutions for problem {0}.", problemInstanceId);
@@ -108,7 +108,7 @@ namespace TaskManager
         /// <param name="package">Divide problem message to be processed.</param>
         private void ProcessDivideProblem(MessagePackage package)
         {
-            var message = Serializers.ByteArrayObject<DivideProblem>(package.MessageBytes);
+            var message = (DivideProblem) package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             Console.WriteLine("Received problem {0} to divide.", problemInstanceId);

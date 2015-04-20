@@ -164,12 +164,7 @@ namespace ClusterUtils.Communication
 
         private void ExtractSingleResponse(StateObject state)
         {
-            var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-            _responses.Add(new MessagePackage
-            {
-                XmlMessage = response,
-                MessageBytes = state.ByteBuffer.ToArray()
-            });
+            _responses.Add(Serializers.MessageFromByteArray(state.ByteBuffer.ToArray()));
         }
 
         private void Send(Socket client, byte[] byteData)

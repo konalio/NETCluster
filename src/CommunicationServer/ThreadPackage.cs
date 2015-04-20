@@ -1,12 +1,11 @@
 ﻿using System.Net.Sockets;
-using System.Xml;
+using ClusterUtils.Communication;
 
 namespace CommunicationServer
 {
     class ThreadPackage
     {
         public Socket Handler;
-        public XmlDocument Message;
-        public byte[] MessageBytes;
+        public MessagePackage Message;
     }
 }

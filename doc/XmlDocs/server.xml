@@ -44,80 +44,80 @@
             <summary>
             Analyzes different messages types
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleStateMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles State Messages from components
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleRegisterMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles Register Messages from components
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleSolveRequestMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles SolveRequest Messages from Client
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleSolutionRequestMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles SolutionRequest Messages from Client
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandlePartialProblemsMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles SolvePartialProblem Messages from components and sends NoOperation response
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleSolutionMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles Solution Messages from components and sends NoOperation response. If Solution is Final, prepares it to send it to Client. 
             If Solution is Partial, adds it to the _partialSolutions list
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandleFinalSolutionMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles Partial Solutions Messages from components
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.HandlePartialSolutionMessages(CommunicationServer.ThreadPackage)">
             <summary>
             Handles Final Solution from components
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.ConvertAndSendTwoMessages``2(``0,``1,System.Net.Sockets.Socket)">
             <summary>
             Converts two Messages of different types to the binary array data and sends them to component
             </summary>
-            <typeparam name="T">Type of the first message</typeparam>
-            <typeparam name="TS">Type of the second message</typeparam>
-            <param name="message1">First message</param>
-            <param name="message2">Second message</param>
+            <typeparam name="T">Type of the first ClusterMessage</typeparam>
+            <typeparam name="TS">Type of the second ClusterMessage</typeparam>
+            <param name="message1">First ClusterMessage</param>
+            <param name="message2">Second ClusterMessage</param>
             <param name="handler">Socket handler of the component, that messages will be sent to</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.ConvertAndSendMessage``1(``0,System.Net.Sockets.Socket)">
             <summary>
-            Converts a message to binary array data and sends it to component
+            Converts a ClusterMessage to binary array data and sends it to component
             </summary>
-            <typeparam name="T">Type of the message</typeparam>
+            <typeparam name="T">Type of the ClusterMessage</typeparam>
             <param name="message">XmlMessage</param>
-            <param name="handler">Socket handler of the component, that message will be sent to</param>
+            <param name="handler">Socket handler of the component, that ClusterMessage will be sent to</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.SendNoOperationMessage(CommunicationServer.ThreadPackage)">
             <summary>
-            Send NoOperation message to component
+            Send NoOperation ClusterMessage to component
             </summary>
-            <param name="tp">Thread Package with Socket handler and XmlDocument message</param>
+            <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.AddPartialSolution(SolutionsSolution,System.UInt64)">
             <summary>
