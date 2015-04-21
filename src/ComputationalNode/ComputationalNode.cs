@@ -12,7 +12,7 @@ namespace ComputationalNode
         /// 
         /// </summary>
         /// <param name="componentConfig">Server info from App.config and arguments.</param>
-        public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") {}
+        public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") { }
 
         /// <summary>
         /// Starts the Node:
@@ -37,6 +37,9 @@ namespace ComputationalNode
             {
                 switch (MessageTypeResolver.GetMessageType(message.XmlMessage))
                 {
+                    case MessageTypeResolver.MessageType.Error:
+                        HandleErrorMessage(message);
+                        break;
                     case MessageTypeResolver.MessageType.NoOperation:
                         ProcessNoOperationMessage(message);
                         break;
@@ -54,7 +57,7 @@ namespace ComputationalNode
         /// <param name="package"></param>
         private void ProcessPartialProblemsMessage(MessagePackage package)
         {
-            var message = (SolvePartialProblems) package.ClusterMessage;
+            var message = (SolvePartialProblems)package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             var partialProblem = message.PartialProblems[0];
@@ -62,7 +65,7 @@ namespace ComputationalNode
             var taskId = partialProblem.TaskId;
 
             Console.WriteLine("Received partial problem {0} from problem instance {1}.", taskId, problemInstanceId);
-            
+
             CreateAndSendPartialSolution(taskId, problemInstanceId);
         }
 

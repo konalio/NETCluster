@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
@@ -36,6 +35,9 @@ namespace TaskManager
             {
                 switch (MessageTypeResolver.GetMessageType(message.XmlMessage))
                 {
+                    case MessageTypeResolver.MessageType.Error:
+                        HandleErrorMessage(message);
+                        break;
                     case MessageTypeResolver.MessageType.NoOperation:
                         ProcessNoOperationMessage(message);
                         break;

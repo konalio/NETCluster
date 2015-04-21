@@ -32,7 +32,7 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="config">Config instance containing server info.</param>
         /// <param name="type">Type of component</param>
-        protected Component(ComponentConfig config, string type) 
+        protected Component(ComponentConfig config, string type)
         {
             ServerInfo = new ServerInfo(config.ServerPort, config.ServerAddress);
             Type = type;
@@ -75,6 +75,24 @@ namespace ClusterUtils
             tcpClient.Close();
 
             return responses;
+        }
+
+        protected void HandleErrorMessage(MessagePackage message)
+        {
+            var errorMessage = (Error)message.ClusterMessage;
+            switch (errorMessage.ErrorType)
+            {
+                case ErrorErrorType.ExceptionOccured:
+                    Console.WriteLine("Error message from server: Exception occured.");
+                    break;
+                case ErrorErrorType.InvalidOperation:
+                    Console.WriteLine("Error message from server: Invalid operation.");
+                    break;
+                case ErrorErrorType.UnknownSender:
+                    Console.WriteLine("Error message from server: Unknow sender.");
+                    break;
+            }
+            Console.WriteLine(errorMessage.ErrorMessage);
         }
     }
 }
