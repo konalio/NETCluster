@@ -77,6 +77,10 @@ namespace ClusterUtils
             return responses;
         }
 
+        /// <summary>
+        /// Method recognizes error received from server and logs info.
+        /// </summary>
+        /// <param name="message"></param>
         protected void HandleErrorMessage(MessagePackage message)
         {
             var errorMessage = (Error)message.ClusterMessage;

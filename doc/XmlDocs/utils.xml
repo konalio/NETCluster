@@ -52,6 +52,12 @@
             <param name="message">XmlMessage to be sent.</param>
             <returns>All received messages as XMLDocuments.</returns>
         </member>
+        <member name="M:ClusterUtils.Component.HandleErrorMessage(ClusterUtils.Communication.MessagePackage)">
+            <summary>
+            Method recognizes error received from server and logs info.
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="T:ClusterUtils.ComponentConfig">
             <summary>
             Container for components' configuration info - server's address and port.

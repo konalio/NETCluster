@@ -111,20 +111,43 @@ namespace CommunicationServer
                 case MessageTypeResolver.MessageType.Solution:
                     HandleSolutionMessages(tp);
                     break;
+                case MessageTypeResolver.MessageType.Error:
+                    HandleErrorMessage(tp);
+                    break;
             }
+        }
+
+        private void HandleErrorMessage(ThreadPackage package)
+        {
+            var errorMessage = (Error)package.Message.ClusterMessage;
+            switch (errorMessage.ErrorType)
+            {
+                case ErrorErrorType.ExceptionOccured:
+                    Console.WriteLine("Error message from server: Exception occured.");
+                    break;
+                case ErrorErrorType.InvalidOperation:
+                    Console.WriteLine("Error message from server: Invalid operation.");
+                    break;
+                case ErrorErrorType.UnknownSender:
+                    Console.WriteLine("Error message from server: Unknow sender.");
+                    break;
+            }
+            Console.WriteLine(errorMessage.ErrorMessage);
+            package.Handler.Shutdown(SocketShutdown.Both);
         }
 
         public void WriteMessageHandling(MessageTypeResolver.MessageType message)
         {
             Console.WriteLine("Handling ClusterMessage type: " + message.ToString());
         }
+
         /// <summary>
         /// Handles State Messages from components
         /// </summary>
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleStateMessages(ThreadPackage tp)
         {
-            var message = (Status) tp.Message.ClusterMessage;
+            var message = (Status)tp.Message.ClusterMessage;
             var id = message.Id;
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
@@ -185,7 +208,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleRegisterMessages(ThreadPackage tp)
         {
-            var message = (Register) tp.Message.ClusterMessage;
+            var message = (Register)tp.Message.ClusterMessage;
 
             var registeredComponent = new ComponentStatus(
                 _componentCount++,
@@ -209,7 +232,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleSolveRequestMessages(ThreadPackage tp)
         {
-            var message = (SolveRequest) tp.Message.ClusterMessage;
+            var message = (SolveRequest)tp.Message.ClusterMessage;
 
             var sr = new SolveRequest
             {
@@ -264,7 +287,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
-            var message = (SolvePartialProblems) tp.Message.ClusterMessage;
+            var message = (SolvePartialProblems)tp.Message.ClusterMessage;
 
             var partialProblems = message.PartialProblems;
 
@@ -286,7 +309,7 @@ namespace CommunicationServer
                     TaskId = dividedPartialProblem.TaskId,
                     NodeID = dividedPartialProblem.NodeID
                 };
-                
+
                 singleProblemArray[0] = problem;
                 singlePartialProblem.PartialProblems = singleProblemArray;
                 _messageList.Add(singlePartialProblem);
@@ -302,7 +325,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleSolutionMessages(ThreadPackage tp)
         {
-            var message = (Solutions) tp.Message.ClusterMessage;
+            var message = (Solutions)tp.Message.ClusterMessage;
             var type = message.Solutions1[0].Type;
 
             switch (type)
@@ -322,7 +345,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleFinalSolutionMessages(ThreadPackage tp)
         {
-            var message = (Solutions) tp.Message.ClusterMessage;
+            var message = (Solutions)tp.Message.ClusterMessage;
 
             var finalSolution = message.Solutions1[0];
             var id = message.Id;
@@ -345,7 +368,7 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandlePartialSolutionMessages(ThreadPackage tp)
         {
-            var message = (Solutions) tp.Message.ClusterMessage;
+            var message = (Solutions)tp.Message.ClusterMessage;
             var partialSolution = message.Solutions1[0];
 
             var ss = new SolutionsSolution
