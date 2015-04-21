@@ -20,7 +20,7 @@ namespace ClusterUtils
         /// <summary>
         /// Id received from server after registration.
         /// </summary>
-        protected uint Id;
+        protected ulong Id;
 
         /// <summary>
         /// Timeout received after registration. Status message is sent at least as frequent as ServerTimeout.
@@ -67,7 +67,7 @@ namespace ClusterUtils
         private bool ProcessRegisterResponse(MessagePackage response)
         {
             var message = (RegisterResponse) response.ClusterMessage;
-            Id = uint.Parse(message.Id);
+            Id = ulong.Parse(message.Id);
             ServerTimeout = int.Parse(message.Timeout);
             ServerTimeout *= 1000;
             Console.WriteLine("Registered at server with Id: {0}.", Id);
