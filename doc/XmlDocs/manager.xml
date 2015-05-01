@@ -21,20 +21,20 @@
             Tries to register to server and starts sending status message.
             </summary>
         </member>
-        <member name="M:TaskManager.TaskManager.ProcessSolutions(System.Xml.XmlDocument)">
+        <member name="M:TaskManager.TaskManager.ProcessSolutions(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Support for processing solutions messages. 
             After receiving Solutions, final solution is chosen from all solutions and is sent back to server.
             Currently choosing final solution is random.
             </summary>
-            <param name="xmlMessage">Solutions message to be processed.</param>
+            <param name="package">Solutions message to be processed.</param>
         </member>
-        <member name="M:TaskManager.TaskManager.ProcessDivideProblem(System.Xml.XmlDocument)">
+        <member name="M:TaskManager.TaskManager.ProcessDivideProblem(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Support for processing DivideProblem message.
             Currently, method creates 5 partial problems for each problem instance and sends them to server.
             </summary>
-            <param name="xmlMessage">Divide problem message to be processed.</param>
+            <param name="package">Divide problem message to be processed.</param>
         </member>
     </members>
 </doc>

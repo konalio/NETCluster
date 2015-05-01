@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Xml;
+using ClusterMessages;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace ComputationalClient
 {
@@ -22,8 +24,15 @@ namespace ComputationalClient
         public void Start()
         {
             LogRuntimeInfo();
-            var problemId = RequestForSolvingProblem();
-            WaitForSolution(problemId);
+            try
+            {
+                var problemId = RequestForSolvingProblem();
+                WaitForSolution(problemId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         /// <summary>
@@ -39,19 +48,34 @@ namespace ComputationalClient
                 Console.Read();
 
                 var response = AskForSolution(problemId);
-                var status = response.GetElementsByTagName("Type")[0];
+                SolutionsSolutionType status;
 
-                Console.WriteLine("Problem status: {0}.", status.InnerText);
+                switch (MessageTypeResolver.GetMessageType(response.XmlMessage))
+                {
+                    case MessageTypeResolver.MessageType.Error:
+                        HandleErrorMessage(response);
+                        throw new Exception("Solution request failed");
+                    case MessageTypeResolver.MessageType.Solution:
+                        var message = (Solutions)response.ClusterMessage;
+                        status = message.Solutions1[0].Type;
+                        break;
+                    default:
+                        throw new Exception("Solution request failed.");
+                }
 
-                if (status.InnerText == "Final")
+                if (status == SolutionsSolutionType.Final)
                 {
                     Console.WriteLine("Received final solution.");
                     break;
                 }
+                else
+                {
+                    Console.WriteLine("Computations ongoing");
+                }
             }
         }
 
-        private XmlDocument AskForSolution(ulong problemId)
+        private MessagePackage AskForSolution(ulong problemId)
         {
             var request = new SolutionRequest
             {
@@ -68,8 +92,19 @@ namespace ComputationalClient
                 ProblemType = "DVRP",
                 Data = new byte[0]
             };
-            var response = SendMessageSingleResponse(request);
-            return ulong.Parse(response.GetElementsByTagName("Id")[0].InnerText);
+            var response = SendMessageSingleResponse(request);    
+        
+            switch (MessageTypeResolver.GetMessageType(response.XmlMessage))
+            {
+                case MessageTypeResolver.MessageType.Error:
+                    HandleErrorMessage(response);
+                    throw new Exception("Solve request failed");
+                case MessageTypeResolver.MessageType.SolveRequestResponse:
+                    var message = (SolveRequestResponse)response.ClusterMessage;
+                    return message.Id;
+                default:
+                    throw new Exception("Solve request failed.");
+            }
         }
     }
 }

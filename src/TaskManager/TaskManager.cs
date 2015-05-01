@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace TaskManager
 {
@@ -29,20 +29,23 @@ namespace TaskManager
             Console.ReadLine();
         }
         
-        protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
+        protected override void ProcessMessages(IEnumerable<MessagePackage> responses)
         {
-            foreach (var xmlMessage in responses)
+            foreach (var message in responses)
             {
-                switch (MessageTypeResolver.GetMessageType(xmlMessage))
+                switch (MessageTypeResolver.GetMessageType(message.XmlMessage))
                 {
+                    case MessageTypeResolver.MessageType.Error:
+                        HandleErrorMessage(message);
+                        break;
                     case MessageTypeResolver.MessageType.NoOperation:
-                        ProcessNoOperationMessage(xmlMessage);
+                        ProcessNoOperationMessage(message);
                         break;
                     case MessageTypeResolver.MessageType.DivideProblem:
-                        ProcessDivideProblem(xmlMessage);
+                        ProcessDivideProblem(message);
                         break;
                     case MessageTypeResolver.MessageType.Solution:
-                        ProcessSolutions(xmlMessage);
+                        ProcessSolutions(message);
                         break;
                 }
             }
@@ -53,10 +56,11 @@ namespace TaskManager
         /// After receiving Solutions, final solution is chosen from all solutions and is sent back to server.
         /// Currently choosing final solution is random.
         /// </summary>
-        /// <param name="xmlMessage">Solutions message to be processed.</param>
-        private void ProcessSolutions(XmlDocument xmlMessage)
+        /// <param name="package">Solutions message to be processed.</param>
+        private void ProcessSolutions(MessagePackage package)
         {
-            var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);
+            var message = (Solutions) package.ClusterMessage;
+            var problemInstanceId = message.Id;
 
             Console.WriteLine("Received partial solutions for problem {0}.", problemInstanceId);
 
@@ -103,10 +107,11 @@ namespace TaskManager
         /// Support for processing DivideProblem message.
         /// Currently, method creates 5 partial problems for each problem instance and sends them to server.
         /// </summary>
-        /// <param name="xmlMessage">Divide problem message to be processed.</param>
-        private void ProcessDivideProblem(XmlDocument xmlMessage)
+        /// <param name="package">Divide problem message to be processed.</param>
+        private void ProcessDivideProblem(MessagePackage package)
         {
-            var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);
+            var message = (DivideProblem) package.ClusterMessage;
+            var problemInstanceId = message.Id;
 
             Console.WriteLine("Received problem {0} to divide.", problemInstanceId);
 

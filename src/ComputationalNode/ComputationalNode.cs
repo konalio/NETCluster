@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils;
+using ClusterUtils.Communication;
 
 namespace ComputationalNode
 {
@@ -12,7 +12,7 @@ namespace ComputationalNode
         /// 
         /// </summary>
         /// <param name="componentConfig">Server info from App.config and arguments.</param>
-        public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") {}
+        public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") { }
 
         /// <summary>
         /// Starts the Node:
@@ -31,17 +31,20 @@ namespace ComputationalNode
         /// Processes messages received from Server.
         /// </summary>
         /// <param name="responses">All received messages.</param>
-        protected override void ProcessMessages(IEnumerable<XmlDocument> responses)
+        protected override void ProcessMessages(IEnumerable<MessagePackage> responses)
         {
-            foreach (var xmlMessage in responses)
+            foreach (var message in responses)
             {
-                switch (MessageTypeResolver.GetMessageType(xmlMessage))
+                switch (MessageTypeResolver.GetMessageType(message.XmlMessage))
                 {
+                    case MessageTypeResolver.MessageType.Error:
+                        HandleErrorMessage(message);
+                        break;
                     case MessageTypeResolver.MessageType.NoOperation:
-                        ProcessNoOperationMessage(xmlMessage);
+                        ProcessNoOperationMessage(message);
                         break;
                     case MessageTypeResolver.MessageType.PartialProblems:
-                        ProcessPartialProblemsMessage(xmlMessage);
+                        ProcessPartialProblemsMessage(message);
                         break;
                 }
             }
@@ -51,15 +54,18 @@ namespace ComputationalNode
         /// Support for handling Partial Problems message.
         /// Node mocks working on partial problem and sends partial solution to server.
         /// </summary>
-        /// <param name="xmlMessage"></param>
-        private void ProcessPartialProblemsMessage(XmlDocument xmlMessage)
+        /// <param name="package"></param>
+        private void ProcessPartialProblemsMessage(MessagePackage package)
         {
-            var problemInstanceId = ulong.Parse(xmlMessage.GetElementsByTagName("Id")[0].InnerText);
+            var message = (SolvePartialProblems)package.ClusterMessage;
+            var problemInstanceId = message.Id;
 
-            var taskId = ulong.Parse(xmlMessage.GetElementsByTagName("TaskId")[0].InnerText);
+            var partialProblem = message.PartialProblems[0];
+
+            var taskId = partialProblem.TaskId;
 
             Console.WriteLine("Received partial problem {0} from problem instance {1}.", taskId, problemInstanceId);
-            
+
             CreateAndSendPartialSolution(taskId, problemInstanceId);
         }
 

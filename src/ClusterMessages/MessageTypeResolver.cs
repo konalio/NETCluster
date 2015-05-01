@@ -61,6 +61,8 @@ namespace ClusterMessages
                     return MessageType.SolveRequestResponse;
                 case "Status":
                     return MessageType.Status;
+                case "Error":
+                    return MessageType.Error;
                 default:
                     return MessageType.Unknown;
             }

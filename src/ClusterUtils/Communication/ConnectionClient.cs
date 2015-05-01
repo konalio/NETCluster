@@ -24,7 +24,7 @@ namespace ClusterUtils.Communication
         private readonly ManualResetEvent _receiveDone =
             new ManualResetEvent(false);
 
-        private readonly List<XmlDocument> _responses = new List<XmlDocument>();
+        private readonly List<MessagePackage> _responses = new List<MessagePackage>();
 
         private readonly IPAddress _serverAddress;
         private readonly int _serverPort;
@@ -59,9 +59,9 @@ namespace ClusterUtils.Communication
         /// <summary>
         /// Sends message to server and waits for responses.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <returns>All possible responses.</returns>
-        public List<XmlDocument> SendAndWaitForResponses(IClusterMessage message)
+        public List<MessagePackage> SendAndWaitForResponses(IClusterMessage message)
         {
             var byteMessage = Serializers.ObjectToByteArray(message);
 
@@ -164,8 +164,7 @@ namespace ClusterUtils.Communication
 
         private void ExtractSingleResponse(StateObject state)
         {
-            var response = Serializers.ByteArrayObject<XmlDocument>(state.ByteBuffer.ToArray());
-            _responses.Add(response);
+            _responses.Add(Serializers.MessageFromByteArray(state.ByteBuffer.ToArray()));
         }
 
         private void Send(Socket client, byte[] byteData)

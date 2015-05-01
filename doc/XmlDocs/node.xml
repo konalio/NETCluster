@@ -18,18 +18,18 @@
             - Starts sending Status messages to the Server.
             </summary>
         </member>
-        <member name="M:ComputationalNode.ComputationalNode.ProcessMessages(System.Collections.Generic.IEnumerable{System.Xml.XmlDocument})">
+        <member name="M:ComputationalNode.ComputationalNode.ProcessMessages(System.Collections.Generic.IEnumerable{ClusterUtils.Communication.MessagePackage})">
             <summary>
             Processes messages received from Server.
             </summary>
             <param name="responses">All received messages.</param>
         </member>
-        <member name="M:ComputationalNode.ComputationalNode.ProcessPartialProblemsMessage(System.Xml.XmlDocument)">
+        <member name="M:ComputationalNode.ComputationalNode.ProcessPartialProblemsMessage(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Support for handling Partial Problems message.
             Node mocks working on partial problem and sends partial solution to server.
             </summary>
-            <param name="xmlMessage"></param>
+            <param name="package"></param>
         </member>
     </members>
 </doc>

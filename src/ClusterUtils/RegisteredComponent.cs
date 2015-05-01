@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
-using System.Xml;
 using ClusterMessages;
+using ClusterUtils.Communication;
 using Timer = System.Timers.Timer;
 
 namespace ClusterUtils
@@ -20,7 +20,7 @@ namespace ClusterUtils
         /// <summary>
         /// Id received from server after registration.
         /// </summary>
-        protected uint Id;
+        protected ulong Id;
 
         /// <summary>
         /// Timeout received after registration. Status message is sent at least as frequent as ServerTimeout.
@@ -47,7 +47,11 @@ namespace ClusterUtils
         {
             var registerMessage = new Register
             {
-                Type = Type
+                Type = Type,
+                SolvableProblems = new []{new RegisterSolvableProblemsProblemName
+                {
+                    Value = "DVRP"
+                }}
             };
 
             var response = SendMessageSingleResponse(registerMessage);
@@ -60,10 +64,11 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="response"></param>
         /// <returns>True on registration success, false otherwise.</returns>
-        private bool ProcessRegisterResponse(XmlDocument response)
+        private bool ProcessRegisterResponse(MessagePackage response)
         {
-            Id = uint.Parse(response.GetElementsByTagName("Id")[0].InnerText);
-            ServerTimeout = int.Parse(response.GetElementsByTagName("Timeout")[0].InnerText);
+            var message = (RegisterResponse) response.ClusterMessage;
+            Id = ulong.Parse(message.Id);
+            ServerTimeout = int.Parse(message.Timeout);
             ServerTimeout *= 1000;
             Console.WriteLine("Registered at server with Id: {0}.", Id);
 
@@ -75,7 +80,7 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="sender">ignored</param>
         /// <param name="e">ignored</param>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         private void SendStatusMessage(object sender, ElapsedEventArgs e,
                                     IClusterMessage message)
         {
@@ -90,7 +95,7 @@ namespace ClusterUtils
         /// <summary>
         /// Method initializing status message timer.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <param name="msCycleTime">Sending loop time in miliseconds.</param>
         public void KeepSendingStatus(Status message, int msCycleTime)
         {
@@ -118,8 +123,8 @@ namespace ClusterUtils
         /// <summary>
         /// Method processing NoOperation message. Retreives backup info.
         /// </summary>
-        /// <param name="xmlMessage">Received NoOperation message.</param>
-        protected void ProcessNoOperationMessage(XmlDocument xmlMessage)
+        /// <param name="package">Received NoOperation message.</param>
+        protected void ProcessNoOperationMessage(MessagePackage package)
         {
             Console.WriteLine("Received NoOperation message.");
         }
@@ -127,7 +132,7 @@ namespace ClusterUtils
         /// <summary>
         /// Helper method for sending message where's no response is expected.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         protected void SendMessageNoResponse(IClusterMessage message)
         {
             SendMessage(message);
@@ -137,6 +142,6 @@ namespace ClusterUtils
         /// Method for handling all messages that given components may handle.
         /// </summary>
         /// <param name="responses">Messages received from server.</param>
-        protected abstract void ProcessMessages(IEnumerable<XmlDocument> responses);
+        protected abstract void ProcessMessages(IEnumerable<MessagePackage> responses);
     }
 }

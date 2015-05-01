@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\MessagePackage.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentConfig.cs" />
     <Compile Include="Communication\ConnectionClient.cs" />

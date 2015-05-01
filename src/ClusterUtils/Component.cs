@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using ClusterMessages;
 using ClusterUtils.Communication;
 
@@ -33,7 +32,7 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="config">Config instance containing server info.</param>
         /// <param name="type">Type of component</param>
-        protected Component(ComponentConfig config, string type) 
+        protected Component(ComponentConfig config, string type)
         {
             ServerInfo = new ServerInfo(config.ServerPort, config.ServerAddress);
             Type = type;
@@ -52,9 +51,9 @@ namespace ClusterUtils
         /// <summary>
         /// Sends single message to server and waits for single response.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <returns>Response from server.</returns>
-        protected XmlDocument SendMessageSingleResponse(IClusterMessage message)
+        protected MessagePackage SendMessageSingleResponse(IClusterMessage message)
         {
             var responses = SendMessage(message);
             return responses[0];
@@ -63,9 +62,9 @@ namespace ClusterUtils
         /// <summary>
         /// General method for sending messages. Sends single message to server and waits for any responses.
         /// </summary>
-        /// <param name="message">Message to be sent.</param>
+        /// <param name="message">XmlMessage to be sent.</param>
         /// <returns>All received messages as XMLDocuments.</returns>
-        protected List<XmlDocument> SendMessage(IClusterMessage message)
+        protected List<MessagePackage> SendMessage(IClusterMessage message)
         {
             var tcpClient = new ConnectionClient(ServerInfo);
 
@@ -76,6 +75,28 @@ namespace ClusterUtils
             tcpClient.Close();
 
             return responses;
+        }
+
+        /// <summary>
+        /// Method recognizes error received from server and logs info.
+        /// </summary>
+        /// <param name="message"></param>
+        protected void HandleErrorMessage(MessagePackage message)
+        {
+            var errorMessage = (Error)message.ClusterMessage;
+            switch (errorMessage.ErrorType)
+            {
+                case ErrorErrorType.ExceptionOccured:
+                    Console.WriteLine("Error message from server: Exception occured.");
+                    break;
+                case ErrorErrorType.InvalidOperation:
+                    Console.WriteLine("Error message from server: Invalid operation.");
+                    break;
+                case ErrorErrorType.UnknownSender:
+                    Console.WriteLine("Error message from server: Unknow sender.");
+                    break;
+            }
+            Console.WriteLine(errorMessage.ErrorMessage);
         }
     }
 }
