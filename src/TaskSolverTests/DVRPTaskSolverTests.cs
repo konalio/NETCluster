@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TaskSolverTests
+namespace DVRPTaskSolverTests
 {
     [TestClass]
-    public class TaskSolverTests
+    public class DVRPTaskSolverTests
     {
         [TestMethod]
         public void DivideProblemTest()
