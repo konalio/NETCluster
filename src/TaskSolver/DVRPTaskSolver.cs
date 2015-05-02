@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TaskSolver
+namespace DVRPTaskSolver
 {
-    public class TaskSolver : UCCTaskSolver.TaskSolver
+    public class DVRPTaskSolver : UCCTaskSolver.TaskSolver
     {
-        public TaskSolver() : base(new byte[0]) { }
+        public DVRPTaskSolver(byte[] problemData) : base(problemData) { }
 
         public override byte[][] DivideProblem(int threadCount)
         {
