@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalClient", "ComputationalClient\ComputationalClient.csproj", "{EDC11EC7-08AB-40C5-B2D9-6053C8456110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolver", "TaskSolver\TaskSolver.csproj", "{F49316D7-D3CF-480D-B613-21160ECC1FA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVRPTaskSolver", "TaskSolver\DVRPTaskSolver.csproj", "{F49316D7-D3CF-480D-B613-21160ECC1FA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSolverTests", "TaskSolverTests\TaskSolverTests.csproj", "{4D8418C5-11B0-4AE0-A73C-DB07BF1BD7A0}"
 EndProject
