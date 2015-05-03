@@ -1,4 +1,4 @@
-﻿namespace TaskSolver
+﻿namespace DVRPTaskSolver
 {
     public class Request
     {
