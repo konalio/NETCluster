@@ -35,7 +35,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DVRPTaskSolver">
+      <HintPath>..\DVRPTaskSolver\bin\Debug\DVRPTaskSolver.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="UCCTaskSolver">
+      <HintPath>..\DVRPTaskSolver\bin\Debug\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -58,6 +64,23 @@
     <Content Include="mainexample.vrp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test_of_size_1.vrp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="test_of_size_15.vrp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="test_of_size_2.vrp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="test_of_size_3.vrp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="test_of_size_5.vrp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
