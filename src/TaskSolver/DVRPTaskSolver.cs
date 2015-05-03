@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 namespace DVRPTaskSolver
 {
     public class DVRPTaskSolver : UCCTaskSolver.TaskSolver
@@ -40,7 +41,9 @@ namespace DVRPTaskSolver
             string edgeWeightType = GetStringValueFromFile(message, "EDGE_WEIGHT_TYPE: ", end);
             string edgeWeightFormat = GetStringValueFromFile(message, "EDGE_WEIGHT_FORMAT: ", end);
             string objective = GetStringValueFromFile(message, "OBJECTIVE: ", end);
-            
+
+            int[][] demands = GetArrayFromFile(message, " DEMAND_SECTION", end, locationsNumber,1, locationsNumber - depotsNumber);
+  
 
             throw new NotImplementedException();
         }
@@ -80,6 +83,48 @@ namespace DVRPTaskSolver
             }
 
             return sb.ToString();
+        }
+
+        public int[][] GetArrayFromFile(string file, string name, int end, int arraySize1, int arraySize2, int clientsNumber)
+        {
+            int index = file.IndexOf(name);
+            int row = 0;
+            int column = 0;
+            var array = new int[arraySize1][];
+
+            StringBuilder[] values = new StringBuilder[arraySize2];             
+
+            if (index < 0)
+                return null;
+
+            index++;
+
+            while (row < clientsNumber)
+            {
+                int[] arrayValues = new int[arraySize2];
+                while (file[index] != '\n' && index < end)
+                {
+                   
+                    while (file[index] != ' ')
+                    {
+                        values[column].Append(file[index]);
+                        index++;
+                    }
+                    arrayValues[column] = int.Parse(values[column].ToString());
+                    column++;
+                    index++;
+
+                }
+                array[int.Parse(values[0].ToString())] = arrayValues;
+                column = 0;
+                row++;
+                foreach (StringBuilder sb in values)
+                    sb.Clear();
+                
+
+            }
+            return array;
+
         }
         
     }
