@@ -26,6 +26,8 @@ namespace DVRPTaskSolver
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             DVRPData data = DVRPData.GetFromBytes(base._problemData);
+            DVRPLocationsSubset subset = DVRPLocationsSubset.GetFromByteArray(partialData);
+            int[] clients = subset.Locations;
 
             throw new NotImplementedException();
         }     

@@ -12,7 +12,7 @@ namespace DVRPTaskSolver
     {
         public int[] Locations;
        
-        private static byte[] Serialize(int [] locations)
+        public static byte[] Serialize(int [] locations)
         {
             if (locations == null)
                 return null;
@@ -26,7 +26,7 @@ namespace DVRPTaskSolver
                 return ms.ToArray();
             }
         }
-        private static DVRPLocationsSubset GetFromByteArray(byte[] array)
+        public static DVRPLocationsSubset GetFromByteArray(byte[] array)
         {
             var result = new DVRPLocationsSubset();
             try
