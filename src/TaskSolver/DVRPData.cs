@@ -31,7 +31,7 @@ namespace DVRPTaskSolver
             var result = new DVRPData();
             var numLocations = 0;
             var locations = new List<Location>();
-            var linesOfVrp = vrpFile.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var linesOfVrp = vrpFile.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             for (var i = 0; i < linesOfVrp.Length; i++)
             {
@@ -39,22 +39,22 @@ namespace DVRPTaskSolver
 
                 switch (lineElems[0])
                 {
-                    case "NAME":
+                    case "NAME:":
                         result.ProblemName = lineElems[1];
                         break;
-                    case "NUM_DEPOTS":
+                    case "NUM_DEPOTS:":
                         result.DepotsCount = int.Parse(lineElems[1]);
                         break;
-                    case "NUM_VISITS":
+                    case "NUM_VISITS:":
                         result.RequestsCount = int.Parse(lineElems[1]);
                         break;
-                    case "NUM_LOCATIONS":
+                    case "NUM_LOCATIONS:":
                         numLocations = int.Parse(lineElems[1]);
                         break;
-                    case "NUM_VEHICLES":
+                    case "NUM_VEHICLES:":
                         result.VehicleCount = int.Parse(lineElems[1]);
                         break;
-                    case "CAPACITIES":
+                    case "CAPACITIES:":
                         result.VehicleCapacity = int.Parse(lineElems[1]);
                         break;
                     case "DEPOTS":
@@ -160,7 +160,7 @@ namespace DVRPTaskSolver
                     case "TIME_AVAIL_SECTION":
                         {
                             i++;
-                            for (var j = 0; j < result.DepotsCount; j++, i++)
+                            for (var j = 0; j < result.RequestsCount; j++, i++)
                             {
                                 var requestAvailTimeData = linesOfVrp[i].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                                 var requestId = int.Parse(requestAvailTimeData[0]);
