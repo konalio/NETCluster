@@ -7,7 +7,7 @@
     <ProjectGuid>{F49316D7-D3CF-480D-B613-21160ECC1FA9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TaskSolver</RootNamespace>
+    <RootNamespace>DVRPTaskSolver</RootNamespace>
     <AssemblyName>DVRPTaskSolver</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,8 +42,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Depot.cs" />
+    <Compile Include="DVRPData.cs" />
     <Compile Include="DVRPTaskSolver.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="TimeWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
