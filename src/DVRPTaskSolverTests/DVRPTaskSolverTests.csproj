@@ -50,14 +50,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DVRPTaskSolverTests.cs" />
     <Compile Include="VrpFileParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TaskSolver\DVRPTaskSolver.csproj">
-      <Project>{F49316D7-D3CF-480D-B613-21160ECC1FA9}</Project>
-      <Name>DVRPTaskSolver</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="mainexample.vrp">
