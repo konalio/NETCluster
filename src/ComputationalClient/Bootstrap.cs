@@ -1,5 +1,4 @@
 ﻿using ClusterUtils;
-using System;
 
 namespace ComputationalClient
 {
@@ -10,8 +9,6 @@ namespace ComputationalClient
             var client = new ComputationalClient(ComponentConfig.GetComponentConfig(args));
 
             client.Start();
-
-            Console.ReadLine();
         }
     }
 }
