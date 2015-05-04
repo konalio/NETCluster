@@ -13,35 +13,33 @@ namespace DVRPTaskSolver
             List<Request> requests = dvrpData.Requests;
             int requestsCount = dvrpData.RequestsCount;
             int[] requestsIds = new int[requestsCount];
-            int[][] requestsSubsets = new int[1][];
-            int[] subset = new int[0];
+            List<List<int>> requestsSubsets = new List<List<int>>();
+            List<int> subset = new List<int>();
             byte[][] returnSubsets;
 
             for (int i = 0; i < requestsCount; i++)
                 requestsIds[i] = requests[i].Id;
 
-            requestsSubsets[0] = subset;
+            requestsSubsets.Add(subset);
 
             SplitIntoSubsetsRecursive(requestsIds, ref requestsSubsets, subset, requestsCount, 0);
 
-            returnSubsets = new byte[requestsSubsets.Length][];
+            returnSubsets = new byte[requestsSubsets.Count][];
 
-            for (int i = 0; i < requestsSubsets.Length; i++)
-                returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i]);
+            for (int i = 0; i < requestsSubsets.Count; i++)
+                returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i].ToArray());
 
             return returnSubsets;
         }
 
-        private void SplitIntoSubsetsRecursive(int[] requestsIds, ref int[][] requestsSubsets, int[] lastSubset, int requestsCount, int lastIndex)
+        private void SplitIntoSubsetsRecursive(int[] requestsIds, ref List<List<int>> requestsSubsets, List<int> lastSubset, int requestsCount, int lastIndex)
         {
-            int[] subset;
+            List<int> subset;
             for (int i = lastIndex; i < requestsCount; i++)
             {
-                subset = (int[])lastSubset.Clone();
-                Array.Resize(ref requestsSubsets, requestsSubsets.Length + 1);
-                Array.Resize(ref subset, subset.Length + 1);
-                subset[subset.Length - 1] = requestsIds[i];
-                requestsSubsets[requestsSubsets.Length - 1] = subset;
+                subset = lastSubset.ConvertAll(request => request);
+                subset.Add(requestsIds[i]);
+                requestsSubsets.Add(subset);
 
                 SplitIntoSubsetsRecursive(requestsIds, ref requestsSubsets, subset, requestsCount, i + 1);
             }
