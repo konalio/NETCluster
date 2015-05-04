@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Depot.cs" />
     <Compile Include="DVRPData.cs" />
+    <Compile Include="DVRPLocationsSubset.cs" />
     <Compile Include="DVRPTaskSolver.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
