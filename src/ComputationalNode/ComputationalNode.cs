@@ -71,7 +71,12 @@ namespace ComputationalNode
 
         private void CreateAndSendPartialSolution(SolvePartialProblems message, 
                         SolvePartialProblemsPartialProblem problem)
-        {               
+        {
+            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.CommonData);
+
+            var infititeTimeout = new TimeSpan(int.MaxValue, int.MaxValue, int.MaxValue);
+            var resultData = taskSolver.Solve(problem.Data, infititeTimeout);
+
             var solution = new Solutions
             {
                 Solutions1 = new[] {new SolutionsSolution
@@ -81,7 +86,7 @@ namespace ComputationalNode
                     Type = SolutionsSolutionType.Partial, 
                     TimeoutOccured = false, 
                     ComputationsTime = 1,
-                    Data = Serializers.StringToByteArrayUTF8(value.ToString())
+                    Data = resultData
                 }},
                 Id = message.Id,
                 ProblemType = "DVRP",
