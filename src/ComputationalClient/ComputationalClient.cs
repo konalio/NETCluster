@@ -45,57 +45,78 @@ namespace ComputationalClient
             while (true)
             {
                 Console.WriteLine("\n >");
-                var commandLineInput = Console.ReadLine();
-                if (commandLineInput == null) continue;
+                string[] commands;
+                if (!GetCommands(out commands)) continue;
 
-                var commands = commandLineInput.Split(new [] {" "}, StringSplitOptions.RemoveEmptyEntries);
+                if (ProcessCommands(commands)) return;
+            }
+        }
 
-                if (commands.Length == 0) continue;
+        private static bool GetCommands(out string[] commands)
+        {
+            commands = null;
+            var commandLineInput = Console.ReadLine();
+            if (commandLineInput == null) return false;
 
-                switch (commands[0])
+            commands = commandLineInput.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+
+            return commands.Length != 0;
+        }
+
+        private bool ProcessCommands(string[] commands)
+        {
+            switch (commands[0])
+            {
+                case "input":
                 {
-                    case "input":
-                    {
-                        try
-                        {
-                            var problemId = SendProblemInstanceOrThrow(commands);
-                            Console.WriteLine("Received problem instance id: {0}", problemId);
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception.Message);
-                        }
-                        break;
-                    }
-                    case "request":
-                    {
-                        try
-                        {
-                            var problemId = GetIdOrThrow(commands);
-                            RequestSolution(problemId);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-
-                        continue;
-                    }
-                    case "help":
-                    {
-                        PrintUsageMessage();
-                        continue;
-                    }
-                    case "quit":
-                    {
-                        return;
-                    }
-                    default:
-                    {
-                        Console.WriteLine("type 'help' to see commands.");
-                        continue;
-                    }
+                    ProcessInputCommand(commands);
+                    return false;
                 }
+                case "request":
+                {
+                    ProcessRequestCommand(commands);
+                    return false;
+                }
+                case "help":
+                {
+                    PrintUsageMessage();
+                    return false;
+                }
+                case "quit":
+                {
+                    return true;
+                }
+                default:
+                {
+                    Console.WriteLine("type 'help' to see commands.");
+                    return false;
+                }
+            }
+        }
+
+        private void ProcessRequestCommand(string[] commands)
+        {
+            try
+            {
+                var problemId = GetIdOrThrow(commands);
+                RequestSolution(problemId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private void ProcessInputCommand(string[] commands)
+        {
+            try
+            {
+                var problemId = SendProblemInstanceOrThrow(commands);
+                Console.WriteLine("Received problem instance id: {0}", problemId);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
 
