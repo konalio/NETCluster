@@ -64,45 +64,50 @@ namespace TaskManager
 
             Console.WriteLine("Received partial solutions for problem {0}.", problemInstanceId);
 
-            ChooseAndSendFinalSolution(problemInstanceId);
+            ChooseAndSendFinalSolution(message);
 
             Console.WriteLine("Sent final solution for problem {0}", problemInstanceId);
         }
 
-        private void ChooseAndSendFinalSolution(ulong problemInstanceId)
+        private void ChooseAndSendFinalSolution(Solutions message)
         {
-            var taskId = ChooseFinalSolution();
-
-            SendFinalSolution(taskId, problemInstanceId);
-        }
-
-        private ulong ChooseFinalSolution()
-        {
-            var r = new Random();
-            return (ulong) r.Next(0, 4);
-        }
-
-        private void SendFinalSolution(ulong taskId, ulong problemInstanceId)
-        {
-            var solution = new Solutions
-            {
-                Solutions1 = new[] { new SolutionsSolution
-                {
-                    TaskId = taskId, 
-                    TaskIdSpecified = true,
-                    ComputationsTime = 1,
-                    TimeoutOccured = false,
-                    Type = SolutionsSolutionType.Final,
-                    Data = new byte[0]
-                } },
-                Id = problemInstanceId,
-                ProblemType = "DVRP",
-                CommonData = new byte[0]
-            };
-
+            var solution = ChooseFinalSolution(message);
             SendMessageNoResponse(solution);
         }
 
+        private Solutions ChooseFinalSolution(Solutions solutions)
+        {
+            var partialSolutions = solutions.Solutions1;
+            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(solutions.CommonData);
+            
+            var partialSolutionsData = new byte[partialSolutions.Length][];
+            
+            for(var i = 0; i < partialSolutions.Length; i++) 
+            {
+                partialSolutionsData[i] = partialSolutions[i].Data;
+            }
+             
+            var resultData = taskSolver.MergeSolution(partialSolutionsData);
+                 
+            var solution = new Solutions 
+            {
+                ProblemType = "DVRP",
+                Id = solutions.Id,
+                Solutions1 = new [] 
+                {
+                    new SolutionsSolution
+                    {
+                        Type = SolutionsSolutionType.Final,
+                        TimeoutOccured = false,
+                        ComputationsTime = 0,
+                        Data = resultData       
+                    }
+                }
+            };
+                 
+            return solution;
+        }
+        
         /// <summary>
         /// Support for processing DivideProblem message.
         /// Currently, method creates 5 partial problems for each problem instance and sends them to server.
@@ -115,35 +120,45 @@ namespace TaskManager
 
             Console.WriteLine("Received problem {0} to divide.", problemInstanceId);
 
-            DivideAndSendPartialProblems(problemInstanceId);
+            DivideAndSendPartialProblems(message);
 
             Console.WriteLine("Sent partial problems for problem {0}", problemInstanceId);
         }
 
-        private void DivideAndSendPartialProblems(ulong problemInstanceId)
+        private void DivideAndSendPartialProblems(DivideProblem message)
         {
-            var partialProblems = CreatePartialProblems(problemInstanceId);
+            var partialProblems = CreatePartialProblems(message);
 
             SendMessageNoResponse(partialProblems);
         }
 
-        private SolvePartialProblems CreatePartialProblems(ulong problemInstanceId)
+        private SolvePartialProblems CreatePartialProblems(DivideProblem message)
         {
-            var partialProblems = new SolvePartialProblems
+            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.Data);
+            var problemsData = taskSolver.DivideProblem(0);
+            
+            var partialProblems = new List<SolvePartialProblemsPartialProblem>();
+            for(var i = 0; i < problemsData.Length; i++) 
             {
-                Id = problemInstanceId,
+                partialProblems.Add(
+                    new SolvePartialProblemsPartialProblem
+                    {
+                        TaskId = (ulong)i,
+                        NodeID = Id,
+                        Data = problemsData[i]
+                    }
+                );
+            }
+            
+            var partialProblemsMessage = new SolvePartialProblems
+            {
+                Id = message.Id,
                 ProblemType = "DVRP",
-                CommonData = new byte[0],
-                PartialProblems = new[]
-                {
-                    new SolvePartialProblemsPartialProblem {TaskId = 0, Data = new byte[0], NodeID = Id},
-                    new SolvePartialProblemsPartialProblem {TaskId = 1, Data = new byte[0], NodeID = Id},
-                    new SolvePartialProblemsPartialProblem {TaskId = 2, Data = new byte[0], NodeID = Id},
-                    new SolvePartialProblemsPartialProblem {TaskId = 3, Data = new byte[0], NodeID = Id},
-                    new SolvePartialProblemsPartialProblem {TaskId = 4, Data = new byte[0], NodeID = Id},
-                }
+                CommonData = message.Data,
+                PartialProblems = partialProblems.ToArray()
             };
-            return partialProblems;
+            
+            return partialProblemsMessage;
         }
     }
 }

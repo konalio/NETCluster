@@ -66,25 +66,26 @@ namespace ComputationalNode
 
             Console.WriteLine("Received partial problem {0} from problem instance {1}.", taskId, problemInstanceId);
 
-            CreateAndSendPartialSolution(taskId, problemInstanceId);
+            CreateAndSendPartialSolution(message, partialProblem);
         }
 
-        private void CreateAndSendPartialSolution(ulong taskId, ulong problemInstanceId)
-        {
+        private void CreateAndSendPartialSolution(SolvePartialProblems message, 
+                        SolvePartialProblemsPartialProblem problem)
+        {               
             var solution = new Solutions
             {
                 Solutions1 = new[] {new SolutionsSolution
                 {
-                    TaskId = taskId, 
+                    TaskId = problem.TaskId, 
                     TaskIdSpecified = true,
                     Type = SolutionsSolutionType.Partial, 
                     TimeoutOccured = false, 
                     ComputationsTime = 1,
-                    Data = new byte[0]
+                    Data = Serializers.StringToByteArrayUTF8(value.ToString())
                 }},
-                Id = problemInstanceId,
+                Id = message.Id,
                 ProblemType = "DVRP",
-                CommonData = new byte[0]
+                CommonData = problem.Data
             };
 
             SendMessageNoResponse(solution);
