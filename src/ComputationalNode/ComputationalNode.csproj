@@ -62,7 +62,7 @@
       <Project>{9DADCF46-E2FD-4844-9F68-0A5B5B966F57}</Project>
       <Name>ClusterUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TaskSolver\DVRPTaskSolver.csproj">
+    <ProjectReference Include="..\DVRPTaskSolver\DVRPTaskSolver.csproj">
       <Project>{F49316D7-D3CF-480D-B613-21160ECC1FA9}</Project>
       <Name>DVRPTaskSolver</Name>
     </ProjectReference>

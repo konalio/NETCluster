@@ -74,7 +74,7 @@ namespace ComputationalNode
         {
             var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.CommonData);
 
-            var infititeTimeout = new TimeSpan(int.MaxValue, int.MaxValue, int.MaxValue);
+            var infititeTimeout = new TimeSpan(0, 0, 0); //temp
             var resultData = taskSolver.Solve(problem.Data, infititeTimeout);
 
             var solution = new Solutions

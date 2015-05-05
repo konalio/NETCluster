@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace DVRPTaskSolver
 {
@@ -15,6 +16,27 @@ namespace DVRPTaskSolver
         {
             this.OptimalTime = optimalTime;
             this.Visits = visits;
+        }
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine(string.Format("Optimal cost: {0}", OptimalTime));
+
+            for (var i = 0; i < Visits.Length; i++)
+            {
+                stringBuilder.Append(string.Format("Visits for vehicle {0}: ", i));
+
+                for (var j = 0; j < Visits[i].Length; j++)
+                {
+                    stringBuilder.Append(string.Format("{0} ", Visits[i][j]));
+                }
+
+                stringBuilder.AppendLine("");
+            }
+
+            return stringBuilder.ToString();
         }
 
         public FinalSolution() { }

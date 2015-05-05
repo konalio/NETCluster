@@ -198,9 +198,16 @@ namespace ComputationalClient
                         throw new Exception("Solution request failed.");
                 }
 
-                Console.WriteLine(status == SolutionsSolutionType.Final
-                    ? "Received final solution."
-                    : "Computations ongoing");
+                if (status == SolutionsSolutionType.Final)
+                {
+                    Console.WriteLine("Received final solution.");
+                    var finalSolutionString = Encoding.UTF8.GetString(((Solutions) response.ClusterMessage).Solutions1[0].Data);
+                    Console.WriteLine(finalSolutionString);
+                }
+                else
+                {
+                    Console.WriteLine("Computations ongoing.");
+                }
             }
             catch (Exception)
             {

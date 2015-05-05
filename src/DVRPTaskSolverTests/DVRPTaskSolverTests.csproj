@@ -35,9 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DVRPTaskSolver">
-      <HintPath>..\DVRPTaskSolver\bin\Debug\DVRPTaskSolver.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="UCCTaskSolver">
       <HintPath>..\DVRPTaskSolver\bin\Debug\UCCTaskSolver.dll</HintPath>
@@ -81,6 +78,12 @@
     <None Include="test_of_size_5.vrp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DVRPTaskSolver\DVRPTaskSolver.csproj">
+      <Project>{F49316D7-D3CF-480D-B613-21160ECC1FA9}</Project>
+      <Name>DVRPTaskSolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace DVRPTaskSolver
 {
@@ -86,7 +87,16 @@ namespace DVRPTaskSolver
             foreach (var fs in finalSolutions)
                 finalSolutionVisits.Add(fs.Visits);
 
-            return FinalSolution.Serialize(optimalTime, finalSolutionVisits.ToArray());
+            var finalSolution = new FinalSolution
+            {
+                OptimalTime = optimalTime,
+                Visits = finalSolutionVisits.ToArray()
+            };
+
+            var finalSolutionString = finalSolution.ToString();
+            var finalSolutionBytes = Encoding.UTF8.GetBytes(finalSolutionString);
+
+            return finalSolutionBytes;
         }
 
         private void selectSolutionsRecursive(int length, int[] requestsIds, List<DVRPPartialSolution> partialSolutions, ref List<List<DVRPPartialSolution>> selectedSolutions,
@@ -126,7 +136,7 @@ namespace DVRPTaskSolver
 
         public override string Name
         {
-            get { throw new NotImplementedException(); }
+            get { return "DVRP"; }
         }
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
@@ -137,7 +147,7 @@ namespace DVRPTaskSolver
             int[] locationsArray=locationsData.Locations;
             LocationObject[] locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);
             double min = int.MaxValue;
-            int[] finalPath;
+            int[] finalPath = null;
 
             foreach(Depot d in dvrpData.Depots)
             {
@@ -150,7 +160,9 @@ namespace DVRPTaskSolver
                 }
             }
 
-            throw new NotImplementedException();
+            var partialSolutionBytes = DVRPPartialSolution.Serialize(locationsArray, finalPath, (int) min);
+
+            return partialSolutionBytes;
         }
 
         private LocationObject[] ConstructLocationArray(List<Depot> depots, List<Request> requests)
