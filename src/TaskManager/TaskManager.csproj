@@ -41,6 +41,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UCCTaskSolver">
+      <HintPath>..\TaskSolver\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap.cs" />
@@ -58,6 +61,10 @@
     <ProjectReference Include="..\ClusterUtils\ClusterUtils.csproj">
       <Project>{9dadcf46-e2fd-4844-9f68-0a5b5b966f57}</Project>
       <Name>ClusterUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskSolver\DVRPTaskSolver.csproj">
+      <Project>{F49316D7-D3CF-480D-B613-21160ECC1FA9}</Project>
+      <Name>DVRPTaskSolver</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

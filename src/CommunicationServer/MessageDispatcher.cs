@@ -20,8 +20,8 @@ namespace CommunicationServer
 
         private List<IClusterMessage> _messageList;
         private List<ComponentStatus> _components;
-
-        private List<List<SolutionsSolution>> _partialSolutions;
+        
+        private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
         public MessageDispatcher(string listport, int timeout)
         {
@@ -36,7 +36,6 @@ namespace CommunicationServer
         {
             _messageList = new List<IClusterMessage>();
             _components = new List<ComponentStatus>();
-            _partialSolutions = new List<List<SolutionsSolution>>();
 
             var th1 = new Thread(ListeningThread);
             th1.Start(null);
@@ -243,6 +242,12 @@ namespace CommunicationServer
             };
             _messageList.Add(sr);
 
+            _problemInstances.Add(new ProblemInstance
+            {
+                CommonData = message.Data,
+                Id = sr.Id
+            });
+
             var responseForClient = new SolveRequestResponse
             {
                 Id = sr.Id
@@ -266,9 +271,14 @@ namespace CommunicationServer
                 Id = id
             };
 
-            if (_partialSolutions != null && _partialSolutions.Count > (int)id && _partialSolutions[(int)id][0].Type == SolutionsSolutionType.Final)
+            var problemInstance = _problemInstances.Find(pi => pi.Id == id);
+
+            if (problemInstance == null)
+                throw new Exception("Send error message - unknown problem.");
+
+            if (problemInstance.FinalSolutionFound)
             {
-                solutions[0] = _partialSolutions[(int)id][0];
+                solutions[0] = problemInstance.FinalSolution;
             } else
             {
                 solutions[0] = new SolutionsSolution
@@ -290,6 +300,13 @@ namespace CommunicationServer
             var message = (SolvePartialProblems)tp.Message.ClusterMessage;
 
             var partialProblems = message.PartialProblems;
+
+            var problemInstance = _problemInstances.Find(pi => pi.Id == message.Id);
+
+            if (problemInstance == null)
+                throw new Exception("Send error message - unknown problem.");
+
+            problemInstance.SubproblemsCount = partialProblems.Count();
 
             foreach (var dividedPartialProblem in partialProblems)
             {
@@ -358,8 +375,14 @@ namespace CommunicationServer
                 TaskId = finalSolution.TaskId,
                 TaskIdSpecified = finalSolution.TaskIdSpecified
             };
-            _partialSolutions[(int)id].Clear();
-            _partialSolutions[(int)id].Add(solution);
+
+            var problemInstance = _problemInstances.Find(pi => pi.Id == id);
+
+            if (problemInstance == null)
+                throw new Exception("Send error message - unknown problem.");
+
+            problemInstance.FinalSolutionFound = true;
+            problemInstance.FinalSolution = solution;
         }
 
         /// <summary>
@@ -430,24 +453,26 @@ namespace CommunicationServer
         /// Adds Parital Solution to the _partialSolutions list
         /// </summary>
         /// <param name="ss">PartialSolution that is added to the list</param>
-        /// <param name="listId">ID of _partialSolutions list</param>
-        public void AddPartialSolution(SolutionsSolution ss, ulong listId)
+        /// <param name="instanceId">ID of _partialSolutions list</param>
+        public void AddPartialSolution(SolutionsSolution ss, ulong instanceId)
         {
-            if (_partialSolutions.Count <= (int)listId)
-            {
-                _partialSolutions.Add(new List<SolutionsSolution>());
-            }
+            var problemInstance = _problemInstances.Find(pi => pi.Id == instanceId);
 
-            _partialSolutions[(int)listId].Add(ss);
+            if (problemInstance == null)
+                throw new Exception("Send error message - unknown problem.");
 
-            if (_partialSolutions[(int)listId].Count != 5) return;
+            problemInstance.PartialSolutions.Add(ss);
+
+            if (problemInstance.PartialSolutions.Count != problemInstance.SubproblemsCount) return;
 
             var s = new Solutions
             {
-                CommonData = new byte[1],
-                ProblemType = "",
-                Id = listId //, Solutions1 =_partialSolutions[(int)listID].ToArray()
+                CommonData = problemInstance.CommonData,
+                ProblemType = "DVRP",
+                Id = instanceId, 
+                Solutions1 = problemInstance.PartialSolutions.ToArray()
             };
+
             _messageList.Add(s);
         }
         /// <summary>

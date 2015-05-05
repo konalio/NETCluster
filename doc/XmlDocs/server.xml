@@ -124,7 +124,7 @@
             Adds Parital Solution to the _partialSolutions list
             </summary>
             <param name="ss">PartialSolution that is added to the list</param>
-            <param name="listId">ID of _partialSolutions list</param>
+            <param name="instanceId">ID of _partialSolutions list</param>
         </member>
         <member name="M:CommunicationServer.MessageDispatcher.SearchTaskManagerMessages(System.UInt64,System.Net.Sockets.Socket)">
             <summary>
