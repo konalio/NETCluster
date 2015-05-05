@@ -21,12 +21,11 @@
             Sends empty problem instance to server and starts awaiting for solution.
             </summary>
         </member>
-        <member name="M:ComputationalClient.ComputationalClient.WaitForSolution(System.UInt64)">
+        <member name="M:ComputationalClient.ComputationalClient.CommandLineLoop">
             <summary>
-            Waiting loop for final solution. Allows user to repeatedly ask if solution is ready.
-            If final solution is received as response for query, client shuts down.
+            Waiting loop for final solution. 
+            Allows user to repeatedly ask if solution is ready and insert new problem instance.
             </summary>
-            <param name="problemId">Problem instance id to query for.</param>
         </member>
     </members>
 </doc>
