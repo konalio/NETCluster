@@ -1,9 +1,7 @@
 ﻿namespace DVRPTaskSolver
 {
-    public class Request
+    public class Request : LocationObject
     {
-        public int Id;
-        public Point Location;
         public int Quantity;
         public int UnloadDuration;
         public int AvailableTime;

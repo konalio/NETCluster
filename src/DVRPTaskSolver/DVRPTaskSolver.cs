@@ -131,7 +131,36 @@ namespace DVRPTaskSolver
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
+            
+            DVRPData dvrpData = DVRPData.GetFromBytes(base._problemData);
+            DVRPLocationsSubset locationsData= DVRPLocationsSubset.GetFromByteArray(partialData);
+            int[] locationsArray=locationsData.Locations;
+            LocationObject[] locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);
+            double min = int.MaxValue;
+            int[] finalPath;
+
+            foreach(Depot d in dvrpData.Depots)
+            {
+                int[] path;
+                double cost = TSPSolver.Solve(out path,locationsArray, locations, d.Id, dvrpData);
+                if(cost<min)
+                {
+                    finalPath = path;
+                    min = cost;
+                }
+            }
+
             throw new NotImplementedException();
+        }
+
+        private LocationObject[] ConstructLocationArray(List<Depot> depots, List<Request> requests)
+        {
+            List<LocationObject> array = new List<LocationObject>();
+            foreach (Depot dep in depots)
+                array.Add(dep);
+            foreach (Request req in requests)
+                array.Add(req);
+            return array.ToArray();
         }
     }
 }

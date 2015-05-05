@@ -48,10 +48,12 @@
     <Compile Include="DVRPPartialSolution.cs" />
     <Compile Include="DVRPTaskSolver.cs" />
     <Compile Include="FinalSolution.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="TimeWindow.cs" />
+    <Compile Include="TSPSolver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
