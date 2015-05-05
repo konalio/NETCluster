@@ -6,11 +6,55 @@ using System.Threading.Tasks;
 
 namespace DVRPTaskSolver
 {
+
+    public class ArrayComparer : IEqualityComparer<int[]>
+    {
+        public bool Equals(int[] x, int[] y)
+        {
+            if (x.Length != y.Length)
+            {
+                return false;
+            }
+            int count = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                for (int j = 0; j < x.Length; j++)
+                {
+                    if (x[j] == y[i])
+                    {
+                        count++;
+                        break;
+                    }
+                }
+
+            }
+            if (count == x.Length)
+                return true;
+            return false;
+        }
+        public int GetHashCode(int[] obj)
+        {
+            int result = 17;
+            for (int i = 0; i < obj.Length; i++)
+            {
+                unchecked
+                {
+                    result = result + obj[i];
+                }
+            }
+            return result;
+        }
+
+    }
     class TSPSolver
     {
         public static double[,] Distances;
-        public static DVRPData data;
+        public static DVRPData Data;
         public static LocationObject[] LocationsArray;
+        public static int ClientsCount;
+
+        public static Dictionary<int[], int> NextVertices;
+
         /// <summary>
         /// TSP Solving using Held–Karp algorithm
         /// </summary>
@@ -18,31 +62,42 @@ namespace DVRPTaskSolver
         /// <param name="n">Number of locations</param>
         /// <param name="startingVertc">Starting location</param>
         /// <returns></returns>
-        public static double Solve(int[] clients, LocationObject[] locations, int startingVertc, DVRPData dat)
+        public static double Solve(out int[] path, int[] clients, LocationObject[] locations, int startingVertice, DVRPData dat)
         {
-            int time = int.MaxValue;
-            data = dat;
+            Data = dat;
             LocationsArray = locations;
             Distances = CalculateDistances(locations);
+            ClientsCount = clients.Length;
+            NextVertices = new Dictionary<int[], int>(new ArrayComparer());
+            path = new int[clients.Length];
             List<int> vertices = new List<int>();
+            List<int> currentPath = new List<int>();
+            List<int> clientsList = new List<int>(clients);
+            int time = 0;
+
 
             for (int i = 0; i < clients.Length; i++)
-            {
-                if (clients[i] == startingVertc) continue;
+            {               
                 vertices.Add(clients[i]);
             }
 
-            for (int i = 0; i < data.Requests.Count; i++)
+            double minCost = StartSolving(startingVertice, vertices, Data.VehicleCapacity, time, currentPath);
+
+            for (int i = 0; i < clients.Length; i++)
             {
-                if (data.Requests[i].AvailableTime < time)
-                {
-                    time = data.Requests[i].AvailableTime;
-                }
+                path[i] = NextVertices[clientsList.ToArray()];
+                clientsList.Remove(path[i]);
             }
 
-            return StartSolving(startingVertc, vertices, data.VehicleCapacity, time);
+            return minCost;
+
         }
 
+        /// <summary>
+        /// Calculate array of distances between all locations
+        /// </summary>
+        /// <param name="locations">Array of all locations</param>
+        /// <returns>Array of distances</returns>
         private static double[,] CalculateDistances(LocationObject[] locations)
         {
             int n = locations.Length;
@@ -72,9 +127,9 @@ namespace DVRPTaskSolver
         {
             double optimalDist = int.MaxValue;
             int index = 0;
-            for (int i = 0; i < data.Depots.Count; i++)
+            for (int i = 0; i < Data.Depots.Count; i++)
             {
-                Depot d = data.Depots[i];
+                Depot d = Data.Depots[i];
                 if (d.TimeWindow.Start <= time && d.TimeWindow.End >= time)
                 {
                     double dist = EuclideanDistance(Location, d.Location);
@@ -93,7 +148,7 @@ namespace DVRPTaskSolver
             return (double)distance / velocity;
         }
 
-        private static double StartSolving(int startingVertice, List<int> vertices, int currentCapacity, double currentTime)
+        private static double StartSolving(int startingVertice, List<int> vertices, int currentCapacity, double currentTime, List<int> currentPath)
         {
             if (vertices.Count == 0)
             {
@@ -101,57 +156,71 @@ namespace DVRPTaskSolver
             }
 
             double additionalCost = 0;
-            bool returnToDepot = false;
-            int depotIndex = 0;
+            double temporaryTime = currentTime;
             double min = int.MaxValue;
-            List<int> copy = new List<int>(vertices);
+            int depotIndex = 0;
             int temporaryCapacity = currentCapacity;
+            List<int> copy = new List<int>(vertices);
 
             if (currentCapacity <= 0)
             {
-                returnToDepot = true;
                 depotIndex = FindOptimalAndOpenDepot(currentTime, LocationsArray[startingVertice].Location);
-                currentCapacity += data.VehicleCapacity;
+                currentCapacity += Data.VehicleCapacity;
                 additionalCost += Distances[startingVertice, depotIndex];
 
             }
 
             foreach (int vertice in vertices)
             {
-                if (((Request)LocationsArray[vertice]).AvailableTime > currentTime)
-                    continue;
+                if (((Request)LocationsArray[vertice]).AvailableTime > temporaryTime)
+                {
+                    temporaryTime = ((Request)LocationsArray[vertice]).AvailableTime;
+                }
 
                 int load = ((Request)LocationsArray[vertice]).Quantity;
                 int timeLoad = ((Request)LocationsArray[vertice]).UnloadDuration;
 
-                if (currentCapacity - load < 0 || currentCapacity - load > data.VehicleCapacity)
+                if (currentCapacity - load < 0 || currentCapacity - load > Data.VehicleCapacity)
                 {
-                    returnToDepot = true;
                     depotIndex = FindOptimalAndOpenDepot(currentTime, LocationsArray[vertice].Location);
-                    temporaryCapacity = data.VehicleCapacity;
-                }
+                    temporaryCapacity = Data.VehicleCapacity;
 
-
-                if (returnToDepot)
-                {
                     additionalCost += Distances[depotIndex, vertice];
                 }
 
-
                 copy.Remove(vertice);
+                currentPath.Add(vertice);
+
                 double dist = Distances[startingVertice, vertice];
-                double timeDistance = CalculateTravelingTime(dist, data.VehicleSpeed);
-                dist += StartSolving(vertice, copy, temporaryCapacity - load, currentTime + timeDistance + timeLoad);
-                copy.Add(vertice);
+                double timeDistance = CalculateTravelingTime(dist, Data.VehicleSpeed);
+                dist += StartSolving(vertice, copy, temporaryCapacity - load, temporaryTime + timeDistance + timeLoad, currentPath);
+
                 if (dist < min)
                 {
                     min = dist;
+
+                    try
+                    {
+                        NextVertices.Add(vertices.ToArray(), vertice);
+                    }
+                    catch (Exception)
+                    {
+                        NextVertices[vertices.ToArray()] = vertice;
+                    }
+
                 }
+                currentPath.Remove(vertice);
+                copy.Add(vertice);
                 temporaryCapacity = currentCapacity;
+                temporaryTime = currentTime;
             }
+
 
             return min + additionalCost;
 
         }
+
+
+
     }
 }
