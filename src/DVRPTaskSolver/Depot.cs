@@ -1,9 +1,7 @@
 ﻿namespace DVRPTaskSolver
 {
-    public class Depot
+    public class Depot : LocationObject
     {
-        public int Id;
-        public Point Location;
         public TimeWindow TimeWindow;
     }
 }
