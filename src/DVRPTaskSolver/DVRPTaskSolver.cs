@@ -142,22 +142,24 @@ namespace DVRPTaskSolver
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             
-            DVRPData dvrpData = DVRPData.GetFromBytes(base._problemData);
-            DVRPLocationsSubset locationsData= DVRPLocationsSubset.GetFromByteArray(partialData);
-            int[] locationsArray=locationsData.Locations;
-            LocationObject[] locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);
+            var dvrpData = DVRPData.GetFromBytes(base._problemData);
+            var locationsData= DVRPLocationsSubset.GetFromByteArray(partialData);
+            var locationsArray=locationsData.Locations;
+            var locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);
             double min = int.MaxValue;
             int[] finalPath = null;
 
-            foreach(Depot d in dvrpData.Depots)
+            var distances = CalculateDistances(locations);
+
+            foreach(var d in dvrpData.Depots)
             {
                 int[] path;
-                double cost = TSPSolver.Solve(out path,locationsArray, locations, d.Id, dvrpData);
-                if(cost<min)
-                {
-                    finalPath = path;
-                    min = cost;
-                }
+                var tspSolver = new TSPSolver(distances, dvrpData, locations);
+                var cost = tspSolver.Solve(out path, locationsArray, d.Id);
+
+                if (!(cost < min)) continue;
+                finalPath = path;
+                min = cost;
             }
 
             var partialSolutionBytes = DVRPPartialSolution.Serialize(locationsArray, finalPath, (int) min);
@@ -167,12 +169,36 @@ namespace DVRPTaskSolver
 
         private LocationObject[] ConstructLocationArray(List<Depot> depots, List<Request> requests)
         {
-            List<LocationObject> array = new List<LocationObject>();
-            foreach (Depot dep in depots)
-                array.Add(dep);
-            foreach (Request req in requests)
-                array.Add(req);
+            if (depots == null) throw new ArgumentNullException("depots");
+            if (requests == null) throw new ArgumentNullException("requests");
+            var array = depots.Cast<LocationObject>().ToList();
+            array.AddRange(requests);
             return array.ToArray();
+        }
+
+        private double[,] CalculateDistances(IReadOnlyList<LocationObject> locations)
+        {
+            if (locations == null) throw new ArgumentNullException("locations");
+            var n = locations.Count;
+            var array = new double[n, n];
+
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    if (j == i) continue;
+                    var d = EuclideanDistance(locations[i].Location, locations[j].Location);
+                    array[i, j] = d;
+                    array[j, i] = d;
+                }
+            }
+
+            return array;
+        }
+
+        private double EuclideanDistance(Point p1, Point p2)
+        {
+            return Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
         }
     }
 }
