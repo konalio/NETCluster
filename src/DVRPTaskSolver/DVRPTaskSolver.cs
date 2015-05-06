@@ -58,7 +58,7 @@ namespace DVRPTaskSolver
 
             var partialSolutions = new List<DVRPPartialSolution>();
             var selectedSolutions = new List<List<DVRPPartialSolution>>();
-            var optimalTime = int.MaxValue;
+            var optimalTime = double.MaxValue;
             var finalSolutions = new List<DVRPPartialSolution>();
 
             for (var i = 0; i < requestsCount; i++)

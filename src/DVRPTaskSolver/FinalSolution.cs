@@ -9,10 +9,10 @@ namespace DVRPTaskSolver
     [Serializable]
     public class FinalSolution
     {
-        public int OptimalTime;
+        public double OptimalTime;
         public int[][] Visits;
 
-        public FinalSolution(int optimalTime, int[][] visits)
+        public FinalSolution(double optimalTime, int[][] visits)
         {
             this.OptimalTime = optimalTime;
             this.Visits = visits;
@@ -41,7 +41,7 @@ namespace DVRPTaskSolver
 
         public FinalSolution() { }
 
-        public static byte[] Serialize(int optimalTime, int[][] visits)
+        public static byte[] Serialize(double optimalTime, int[][] visits)
         {
             if (visits == null)
                 return null;

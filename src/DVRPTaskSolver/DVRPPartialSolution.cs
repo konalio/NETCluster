@@ -10,9 +10,9 @@ namespace DVRPTaskSolver
     {
         public int[] RequestsSubset;
         public int[] Visits;
-        public int OptimalTime;
+        public double OptimalTime;
 
-        public DVRPPartialSolution(int[] requestsSubset, int[] visits, int optimalTime)
+        public DVRPPartialSolution(int[] requestsSubset, int[] visits, double optimalTime)
         {
             this.RequestsSubset = requestsSubset;
             this.Visits = visits;
@@ -21,7 +21,7 @@ namespace DVRPTaskSolver
 
         public DVRPPartialSolution() { }
 
-        public static byte[] Serialize(int[] requestsSubset, int[] visits, int optimalTime)
+        public static byte[] Serialize(int[] requestsSubset, int[] visits, double optimalTime)
         {
             if (requestsSubset == null || visits == null)
                 return null;
