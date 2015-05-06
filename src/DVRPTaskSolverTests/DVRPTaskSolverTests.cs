@@ -1,9 +1,8 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Text;
 using DVRPTaskSolver;
-using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DVRPTaskSolverTests
 {
@@ -120,34 +119,64 @@ namespace DVRPTaskSolverTests
 
         [TestMethod]
         [DeploymentItem("mainexample.vrp")]
-        public void TSPSolverTests()
+        public double TSPSolverTest1()
         {
             var file = File.ReadAllText("mainexample.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
             var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            var requestsSubsets = new List<List<int>> {new List<int>(new[] {1, 4, 7, 8})};
-            //requestsSubsets.Add(new List<int>(new int[] { 2, 3, 5, 6 }));
-            var dvrpSolutions = new List<DVRPPartialSolution>();
+            var subset = new[] {1, 4, 7, 8};
+            var subsetBytes = DVRPLocationsSubset.Serialize(subset);
 
-            var returnSubsets = new byte[requestsSubsets.Count][];
-            var results = new byte[requestsSubsets.Count][];
-            for (var i = 0; i < requestsSubsets.Count; i++)
-                returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i].ToArray());
-            var j = 0;
+            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan() { });
+            var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
 
-            foreach (var b in returnSubsets)
+            var expected = new[] {4, 8, 7, 1};
+
+            for (var i = 0; i < expected.Length; i++)
             {
-                results[j] = dvrpTaskSolver.Solve(b, new TimeSpan() { });
-                dvrpSolutions.Add(DVRPPartialSolution.GetFromByteArray(results[j]));
-                j++;
+                Assert.AreEqual(expected[i], solution.Visits[i]);
             }
 
-            foreach (var dp in dvrpSolutions)
+            return solution.OptimalTime;
+        }
+
+        [TestMethod]
+        [DeploymentItem("mainexample.vrp")]
+        public double TSPSolverTest2()
+        {
+            var file = File.ReadAllText("mainexample.vrp");
+            var problemBytes = Encoding.UTF8.GetBytes(file);
+
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+
+            var subset = new[] { 2, 3, 5, 6 };
+            var subsetBytes = DVRPLocationsSubset.Serialize(subset);
+
+            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan() { });
+            var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
+
+            var expected = new[] { 2, 6, 5, 3 };
+
+            for (var i = 0; i < expected.Length; i++)
             {
-                Console.WriteLine(dp.OptimalTime);
+                Assert.AreEqual(expected[i], solution.Visits[i]);
             }
+
+            return solution.OptimalTime;
+        }
+
+        [TestMethod]
+        [DeploymentItem("mainexample.vrp")]
+        public void TSPSolverTestCost()
+        {
+            var costOfFirstPath = TSPSolverTest1();
+            var costOfSecondPath = TSPSolverTest2();
+
+            var finalCost = costOfFirstPath + costOfSecondPath;
+
+            Assert.IsTrue(finalCost >= 679.0f && finalCost <= 682.0f);
         }
     }
 }
