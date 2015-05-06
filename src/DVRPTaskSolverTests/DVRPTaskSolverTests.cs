@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Text;
 using DVRPTaskSolver;
+using System.Collections.Generic;
 
 namespace DVRPTaskSolverTests
 {
@@ -115,6 +116,40 @@ namespace DVRPTaskSolverTests
             byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
             Assert.AreEqual(32768, partialProblemsBytes.Length);
+        }
+
+        [TestMethod]
+        [DeploymentItem("mainexample.vrp")]
+        public void TSPSolverTests()
+        {
+            var file = File.ReadAllText("mainexample.vrp");
+            var problemBytes = Encoding.UTF8.GetBytes(file);
+
+            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+
+            List<List<int>> requestsSubsets = new List<List<int>>();
+            requestsSubsets.Add(new List<int>(new int[] { 1, 4, 7, 8 }));
+            //requestsSubsets.Add(new List<int>(new int[] { 2, 3, 5, 6 }));
+            var dvrpSolutions = new List<DVRPPartialSolution>();
+
+            byte[][] returnSubsets = new byte[requestsSubsets.Count][];
+            byte[][] results = new byte[requestsSubsets.Count][];
+            for (int i = 0; i < requestsSubsets.Count; i++)
+                returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i].ToArray());
+            int j = 0;
+
+            foreach (byte[] b in returnSubsets)
+            {
+                results[j] = dvrpTaskSolver.Solve(b, new TimeSpan() { });
+                dvrpSolutions.Add(DVRPPartialSolution.GetFromByteArray(results[j]));
+                j++;
+            }
+            //byte[] finalSolution = dvrpTaskSolver.MergeSolution(results);
+            //string res = Encoding.UTF8.GetString(finalSolution);
+            foreach (DVRPPartialSolution dp in dvrpSolutions)
+            {
+                Console.WriteLine(dp.OptimalTime);
+            }
         }
     }
 }

@@ -112,23 +112,29 @@ namespace DVRPTaskSolver
         {
             if (vertices.Count == 0)
             {
-                return _distances[startingVertice, FindOptimalAndOpenDepot(currentTime, _locationsArray[startingVertice].Location)];
+                var depoIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[startingVertice].Location);
+                return depoIndex == -1 ? int.MaxValue : _distances[startingVertice, depoIndex];
             }
 
             double additionalCost = 0;
             var temporaryTime = currentTime;
             double min = int.MaxValue;
             int depotIndex;
-            var temporaryCapacity = currentCapacity;
             var copy = new List<int>(vertices);
 
-            if (currentCapacity <= 0)
+            if (currentCapacity == 0 || currentCapacity == _data.VehicleCapacity)
             {
+                if (currentCapacity == 0)
+                    currentCapacity += _data.VehicleCapacity;
+                else
+                    currentCapacity = 0;
+
                 depotIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[startingVertice].Location);
-                currentCapacity += _data.VehicleCapacity;
                 additionalCost += _distances[startingVertice, depotIndex];
 
             }
+
+            var temporaryCapacity = currentCapacity;
 
             foreach (var vertice in vertices)
             {
@@ -142,9 +148,12 @@ namespace DVRPTaskSolver
 
                 if (currentCapacity - load < 0 || currentCapacity - load > _data.VehicleCapacity)
                 {
-                    depotIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[vertice].Location);
-                    temporaryCapacity = _data.VehicleCapacity;
+                    if (currentCapacity - load < 0)
+                        temporaryCapacity = _data.VehicleCapacity;
+                    else
+                        temporaryCapacity = 0;
 
+                    depotIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[vertice].Location);
                     additionalCost += _distances[depotIndex, vertice];
                 }
 
