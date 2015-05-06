@@ -94,31 +94,37 @@ namespace DVRPTaskSolver
         {
             List<DVRPPartialSolution> subset;
             bool containsElement = false;
+            bool rejected = false;
             for (int i = lastIndex; i < solutionsCount; i++)
             {
                 subset = lastSubset.ConvertAll(solution => solution);
                 subset.Add(partialSolutions[i]);
 
-                if (subset.Count == length)
+                rejected = false;
+                foreach (var rId in requestsIds)
                 {
-                    foreach (var rId in requestsIds)
-                    {
-                        containsElement = false;
-                        for (int j = 0; j < length; j++)
-                            if (subset[j].RequestsSubset.Contains(rId))
-                            {
-                                if (containsElement)
-                                    return;
-                                containsElement = true;
-                            }
-                        if (!containsElement)
-                            return;
-                    }
+                    containsElement = false;
+                    for (int j = 0; j < subset.Count; j++)
+                        if (subset[j].RequestsSubset.Contains(rId))
+                        {
+                            if (containsElement)
+                                rejected = true;
+                            containsElement = true;
+                        }
+                    if (!containsElement)
+                        rejected = true;
+                }
+
+                if (!rejected)
+                {
+                    while (subset.Count != length)
+                        subset.Add(new DVRPPartialSolution(new int[0],new int[0],0));
 
                     selectedSolutions.Add(subset);
-
-                    return;
                 }
+
+                if (subset.Count == length)
+                    continue;
 
                 selectSolutionsRecursive(length, requestsIds, partialSolutions, ref selectedSolutions, subset, solutionsCount, i + 1);
             }
