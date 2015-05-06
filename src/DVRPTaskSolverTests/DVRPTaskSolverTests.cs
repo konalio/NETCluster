@@ -117,20 +117,24 @@ namespace DVRPTaskSolverTests
             Assert.AreEqual(32768, partialProblemsBytes.Length);
         }
 
-        [TestMethod]
-        [DeploymentItem("mainexample.vrp")]
-        public double TSPSolverTest1()
+        private DVRPPartialSolution CalculatePartialProblem(string fileName, int[] subset)
         {
-            var file = File.ReadAllText("mainexample.vrp");
+            var file = File.ReadAllText(fileName);
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
             var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
-
-            var subset = new[] { 1, 4, 7, 8 };
             var subsetBytes = DVRPLocationsSubset.Serialize(subset);
 
             var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan());
-            var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
+            return DVRPPartialSolution.GetFromByteArray(solutionBytes);
+        }
+
+        [TestMethod]
+        [DeploymentItem("mainexample.vrp")]
+        public void TSPSolverTest1()
+        {
+            var subset = new[] { 1, 4, 7, 8 };
+            var solution = CalculatePartialProblem("mainexample.vrp", subset);
 
             var expected = new[] { 4, 8, 7, 1 };
 
@@ -138,24 +142,14 @@ namespace DVRPTaskSolverTests
             {
                 Assert.AreEqual(expected[i], solution.Visits[i]);
             }
-
-            return solution.OptimalTime;
         }
 
         [TestMethod]
         [DeploymentItem("mainexample.vrp")]
-        public double TSPSolverTest2()
+        public void TSPSolverTest2()
         {
-            var file = File.ReadAllText("mainexample.vrp");
-            var problemBytes = Encoding.UTF8.GetBytes(file);
-
-            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
-
             var subset = new[] { 2, 3, 5, 6 };
-            var subsetBytes = DVRPLocationsSubset.Serialize(subset);
-
-            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan());
-            var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
+            var solution = CalculatePartialProblem("mainexample.vrp", subset);
 
             var expected = new[] { 2, 6, 5, 3 };
 
@@ -163,18 +157,16 @@ namespace DVRPTaskSolverTests
             {
                 Assert.AreEqual(expected[i], solution.Visits[i]);
             }
-
-            return solution.OptimalTime;
         }
 
         [TestMethod]
         [DeploymentItem("mainexample.vrp")]
         public void TSPSolverTestCost()
         {
-            var costOfFirstPath = TSPSolverTest1();
-            var costOfSecondPath = TSPSolverTest2();
+            var firstSolution = CalculatePartialProblem("mainexample.vrp", new[] { 1, 4, 7, 8 });
+            var secondSolution = CalculatePartialProblem("mainexample.vrp", new[] { 2, 3, 5, 6 });
 
-            var finalCost = costOfFirstPath + costOfSecondPath;
+            var finalCost = firstSolution.OptimalCost + secondSolution.OptimalCost;
 
             Assert.IsTrue(finalCost >= 679.0f && finalCost <= 682.0f);
         }

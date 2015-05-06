@@ -57,22 +57,23 @@ namespace DVRPTaskSolver
             _nextVertices = new Dictionary<int[], int>(new ArrayComparer());
             path = new int[clients.Length];
 
-            var currentPath = new List<int>();
+            var minCost = StartSolving(startingVertice, clients.ToList(), _data.VehicleCapacity, 0, new List<int>());
+
+            RecreatePath(path, clients);
+
+            return minCost;
+
+        }
+
+        private void RecreatePath(int[] path, int[] clients)
+        {
             var clientsList = new List<int>(clients);
-            const int time = 0;
-
-            var vertices = clients.ToList();
-
-            var minCost = StartSolving(startingVertice, vertices, _data.VehicleCapacity, time, currentPath);
 
             for (var i = 0; i < clients.Length; i++)
             {
                 path[i] = _nextVertices[clientsList.ToArray()];
                 clientsList.Remove(path[i]);
             }
-
-            return minCost;
-
         }
 
         private double EuclideanDistance(Point p1, Point p2)
@@ -80,9 +81,9 @@ namespace DVRPTaskSolver
             return Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
         }
 
-        private int FindOptimalAndOpenDepot(double time, Point location)
+        private int FindClosestOpenedDepot(double time, Point location)
         {
-            double optimalDist = int.MaxValue;
+            var optimalDist = double.MaxValue;
             var index = 0;
             foreach (var depot in _data.Depots)
             {
@@ -112,7 +113,7 @@ namespace DVRPTaskSolver
         {
             if (vertices.Count == 0)
             {
-                var depoIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[startingVertice].Location);
+                var depoIndex = FindClosestOpenedDepot(currentTime, _locationsArray[startingVertice].Location);
                 return depoIndex == -1 ? int.MaxValue : _distances[startingVertice, depoIndex];
             }
 
@@ -129,9 +130,8 @@ namespace DVRPTaskSolver
                 else
                     currentCapacity = 0;
 
-                depotIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[startingVertice].Location);
+                depotIndex = FindClosestOpenedDepot(currentTime, _locationsArray[startingVertice].Location);
                 additionalCost += _distances[startingVertice, depotIndex];
-
             }
 
             var temporaryCapacity = currentCapacity;
@@ -148,12 +148,9 @@ namespace DVRPTaskSolver
 
                 if (currentCapacity - load < 0 || currentCapacity - load > _data.VehicleCapacity)
                 {
-                    if (currentCapacity - load < 0)
-                        temporaryCapacity = _data.VehicleCapacity;
-                    else
-                        temporaryCapacity = 0;
+                    temporaryCapacity = currentCapacity - load < 0 ? _data.VehicleCapacity : 0;
 
-                    depotIndex = FindOptimalAndOpenDepot(currentTime, _locationsArray[vertice].Location);
+                    depotIndex = FindClosestOpenedDepot(currentTime, _locationsArray[vertice].Location);
                     additionalCost += _distances[depotIndex, vertice];
                 }
 
@@ -164,32 +161,32 @@ namespace DVRPTaskSolver
                 var timeDistance = CalculateTravelingTime(dist, _data.VehicleSpeed);
                 dist += StartSolving(vertice, copy, temporaryCapacity - load, temporaryTime + timeDistance + timeLoad, currentPath);
 
-                if (dist < min)
-                {
-                    min = dist;
+                min = UpdateBestIfFoundBetterPath(vertices, dist, min, vertice);
 
-                    try
-                    {
-                        _nextVertices.Add(vertices.ToArray(), vertice);
-                    }
-                    catch (Exception)
-                    {
-                        _nextVertices[vertices.ToArray()] = vertice;
-                    }
-
-                }
                 currentPath.Remove(vertice);
                 copy.Add(vertice);
                 temporaryCapacity = currentCapacity;
                 temporaryTime = currentTime;
             }
 
-
             return min + additionalCost;
-
         }
 
+        private double UpdateBestIfFoundBetterPath(List<int> vertices, double dist, double min, int vertice)
+        {
+            if (!(dist < min)) return min;
 
+            min = dist;
 
+            try
+            {
+                _nextVertices.Add(vertices.ToArray(), vertice);
+            }
+            catch (Exception)
+            {
+                _nextVertices[vertices.ToArray()] = vertice;
+            }
+            return min;
+        }
     }
 }

@@ -69,7 +69,7 @@ namespace DVRPTaskSolver
             Console.WriteLine("");
             foreach (var dvrpPartialSolution in partialSolutions)
             {
-                Console.Write("Cost {0}: ", dvrpPartialSolution.OptimalTime);
+                Console.Write("Cost {0}: ", dvrpPartialSolution.OptimalCost);
                 foreach (var visit in dvrpPartialSolution.Visits)
                 {
                     Console.Write("{0} ", visit);
@@ -81,7 +81,7 @@ namespace DVRPTaskSolver
 
             foreach (var ss in selectedSolutions)
             {
-                var solutionTime = ss.Sum(s => s.OptimalTime);
+                var solutionTime = ss.Sum(s => s.OptimalCost);
 
                 if (solutionTime >= optimalTime) continue;
 

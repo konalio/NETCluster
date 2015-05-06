@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -58,7 +57,7 @@ namespace DVRPTaskSolver
 
         public static FinalSolution GetFromByteArray(byte[] array)
         {
-            var result = new FinalSolution();
+            FinalSolution result;
             try
             {
                 var formatter = new BinaryFormatter();
