@@ -11,22 +11,21 @@ namespace DVRPTaskSolver
 
         public override byte[][] DivideProblem(int threadCount)
         {
-            DVRPData dvrpData = DVRPData.GetFromBytes(base._problemData);
-            List<Request> requests = dvrpData.Requests;
-            int requestsCount = dvrpData.RequestsCount;
-            int[] requestsIds = new int[requestsCount];
-            List<List<int>> requestsSubsets = new List<List<int>>();
-            List<int> subset = new List<int>();
-            byte[][] returnSubsets;
+            var dvrpData = DVRPData.GetFromBytes(_problemData);
+            var requests = dvrpData.Requests;
+            var requestsCount = dvrpData.RequestsCount;
+            var requestsIds = new int[requestsCount];
+            var requestsSubsets = new List<List<int>>();
+            var subset = new List<int>();
 
-            for (int i = 0; i < requestsCount; i++)
+            for (var i = 0; i < requestsCount; i++)
                 requestsIds[i] = requests[i].Id;
 
             requestsSubsets.Add(subset);
 
             SplitIntoSubsetsRecursive(requestsIds, ref requestsSubsets, subset, requestsCount, 0);
 
-            returnSubsets = new byte[requestsSubsets.Count][];
+            var returnSubsets = new byte[requestsSubsets.Count][];
 
             for (int i = 0; i < requestsSubsets.Count; i++)
                 returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i].ToArray());
@@ -49,7 +48,7 @@ namespace DVRPTaskSolver
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            var dvrpData = DVRPData.GetFromBytes(base._problemData);
+            var dvrpData = DVRPData.GetFromBytes(_problemData);
             var vehiclesCount = dvrpData.VehicleCount;
             var requests = dvrpData.Requests;
             var requestsCount = dvrpData.RequestsCount;
@@ -78,7 +77,7 @@ namespace DVRPTaskSolver
                 Console.WriteLine("");
             }
 
-            selectSolutionsRecursive(vehiclesCount, requestsIds, partialSolutions, ref selectedSolutions, subset, solutions.Length, 0);
+            SelectSolutionsRecursive(vehiclesCount, requestsIds, partialSolutions, ref selectedSolutions, subset, solutions.Length, 0);
 
             foreach(var ss in selectedSolutions)
             {
@@ -102,28 +101,25 @@ namespace DVRPTaskSolver
             return finalSolutionBytes;
         }
 
-        private void selectSolutionsRecursive(int length, int[] requestsIds, List<DVRPPartialSolution> partialSolutions, ref List<List<DVRPPartialSolution>> selectedSolutions,
+        private void SelectSolutionsRecursive(int length, int[] requestsIds, List<DVRPPartialSolution> partialSolutions, ref List<List<DVRPPartialSolution>> selectedSolutions,
             List<DVRPPartialSolution> lastSubset, int solutionsCount, int lastIndex)
         {
-            List<DVRPPartialSolution> subset;
-            bool containsElement = false;
-            bool rejected = false;
-            for (int i = lastIndex; i < solutionsCount; i++)
+            for (var i = lastIndex; i < solutionsCount; i++)
             {
-                subset = lastSubset.ConvertAll(solution => solution);
+                var subset = lastSubset.ConvertAll(solution => solution);
                 subset.Add(partialSolutions[i]);
 
-                rejected = false;
+                var rejected = false;
                 foreach (var rId in requestsIds)
                 {
-                    containsElement = false;
-                    for (int j = 0; j < subset.Count; j++)
-                        if (subset[j].RequestsSubset.Contains(rId))
-                        {
-                            if (containsElement)
-                                rejected = true;
-                            containsElement = true;
-                        }
+                    var containsElement = false;
+                    var id = rId;
+                    foreach (var t in subset.Where(t => t.RequestsSubset.Contains(id)))
+                    {
+                        if (containsElement)
+                            rejected = true;
+                        containsElement = true;
+                    }
                     if (!containsElement)
                         rejected = true;
                 }
@@ -139,7 +135,7 @@ namespace DVRPTaskSolver
                 if (subset.Count == length)
                     continue;
 
-                selectSolutionsRecursive(length, requestsIds, partialSolutions, ref selectedSolutions, subset, solutionsCount, i + 1);
+                SelectSolutionsRecursive(length, requestsIds, partialSolutions, ref selectedSolutions, subset, solutionsCount, i + 1);
             }
         }
 
@@ -151,7 +147,7 @@ namespace DVRPTaskSolver
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             
-            var dvrpData = DVRPData.GetFromBytes(base._problemData);
+            var dvrpData = DVRPData.GetFromBytes(_problemData);
             var locationsData= DVRPLocationsSubset.GetFromByteArray(partialData);
             var locationsArray=locationsData.Locations;
             var locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);

@@ -17,20 +17,20 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("test_of_size_1.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
+            var partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
-            int[][] partialProblems = new int[partialProblemsBytes.Length][];
-            for (int i = 0; i < partialProblemsBytes.Length; i++)
-                partialProblems[i] = DVRPTaskSolver.DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
+            var partialProblems = new int[partialProblemsBytes.Length][];
+            for (var i = 0; i < partialProblemsBytes.Length; i++)
+                partialProblems[i] = DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
 
-            int[][] expected = new int[2][];
+            var expected = new int[2][];
             expected[0] = new int[0];
-            expected[1] = new int[1] { 1 };
+            expected[1] = new[] { 1 };
 
             Assert.AreEqual(expected.Length, partialProblemsBytes.Length);
-            for (int i = 0; i < expected.Length; i++)
+            for (var i = 0; i < expected.Length; i++)
                 CollectionAssert.AreEqual(expected[i], partialProblems[i]);
         }
 
@@ -41,22 +41,22 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("test_of_size_2.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
+            var partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
-            int[][] partialProblems = new int[partialProblemsBytes.Length][];
-            for (int i = 0; i < partialProblemsBytes.Length; i++)
-                partialProblems[i] = DVRPTaskSolver.DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
+            var partialProblems = new int[partialProblemsBytes.Length][];
+            for (var i = 0; i < partialProblemsBytes.Length; i++)
+                partialProblems[i] = DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
 
-            int[][] expected = new int[4][];
+            var expected = new int[4][];
             expected[0] = new int[0];
-            expected[1] = new int[1] { 1 };
-            expected[2] = new int[2] { 1, 2 };
-            expected[3] = new int[1] { 2 };
+            expected[1] = new [] { 1 };
+            expected[2] = new [] { 1, 2 };
+            expected[3] = new [] { 2 };
 
             Assert.AreEqual(expected.Length, partialProblemsBytes.Length);
-            for (int i = 0; i < expected.Length; i++)
+            for (var i = 0; i < expected.Length; i++)
                 CollectionAssert.AreEqual(expected[i], partialProblems[i]);
         }
 
@@ -67,26 +67,26 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("test_of_size_3.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
+            var partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
-            int[][] partialProblems = new int[partialProblemsBytes.Length][];
-            for (int i = 0; i < partialProblemsBytes.Length; i++)
-                partialProblems[i] = DVRPTaskSolver.DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
+            var partialProblems = new int[partialProblemsBytes.Length][];
+            for (var i = 0; i < partialProblemsBytes.Length; i++)
+                partialProblems[i] = DVRPLocationsSubset.GetFromByteArray(partialProblemsBytes[i]).Locations;
 
-            int[][] expected = new int[8][];
+            var expected = new int[8][];
             expected[0] = new int[0];
-            expected[1] = new int[1] { 1 };
-            expected[2] = new int[2] { 1, 2 };
-            expected[3] = new int[3] { 1, 2, 3 };
-            expected[4] = new int[2] { 1, 3 };
-            expected[5] = new int[1] { 2 };
-            expected[6] = new int[2] { 2, 3 };
-            expected[7] = new int[1] { 3 };
+            expected[1] = new[] { 1 };
+            expected[2] = new[] { 1, 2 };
+            expected[3] = new[] { 1, 2, 3 };
+            expected[4] = new[] { 1, 3 };
+            expected[5] = new[] { 2 };
+            expected[6] = new[] { 2, 3 };
+            expected[7] = new[] { 3 };
 
             Assert.AreEqual(expected.Length, partialProblemsBytes.Length);
-            for (int i = 0; i < expected.Length; i++)
+            for (var i = 0; i < expected.Length; i++)
                 CollectionAssert.AreEqual(expected[i], partialProblems[i]);
         }
 
@@ -97,9 +97,9 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("test_of_size_5.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
+            var partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
             Assert.AreEqual(32, partialProblemsBytes.Length);
         }
@@ -111,9 +111,9 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("test_of_size_15.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            byte[][] partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
+            var partialProblemsBytes = dvrpTaskSolver.DivideProblem(0);
 
             Assert.AreEqual(32768, partialProblemsBytes.Length);
         }
@@ -125,28 +125,26 @@ namespace DVRPTaskSolverTests
             var file = File.ReadAllText("mainexample.vrp");
             var problemBytes = Encoding.UTF8.GetBytes(file);
 
-            DVRPTaskSolver.DVRPTaskSolver dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
+            var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            List<List<int>> requestsSubsets = new List<List<int>>();
-            requestsSubsets.Add(new List<int>(new int[] { 1, 4, 7, 8 }));
+            var requestsSubsets = new List<List<int>> {new List<int>(new[] {1, 4, 7, 8})};
             //requestsSubsets.Add(new List<int>(new int[] { 2, 3, 5, 6 }));
             var dvrpSolutions = new List<DVRPPartialSolution>();
 
-            byte[][] returnSubsets = new byte[requestsSubsets.Count][];
-            byte[][] results = new byte[requestsSubsets.Count][];
-            for (int i = 0; i < requestsSubsets.Count; i++)
+            var returnSubsets = new byte[requestsSubsets.Count][];
+            var results = new byte[requestsSubsets.Count][];
+            for (var i = 0; i < requestsSubsets.Count; i++)
                 returnSubsets[i] = DVRPLocationsSubset.Serialize(requestsSubsets[i].ToArray());
-            int j = 0;
+            var j = 0;
 
-            foreach (byte[] b in returnSubsets)
+            foreach (var b in returnSubsets)
             {
                 results[j] = dvrpTaskSolver.Solve(b, new TimeSpan() { });
                 dvrpSolutions.Add(DVRPPartialSolution.GetFromByteArray(results[j]));
                 j++;
             }
-            //byte[] finalSolution = dvrpTaskSolver.MergeSolution(results);
-            //string res = Encoding.UTF8.GetString(finalSolution);
-            foreach (DVRPPartialSolution dp in dvrpSolutions)
+
+            foreach (var dp in dvrpSolutions)
             {
                 Console.WriteLine(dp.OptimalTime);
             }
