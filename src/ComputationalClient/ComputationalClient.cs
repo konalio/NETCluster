@@ -63,6 +63,11 @@ namespace ComputationalClient
             return commands.Length != 0;
         }
 
+        /// <summary>
+        /// Processing of commands recevied by client.
+        /// </summary>
+        /// <param name="commands">Received commands.</param>
+        /// <returns>Returnes true if Client should exit. False otherwise.</returns>
         private bool ProcessCommands(string[] commands)
         {
             switch (commands[0])
@@ -94,6 +99,10 @@ namespace ComputationalClient
             }
         }
 
+        /// <summary>
+        /// Retreives id and sends request to server for solution.
+        /// </summary>
+        /// <param name="commands"></param>
         private void ProcessRequestCommand(string[] commands)
         {
             try
@@ -107,6 +116,10 @@ namespace ComputationalClient
             }
         }
 
+        /// <summary>
+        /// Reads data file and sends solve request to server.
+        /// </summary>
+        /// <param name="commands"></param>
         private void ProcessInputCommand(string[] commands)
         {
             try

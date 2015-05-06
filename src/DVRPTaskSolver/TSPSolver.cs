@@ -30,6 +30,10 @@ namespace DVRPTaskSolver
         }
 
     }
+
+    /// <summary>
+    /// Class for solving TSP-like problem for subset of clients. Restrictions described in DVRP definition are applied.
+    /// </summary>
     public class TSPSolver
     {
         private readonly double[,] _distances;
@@ -38,7 +42,13 @@ namespace DVRPTaskSolver
 
         private Dictionary<int[], int> _nextVertices;
 
-        public TSPSolver(double[,] distances, DVRPData commonData, LocationObject[] locations)
+        /// <summary>
+        /// Constructor for TSPSolver.
+        /// </summary>
+        /// <param name="locations">Locations of all depots and related verticies.</param>
+        /// <param name="distances">Distances between all locations (indexed by depot/visit Id).</param>
+        /// <param name="commonData">General data related to problem (vehicle sleep, capacity, etc).</param>
+        public TSPSolver(LocationObject[] locations, double[,] distances, DVRPData commonData)
         {
             _distances = distances;
             _data = commonData;
@@ -46,18 +56,18 @@ namespace DVRPTaskSolver
         }
 
         /// <summary>
-        /// TSP Solving using Held–Karp algorithm
+        /// TSP Solving using Held–Karp algorithm.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="clients"></param>
-        /// <param name="startingVertice"></param>
-        /// <returns></returns>
+        /// <param name="path">(Output parameter) Found minimum-cost path.</param>
+        /// <param name="clients">Clients that we have to visit.</param>
+        /// <param name="startingVertice">Vertex from which we start travelling.</param>
+        /// <returns>Distance travelled in returned path.</returns>
         public double Solve(out int[] path, int[] clients, int startingVertice)
         {
             _nextVertices = new Dictionary<int[], int>(new ArrayComparer());
             path = new int[clients.Length];
 
-            var minCost = StartSolving(startingVertice, clients.ToList(), _data.VehicleCapacity, 0, new List<int>());
+            var minCost = StartSolving(startingVertice, clients.ToList(), _data.VehicleCapacity, 0);
 
             RecreatePath(path, clients);
 
@@ -81,6 +91,12 @@ namespace DVRPTaskSolver
             return Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
         }
 
+        /// <summary>
+        /// Finds depot id that is closest to given location and is open at given time.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="location"></param>
+        /// <returns></returns>
         private int FindClosestOpenedDepot(double time, Point location)
         {
             var optimalDist = double.MaxValue;
@@ -109,7 +125,15 @@ namespace DVRPTaskSolver
             return distance / velocity;
         }
 
-        private double StartSolving(int startingVertice, List<int> vertices, int currentCapacity, double currentTime, List<int> currentPath)
+        /// <summary>
+        /// Main function in TSPSolver. Recursively tries to add all of left verticies. If it finds path with lower cost - replaces old one.
+        /// </summary>
+        /// <param name="startingVertice">Vertex from which we start looking for next vertex.</param>
+        /// <param name="vertices">Verticies that we are considering as possible next in path.</param>
+        /// <param name="currentCapacity">Current load of vehicle.</param>
+        /// <param name="currentTime">Current moment in time.</param>
+        /// <returns></returns>
+        private double StartSolving(int startingVertice, List<int> vertices, int currentCapacity, double currentTime)
         {
             if (vertices.Count == 0)
             {
@@ -136,35 +160,33 @@ namespace DVRPTaskSolver
 
             var temporaryCapacity = currentCapacity;
 
-            foreach (var vertice in vertices)
+            foreach (var vertex in vertices)
             {
-                if (((Request)_locationsArray[vertice]).AvailableTime > temporaryTime)
+                if (((Request)_locationsArray[vertex]).AvailableTime > temporaryTime)
                 {
-                    temporaryTime = ((Request)_locationsArray[vertice]).AvailableTime;
+                    temporaryTime = ((Request)_locationsArray[vertex]).AvailableTime;
                 }
 
-                var load = ((Request)_locationsArray[vertice]).Quantity;
-                var timeLoad = ((Request)_locationsArray[vertice]).UnloadDuration;
+                var load = ((Request)_locationsArray[vertex]).Quantity;
+                var timeLoad = ((Request)_locationsArray[vertex]).UnloadDuration;
 
                 if (currentCapacity - load < 0 || currentCapacity - load > _data.VehicleCapacity)
                 {
                     temporaryCapacity = currentCapacity - load < 0 ? _data.VehicleCapacity : 0;
 
-                    depotIndex = FindClosestOpenedDepot(currentTime, _locationsArray[vertice].Location);
-                    additionalCost += _distances[depotIndex, vertice];
+                    depotIndex = FindClosestOpenedDepot(currentTime, _locationsArray[vertex].Location);
+                    additionalCost += _distances[depotIndex, vertex];
                 }
 
-                copy.Remove(vertice);
-                currentPath.Add(vertice);
+                copy.Remove(vertex);
 
-                var dist = _distances[startingVertice, vertice];
+                var dist = _distances[startingVertice, vertex];
                 var timeDistance = CalculateTravelingTime(dist, _data.VehicleSpeed);
-                dist += StartSolving(vertice, copy, temporaryCapacity - load, temporaryTime + timeDistance + timeLoad, currentPath);
+                dist += StartSolving(vertex, copy, temporaryCapacity - load, temporaryTime + timeDistance + timeLoad);
 
-                min = UpdateBestIfFoundBetterPath(vertices, dist, min, vertice);
+                min = UpdateBestIfFoundBetterPath(vertices, dist, min, vertex);
 
-                currentPath.Remove(vertice);
-                copy.Add(vertice);
+                copy.Add(vertex);
                 temporaryCapacity = currentCapacity;
                 temporaryTime = currentTime;
             }

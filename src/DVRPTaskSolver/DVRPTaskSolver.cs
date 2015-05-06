@@ -33,12 +33,19 @@ namespace DVRPTaskSolver
             return returnSubsets;
         }
 
+        /// <summary>
+        /// Calculates all subsets of clients for given set of clients recursively.
+        /// </summary>
+        /// <param name="requestsIds">Id's of clients in this problem instance.</param>
+        /// <param name="requestsSubsets">Generated subsets.</param>
+        /// <param name="lastSubset">Previous subset to be extended.</param>
+        /// <param name="requestsCount">Number of clients.</param>
+        /// <param name="lastIndex"></param>
         private void SplitIntoSubsetsRecursive(int[] requestsIds, ref List<List<int>> requestsSubsets, List<int> lastSubset, int requestsCount, int lastIndex)
         {
-            List<int> subset;
-            for (int i = lastIndex; i < requestsCount; i++)
+            for (var i = lastIndex; i < requestsCount; i++)
             {
-                subset = lastSubset.ConvertAll(request => request);
+                var subset = lastSubset.ConvertAll(request => request);
                 subset.Add(requestsIds[i]);
                 requestsSubsets.Add(subset);
 
@@ -101,6 +108,16 @@ namespace DVRPTaskSolver
             return finalSolutionBytes;
         }
 
+        /// <summary>
+        /// Recursively combines subsets to find all set partitions.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="requestsIds"></param>
+        /// <param name="partialSolutions"></param>
+        /// <param name="selectedSolutions"></param>
+        /// <param name="lastSubset"></param>
+        /// <param name="solutionsCount"></param>
+        /// <param name="lastIndex"></param>
         private void SelectSolutionsRecursive(int length, int[] requestsIds, List<DVRPPartialSolution> partialSolutions, ref List<List<DVRPPartialSolution>> selectedSolutions,
             List<DVRPPartialSolution> lastSubset, int solutionsCount, int lastIndex)
         {
@@ -159,7 +176,7 @@ namespace DVRPTaskSolver
             foreach (var d in dvrpData.Depots)
             {
                 int[] path;
-                var tspSolver = new TSPSolver(distances, dvrpData, locations);
+                var tspSolver = new TSPSolver(locations, distances, dvrpData);
                 var cost = tspSolver.Solve(out path, locationsArray, d.Id);
 
                 if (!(cost < min)) continue;
