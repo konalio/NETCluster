@@ -463,8 +463,10 @@ namespace CommunicationServer
 
             problemInstance.PartialSolutions.Add(ss);
 
-            if (problemInstance.PartialSolutions.Count != problemInstance.SubproblemsCount) return;
+            Console.WriteLine("Received {0}/{1} partial problems for problem {2}.", problemInstance.PartialSolutions.Count, problemInstance.SubproblemsCount, instanceId);
 
+            if (problemInstance.PartialSolutions.Count != problemInstance.SubproblemsCount) return;
+            
             var s = new Solutions
             {
                 CommonData = problemInstance.CommonData,

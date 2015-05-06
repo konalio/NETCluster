@@ -49,48 +49,51 @@ namespace DVRPTaskSolver
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            DVRPData dvrpData = DVRPData.GetFromBytes(base._problemData);
-            int vehiclesCount = dvrpData.VehicleCount;
-            List<Request> requests = dvrpData.Requests;
-            int requestsCount = dvrpData.RequestsCount;
-            int[] requestsIds = new int[requestsCount];
-            List<DVRPPartialSolution> subset = new List<DVRPPartialSolution>();
+            var dvrpData = DVRPData.GetFromBytes(base._problemData);
+            var vehiclesCount = dvrpData.VehicleCount;
+            var requests = dvrpData.Requests;
+            var requestsCount = dvrpData.RequestsCount;
+            var requestsIds = new int[requestsCount];
+            var subset = new List<DVRPPartialSolution>();
 
-            List<DVRPPartialSolution> partialSolutions = new List<DVRPPartialSolution>();
-            List<List<DVRPPartialSolution>> selectedSolutions = new List<List<DVRPPartialSolution>>();
-            int optimalTime = int.MaxValue;
-            int solutionTime = 0;
-            List<DVRPPartialSolution> finalSolutions = new List<DVRPPartialSolution>();
-            List<int[]> finalSolutionVisits = new List<int[]>();
+            var partialSolutions = new List<DVRPPartialSolution>();
+            var selectedSolutions = new List<List<DVRPPartialSolution>>();
+            var optimalTime = int.MaxValue;
+            var finalSolutions = new List<DVRPPartialSolution>();
 
-            for (int i = 0; i < requestsCount; i++)
+            for (var i = 0; i < requestsCount; i++)
                 requestsIds[i] = requests[i].Id;
             
-            for (int i = 0; i < solutions.Length; i++)
+            for (var i = 0; i < solutions.Length; i++)
                 partialSolutions.Add(DVRPPartialSolution.GetFromByteArray(solutions[i]));
+
+            Console.WriteLine("");
+            foreach (var dvrpPartialSolution in partialSolutions)
+            {
+                Console.Write("Cost {0}: ", dvrpPartialSolution.OptimalTime);
+                foreach (var visit in dvrpPartialSolution.Visits)
+                {
+                    Console.Write("{0} ", visit);
+                }
+                Console.WriteLine("");
+            }
 
             selectSolutionsRecursive(vehiclesCount, requestsIds, partialSolutions, ref selectedSolutions, subset, solutions.Length, 0);
 
             foreach(var ss in selectedSolutions)
             {
-                solutionTime=0;
-                foreach (var s in ss)
-                    solutionTime += s.OptimalTime;
+                var solutionTime = ss.Sum(s => s.OptimalTime);
 
-                if(solutionTime<optimalTime)
-                {
-                    optimalTime = solutionTime;
-                    finalSolutions = ss;
-                }
+                if (solutionTime >= optimalTime) continue;
+
+                optimalTime = solutionTime;
+                finalSolutions = ss;
             }
-
-            foreach (var fs in finalSolutions)
-                finalSolutionVisits.Add(fs.Visits);
 
             var finalSolution = new FinalSolution
             {
                 OptimalTime = optimalTime,
-                Visits = finalSolutionVisits.ToArray()
+                Visits = finalSolutions.Select(fs => fs.Visits).ToArray()
             };
 
             var finalSolutionString = finalSolution.ToString();
