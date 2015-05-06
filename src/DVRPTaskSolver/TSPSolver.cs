@@ -56,11 +56,11 @@ namespace DVRPTaskSolver
         {
             _nextVertices = new Dictionary<int[], int>(new ArrayComparer());
             path = new int[clients.Length];
-            
+
             var currentPath = new List<int>();
             var clientsList = new List<int>(clients);
             const int time = 0;
-            
+
             var vertices = clients.ToList();
 
             var minCost = StartSolving(startingVertice, vertices, _data.VehicleCapacity, time, currentPath);
@@ -89,7 +89,7 @@ namespace DVRPTaskSolver
                 if (!IsInTimeWindow(time, depot.TimeWindow)) continue;
 
                 var dist = EuclideanDistance(location, depot.Location);
-                    
+
                 if (!(dist < optimalDist)) continue;
 
                 index = depot.Id;

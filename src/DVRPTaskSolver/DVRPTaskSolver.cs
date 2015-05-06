@@ -62,7 +62,7 @@ namespace DVRPTaskSolver
 
             for (var i = 0; i < requestsCount; i++)
                 requestsIds[i] = requests[i].Id;
-            
+
             for (var i = 0; i < solutions.Length; i++)
                 partialSolutions.Add(DVRPPartialSolution.GetFromByteArray(solutions[i]));
 
@@ -79,7 +79,7 @@ namespace DVRPTaskSolver
 
             SelectSolutionsRecursive(vehiclesCount, requestsIds, partialSolutions, ref selectedSolutions, subset, solutions.Length, 0);
 
-            foreach(var ss in selectedSolutions)
+            foreach (var ss in selectedSolutions)
             {
                 var solutionTime = ss.Sum(s => s.OptimalTime);
 
@@ -91,7 +91,7 @@ namespace DVRPTaskSolver
 
             var finalSolution = new FinalSolution
             {
-                OptimalTime = optimalTime,
+                OptimalCost = optimalTime,
                 Visits = finalSolutions.Select(fs => fs.Visits).ToArray()
             };
 
@@ -127,7 +127,7 @@ namespace DVRPTaskSolver
                 if (!rejected)
                 {
                     while (subset.Count != length)
-                        subset.Add(new DVRPPartialSolution(new int[0],new int[0],0));
+                        subset.Add(new DVRPPartialSolution(new int[0], new int[0], 0));
 
                     selectedSolutions.Add(subset);
                 }
@@ -146,17 +146,17 @@ namespace DVRPTaskSolver
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
-            
+
             var dvrpData = DVRPData.GetFromBytes(_problemData);
-            var locationsData= DVRPLocationsSubset.GetFromByteArray(partialData);
-            var locationsArray=locationsData.Locations;
-            var locations = ConstructLocationArray(dvrpData.Depots,dvrpData.Requests);
+            var locationsData = DVRPLocationsSubset.GetFromByteArray(partialData);
+            var locationsArray = locationsData.Locations;
+            var locations = ConstructLocationArray(dvrpData.Depots, dvrpData.Requests);
             double min = int.MaxValue;
             int[] finalPath = null;
 
             var distances = CalculateDistances(locations);
 
-            foreach(var d in dvrpData.Depots)
+            foreach (var d in dvrpData.Depots)
             {
                 int[] path;
                 var tspSolver = new TSPSolver(distances, dvrpData, locations);
@@ -167,7 +167,7 @@ namespace DVRPTaskSolver
                 min = cost;
             }
 
-            var partialSolutionBytes = DVRPPartialSolution.Serialize(locationsArray, finalPath, (int) min);
+            var partialSolutionBytes = DVRPPartialSolution.Serialize(locationsArray, finalPath, (int)min);
 
             return partialSolutionBytes;
         }

@@ -69,13 +69,12 @@ namespace ComputationalNode
             CreateAndSendPartialSolution(message, partialProblem);
         }
 
-        private void CreateAndSendPartialSolution(SolvePartialProblems message, 
+        private void CreateAndSendPartialSolution(SolvePartialProblems message,
                         SolvePartialProblemsPartialProblem problem)
         {
             var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.CommonData);
 
-            var infititeTimeout = new TimeSpan(0, 0, 0); //temp
-            var resultData = taskSolver.Solve(problem.Data, infititeTimeout);
+            var resultData = taskSolver.Solve(problem.Data, new TimeSpan());
 
             var solution = new Solutions
             {

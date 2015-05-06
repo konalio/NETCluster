@@ -9,20 +9,20 @@ namespace DVRPTaskSolver
     [Serializable]
     public class FinalSolution
     {
-        public double OptimalTime;
+        public double OptimalCost;
         public int[][] Visits;
 
-        public FinalSolution(double optimalTime, int[][] visits)
+        public FinalSolution(double optimalCost, int[][] visits)
         {
-            this.OptimalTime = optimalTime;
-            this.Visits = visits;
+            OptimalCost = optimalCost;
+            Visits = visits;
         }
 
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.AppendLine(string.Format("Optimal cost: {0}", OptimalTime));
+            stringBuilder.AppendLine(string.Format("Optimal cost: {0}", OptimalCost));
 
             for (var i = 0; i < Visits.Length; i++)
             {

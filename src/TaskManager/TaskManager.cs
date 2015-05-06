@@ -16,7 +16,7 @@ namespace TaskManager
         /// 
         /// </summary>
         /// <param name="config">Server info from App.config and arguments.</param>
-        public TaskManager(ComponentConfig config) : base(config, "TaskManager") { } 
+        public TaskManager(ComponentConfig config) : base(config, "TaskManager") { }
 
         /// <summary>
         /// Tries to register to server and starts sending status message.
@@ -28,7 +28,7 @@ namespace TaskManager
             StartSendingStatus();
             Console.ReadLine();
         }
-        
+
         protected override void ProcessMessages(IEnumerable<MessagePackage> responses)
         {
             foreach (var message in responses)
@@ -59,7 +59,7 @@ namespace TaskManager
         /// <param name="package">Solutions message to be processed.</param>
         private void ProcessSolutions(MessagePackage package)
         {
-            var message = (Solutions) package.ClusterMessage;
+            var message = (Solutions)package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             Console.WriteLine("Received partial solutions for problem {0}.", problemInstanceId);
@@ -79,21 +79,21 @@ namespace TaskManager
         {
             var partialSolutions = solutions.Solutions1;
             var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(solutions.CommonData);
-            
+
             var partialSolutionsData = new byte[partialSolutions.Length][];
-            
-            for(var i = 0; i < partialSolutions.Length; i++) 
+
+            for (var i = 0; i < partialSolutions.Length; i++)
             {
                 partialSolutionsData[i] = partialSolutions[i].Data;
             }
-             
+
             var resultData = taskSolver.MergeSolution(partialSolutionsData);
-                 
-            var solution = new Solutions 
+
+            var solution = new Solutions
             {
                 ProblemType = "DVRP",
                 Id = solutions.Id,
-                Solutions1 = new [] 
+                Solutions1 = new[] 
                 {
                     new SolutionsSolution
                     {
@@ -104,10 +104,10 @@ namespace TaskManager
                     }
                 }
             };
-                 
+
             return solution;
         }
-        
+
         /// <summary>
         /// Support for processing DivideProblem message.
         /// Currently, method creates 5 partial problems for each problem instance and sends them to server.
@@ -115,7 +115,7 @@ namespace TaskManager
         /// <param name="package">Divide problem message to be processed.</param>
         private void ProcessDivideProblem(MessagePackage package)
         {
-            var message = (DivideProblem) package.ClusterMessage;
+            var message = (DivideProblem)package.ClusterMessage;
             var problemInstanceId = message.Id;
 
             Console.WriteLine("Received problem {0} to divide.", problemInstanceId);
@@ -136,9 +136,9 @@ namespace TaskManager
         {
             var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.Data);
             var problemsData = taskSolver.DivideProblem(0);
-            
+
             var partialProblems = new List<SolvePartialProblemsPartialProblem>();
-            for(var i = 0; i < problemsData.Length; i++) 
+            for (var i = 0; i < problemsData.Length; i++)
             {
                 partialProblems.Add(
                     new SolvePartialProblemsPartialProblem
@@ -149,7 +149,7 @@ namespace TaskManager
                     }
                 );
             }
-            
+
             var partialProblemsMessage = new SolvePartialProblems
             {
                 Id = message.Id,
@@ -157,7 +157,7 @@ namespace TaskManager
                 CommonData = message.Data,
                 PartialProblems = partialProblems.ToArray()
             };
-            
+
             return partialProblemsMessage;
         }
     }

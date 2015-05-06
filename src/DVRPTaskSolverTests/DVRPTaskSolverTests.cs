@@ -50,9 +50,9 @@ namespace DVRPTaskSolverTests
 
             var expected = new int[4][];
             expected[0] = new int[0];
-            expected[1] = new [] { 1 };
-            expected[2] = new [] { 1, 2 };
-            expected[3] = new [] { 2 };
+            expected[1] = new[] { 1 };
+            expected[2] = new[] { 1, 2 };
+            expected[3] = new[] { 2 };
 
             Assert.AreEqual(expected.Length, partialProblemsBytes.Length);
             for (var i = 0; i < expected.Length; i++)
@@ -126,13 +126,13 @@ namespace DVRPTaskSolverTests
 
             var dvrpTaskSolver = new DVRPTaskSolver.DVRPTaskSolver(problemBytes);
 
-            var subset = new[] {1, 4, 7, 8};
+            var subset = new[] { 1, 4, 7, 8 };
             var subsetBytes = DVRPLocationsSubset.Serialize(subset);
 
-            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan() { });
+            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan());
             var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
 
-            var expected = new[] {4, 8, 7, 1};
+            var expected = new[] { 4, 8, 7, 1 };
 
             for (var i = 0; i < expected.Length; i++)
             {
@@ -154,7 +154,7 @@ namespace DVRPTaskSolverTests
             var subset = new[] { 2, 3, 5, 6 };
             var subsetBytes = DVRPLocationsSubset.Serialize(subset);
 
-            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan() { });
+            var solutionBytes = dvrpTaskSolver.Solve(subsetBytes, new TimeSpan());
             var solution = DVRPPartialSolution.GetFromByteArray(solutionBytes);
 
             var expected = new[] { 2, 6, 5, 3 };

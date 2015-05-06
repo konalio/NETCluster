@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
 namespace DVRPTaskSolver
 {
     [Serializable]
@@ -16,11 +13,10 @@ namespace DVRPTaskSolver
         {
             if (locations == null)
                 return null;
-            DVRPLocationsSubset subset = new DVRPLocationsSubset();
-            subset.Locations = locations;
+            var subset = new DVRPLocationsSubset { Locations = locations };
 
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var bf = new BinaryFormatter();
+            using (var ms = new MemoryStream())
             {
                 bf.Serialize(ms, subset);
                 return ms.ToArray();
@@ -28,7 +24,7 @@ namespace DVRPTaskSolver
         }
         public static DVRPLocationsSubset GetFromByteArray(byte[] array)
         {
-            var result = new DVRPLocationsSubset();
+            DVRPLocationsSubset result;
             try
             {
                 var formatter = new BinaryFormatter();

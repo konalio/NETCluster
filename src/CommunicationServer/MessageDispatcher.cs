@@ -20,7 +20,7 @@ namespace CommunicationServer
 
         private List<IClusterMessage> _messageList;
         private List<ComponentStatus> _components;
-        
+
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
         public MessageDispatcher(string listport, int timeout)
@@ -466,12 +466,12 @@ namespace CommunicationServer
             Console.WriteLine("Received {0}/{1} partial problems for problem {2}.", problemInstance.PartialSolutions.Count, problemInstance.SubproblemsCount, instanceId);
 
             if (problemInstance.PartialSolutions.Count != problemInstance.SubproblemsCount) return;
-            
+
             var s = new Solutions
             {
                 CommonData = problemInstance.CommonData,
                 ProblemType = "DVRP",
-                Id = instanceId, 
+                Id = instanceId,
                 Solutions1 = problemInstance.PartialSolutions.ToArray()
             };
 
