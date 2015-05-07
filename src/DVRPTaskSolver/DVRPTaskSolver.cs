@@ -55,52 +55,13 @@ namespace DVRPTaskSolver
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            var dvrpData = DVRPData.GetFromBytes(_problemData);
-            var vehiclesCount = dvrpData.VehicleCount;
-            var requests = dvrpData.Requests;
-            var requestsCount = dvrpData.RequestsCount;
-            var requestsIds = new int[requestsCount];
-            var subset = new List<DVRPPartialSolution>();
+            var requestsIds = GetAllRequestsIds();
+            var partialSolutions = solutions.Select(DVRPPartialSolution.GetFromByteArray).ToList();
 
-            var partialSolutions = new List<DVRPPartialSolution>();
-            var selectedSolutions = new List<List<DVRPPartialSolution>>();
-            var optimalTime = double.MaxValue;
-            var finalSolutions = new List<DVRPPartialSolution>();
+            var finalSolution = SolutionExtractor.Extract(requestsIds, partialSolutions);
 
-            for (var i = 0; i < requestsCount; i++)
-                requestsIds[i] = requests[i].Id;
-
-            for (var i = 0; i < solutions.Length; i++)
-                partialSolutions.Add(DVRPPartialSolution.GetFromByteArray(solutions[i]));
-
-            Console.WriteLine("");
-            foreach (var dvrpPartialSolution in partialSolutions)
-            {
-                Console.Write("Cost {0}: ", dvrpPartialSolution.OptimalCost);
-                foreach (var visit in dvrpPartialSolution.Visits)
-                {
-                    Console.Write("{0} ", visit);
-                }
-                Console.WriteLine("");
-            }
-
-            SelectSolutionsRecursive(vehiclesCount, requestsIds, partialSolutions, ref selectedSolutions, subset, solutions.Length, 0);
-
-            foreach (var ss in selectedSolutions)
-            {
-                var solutionTime = ss.Sum(s => s.OptimalCost);
-
-                if (solutionTime >= optimalTime) continue;
-
-                optimalTime = solutionTime;
-                finalSolutions = ss;
-            }
-
-            var finalSolution = new FinalSolution
-            {
-                OptimalCost = optimalTime,
-                Visits = finalSolutions.Select(fs => fs.Visits).ToArray()
-            };
+            if (finalSolution == null)
+                return Encoding.UTF8.GetBytes("Error.");
 
             var finalSolutionString = finalSolution.ToString();
             var finalSolutionBytes = Encoding.UTF8.GetBytes(finalSolutionString);
@@ -108,52 +69,13 @@ namespace DVRPTaskSolver
             return finalSolutionBytes;
         }
 
-        /// <summary>
-        /// Recursively combines subsets to find all set partitions.
-        /// </summary>
-        /// <param name="length"></param>
-        /// <param name="requestsIds"></param>
-        /// <param name="partialSolutions"></param>
-        /// <param name="selectedSolutions"></param>
-        /// <param name="lastSubset"></param>
-        /// <param name="solutionsCount"></param>
-        /// <param name="lastIndex"></param>
-        private void SelectSolutionsRecursive(int length, int[] requestsIds, List<DVRPPartialSolution> partialSolutions, ref List<List<DVRPPartialSolution>> selectedSolutions,
-            List<DVRPPartialSolution> lastSubset, int solutionsCount, int lastIndex)
+        private int[] GetAllRequestsIds()
         {
-            for (var i = lastIndex; i < solutionsCount; i++)
-            {
-                var subset = lastSubset.ConvertAll(solution => solution);
-                subset.Add(partialSolutions[i]);
-
-                var rejected = false;
-                foreach (var rId in requestsIds)
-                {
-                    var containsElement = false;
-                    var id = rId;
-                    foreach (var t in subset.Where(t => t.RequestsSubset.Contains(id)))
-                    {
-                        if (containsElement)
-                            rejected = true;
-                        containsElement = true;
-                    }
-                    if (!containsElement)
-                        rejected = true;
-                }
-
-                if (!rejected)
-                {
-                    while (subset.Count != length)
-                        subset.Add(new DVRPPartialSolution(new int[0], new int[0], 0));
-
-                    selectedSolutions.Add(subset);
-                }
-
-                if (subset.Count == length)
-                    continue;
-
-                SelectSolutionsRecursive(length, requestsIds, partialSolutions, ref selectedSolutions, subset, solutionsCount, i + 1);
-            }
+            var dvrpData = DVRPData.GetFromBytes(_problemData);
+            var requestsIds = new int[dvrpData.RequestsCount];
+            for (var i = 0; i < dvrpData.RequestsCount; i++)
+                requestsIds[i] = dvrpData.Requests[i].Id;
+            return requestsIds;
         }
 
         public override string Name

@@ -49,6 +49,7 @@
     <Compile Include="DVRPTaskSolver.cs" />
     <Compile Include="FinalSolution.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="Partitioning.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
