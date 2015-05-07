@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace DVRPTaskSolver
+namespace DVRPTaskSolver.Wrappers.DVRP
 {
     [Serializable]
     public class DVRPLocationsSubset

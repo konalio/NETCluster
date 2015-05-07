@@ -42,18 +42,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Depot.cs" />
-    <Compile Include="DVRPData.cs" />
-    <Compile Include="DVRPLocationsSubset.cs" />
-    <Compile Include="DVRPPartialSolution.cs" />
+    <Compile Include="ArrayComparer.cs" />
+    <Compile Include="Wrappers\Depot.cs" />
+    <Compile Include="Wrappers\DVRP\DVRPData.cs" />
+    <Compile Include="Wrappers\DVRP\DVRPLocationsSubset.cs" />
+    <Compile Include="Wrappers\DVRP\DVRPPartialSolution.cs" />
     <Compile Include="DVRPTaskSolver.cs" />
-    <Compile Include="FinalSolution.cs" />
-    <Compile Include="Location.cs" />
+    <Compile Include="Wrappers\DVRP\DVRPFinalSolution.cs" />
+    <Compile Include="Wrappers\Location.cs" />
     <Compile Include="Partitioning.cs" />
-    <Compile Include="Point.cs" />
+    <Compile Include="Wrappers\Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="TimeWindow.cs" />
+    <Compile Include="Wrappers\Request.cs" />
+    <Compile Include="SolutionExtractor.cs" />
+    <Compile Include="Wrappers\TimeWindow.cs" />
     <Compile Include="TSPSolver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

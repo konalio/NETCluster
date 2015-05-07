@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DVRPTaskSolver.Wrappers;
+using DVRPTaskSolver.Wrappers.DVRP;
 
 namespace DVRPTaskSolver
 {
@@ -58,7 +60,7 @@ namespace DVRPTaskSolver
             var requestsIds = GetAllRequestsIds();
             var partialSolutions = solutions.Select(DVRPPartialSolution.GetFromByteArray).ToList();
 
-            var finalSolution = SolutionExtractor.Extract(requestsIds, partialSolutions);
+            var finalSolution = SolutionExtractor.ExtractLowestCostSolution(requestsIds, partialSolutions);
 
             if (finalSolution == null)
                 return Encoding.UTF8.GetBytes("Error.");

@@ -3,15 +3,15 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace DVRPTaskSolver
+namespace DVRPTaskSolver.Wrappers.DVRP
 {
     [Serializable]
-    public class FinalSolution
+    public class DVRPFinalSolution
     {
         public double OptimalCost;
         public int[][] Visits;
 
-        public FinalSolution(double optimalCost, int[][] visits)
+        public DVRPFinalSolution(double optimalCost, int[][] visits)
         {
             OptimalCost = optimalCost;
             Visits = visits;
@@ -38,14 +38,14 @@ namespace DVRPTaskSolver
             return stringBuilder.ToString();
         }
 
-        public FinalSolution() { }
+        public DVRPFinalSolution() { }
 
         public static byte[] Serialize(double optimalTime, int[][] visits)
         {
             if (visits == null)
                 return null;
 
-            FinalSolution finalSolution = new FinalSolution(optimalTime, visits);
+            DVRPFinalSolution finalSolution = new DVRPFinalSolution(optimalTime, visits);
 
             BinaryFormatter bf = new BinaryFormatter();
             using (MemoryStream ms = new MemoryStream())
@@ -55,15 +55,15 @@ namespace DVRPTaskSolver
             }
         }
 
-        public static FinalSolution GetFromByteArray(byte[] array)
+        public static DVRPFinalSolution GetFromByteArray(byte[] array)
         {
-            FinalSolution result;
+            DVRPFinalSolution result;
             try
             {
                 var formatter = new BinaryFormatter();
                 using (var ms = new MemoryStream(array))
                 {
-                    result = (FinalSolution)formatter.Deserialize(ms);
+                    result = (DVRPFinalSolution)formatter.Deserialize(ms);
                 }
             }
             catch (Exception)

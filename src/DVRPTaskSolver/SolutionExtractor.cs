@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DVRPTaskSolver.Wrappers.DVRP;
 
 namespace DVRPTaskSolver
 {
     public static class SolutionExtractor
     {
-        public static FinalSolution Extract(int[] requestsIds, List<DVRPPartialSolution> partialSolutions)
+        public static DVRPFinalSolution ExtractLowestCostSolution(int[] requestsIds, List<DVRPPartialSolution> partialSolutions)
         {
-            var partitionsSolutions = new List<FinalSolution>();
+            var partitionsSolutions = new List<DVRPFinalSolution>();
 
             var requestsPartitions = GetRequestsSetPartitions(requestsIds);
-            var sortedPartialSolutions = SortPartialSolutions(requestsIds, partialSolutions);
+            var sortedPartialSolutions = SortPartialSolutions(requestsIds.Length, partialSolutions);
 
             foreach (var partition in requestsPartitions)
             {
-                var solution = new FinalSolution();
+                var solution = new DVRPFinalSolution();
                 var solutionVisits = new List<int[]>();
                 
                 ChooseMatchingPartialSolutionsForPartitionSubsets(partition, sortedPartialSolutions, solution, solutionVisits);
@@ -26,22 +27,41 @@ namespace DVRPTaskSolver
             return ChooseLowestCostFinalSolution(partitionsSolutions);
         }
 
-        private static void ChooseMatchingPartialSolutionsForPartitionSubsets(int[][] partition, List<DVRPPartialSolution>[] sortedPartialSolutions,
-            FinalSolution solution, List<int[]> solutionVisits)
+        private static IEnumerable<int[][]> GetRequestsSetPartitions(int[] requestsIds)
         {
-            foreach (var partitionSubset in partition)
-            {
-                var partitionSubsetPartialSolution = FindMatchingFinalSolutionForSubset(sortedPartialSolutions, partitionSubset.Length, partitionSubset);
+            return new List<int[][]>(Partitioning.GetAllPartitions(requestsIds));
+        }
 
+        private static List<DVRPPartialSolution>[] SortPartialSolutions(int requestsCount, IEnumerable<DVRPPartialSolution> partialSolutions)
+        {
+            var sortedPartialSolutions = new List<DVRPPartialSolution>[requestsCount + 1];
+
+            for (var i = 0; i < sortedPartialSolutions.Length; i++)
+                sortedPartialSolutions[i] = new List<DVRPPartialSolution>();
+
+            foreach (var dvrpPartialSolution in partialSolutions)
+            {
+                var count = dvrpPartialSolution.RequestsSubset.Length;
+                sortedPartialSolutions[count].Add(dvrpPartialSolution);
+            }
+            return sortedPartialSolutions;
+        }
+
+        private static void ChooseMatchingPartialSolutionsForPartitionSubsets(IEnumerable<int[]> partition, IReadOnlyList<List<DVRPPartialSolution>> sortedPartialSolutions,
+            DVRPFinalSolution solution, ICollection<int[]> solutionVisits)
+        {
+            foreach (var partitionSubsetPartialSolution in 
+                partition.Select(partitionSubset => FindMatchingFinalSolutionForSubset(partitionSubset, sortedPartialSolutions)))
+            {
                 solution.OptimalCost += partitionSubsetPartialSolution.OptimalCost;
                 solutionVisits.Add(partitionSubsetPartialSolution.Visits);
             }
         }
 
-        private static DVRPPartialSolution FindMatchingFinalSolutionForSubset(List<DVRPPartialSolution>[] sortedPartialSolutions, int subsetCount,
-            int[] partitionSubset)
+        private static DVRPPartialSolution FindMatchingFinalSolutionForSubset(IReadOnlyList<int> partitionSubset, IReadOnlyList<List<DVRPPartialSolution>> sortedPartialSolutions)
         {
             var foundMatchingIndex = -1;
+            var subsetCount = partitionSubset.Count;
 
             for (var i = 0; i < sortedPartialSolutions[subsetCount].Count; i++)
             {
@@ -51,7 +71,6 @@ namespace DVRPTaskSolver
                 for (var j = 0; j < subsetCount; j++)
                 {
                     if (partialSolutionRequestSubset[j] == partitionSubset[j]) continue;
-
                     diff++;
                     break;
                 }
@@ -63,9 +82,9 @@ namespace DVRPTaskSolver
             return sortedPartialSolutions[subsetCount][foundMatchingIndex];
         }
 
-        private static FinalSolution ChooseLowestCostFinalSolution(List<FinalSolution> partitionsSolutions)
+        private static DVRPFinalSolution ChooseLowestCostFinalSolution(IEnumerable<DVRPFinalSolution> partitionsSolutions)
         {
-            FinalSolution finalSolution = null;
+            DVRPFinalSolution finalSolution = null;
             double[] minCost = {double.MaxValue};
 
             foreach (
@@ -76,26 +95,6 @@ namespace DVRPTaskSolver
                 finalSolution = partitionsSolution;
             }
             return finalSolution;
-        }
-
-        private static List<int[][]> GetRequestsSetPartitions(int[] requestsIds)
-        {
-            return new List<int[][]>(Partitioning.GetAllPartitions(requestsIds));
-        }
-
-        private static List<DVRPPartialSolution>[] SortPartialSolutions(int[] requestsIds, List<DVRPPartialSolution> partialSolutions)
-        {
-            var sortedPartialSolutions = new List<DVRPPartialSolution>[requestsIds.Length + 1];
-
-            for (var i = 0; i < sortedPartialSolutions.Length; i++)
-                sortedPartialSolutions[i] = new List<DVRPPartialSolution>();
-
-            foreach (var dvrpPartialSolution in partialSolutions)
-            {
-                var count = dvrpPartialSolution.RequestsSubset.Length;
-                sortedPartialSolutions[count].Add(dvrpPartialSolution);
-            }
-            return sortedPartialSolutions;
         }
     }
 }
