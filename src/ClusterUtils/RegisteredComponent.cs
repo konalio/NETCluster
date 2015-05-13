@@ -126,7 +126,8 @@ namespace ClusterUtils
         /// <param name="package">Received NoOperation message.</param>
         protected void ProcessNoOperationMessage(MessagePackage package)
         {
-            Console.WriteLine("Received NoOperation message.");
+            if (LogAllInfo)
+                Console.WriteLine("Received NoOperation message.");
         }
 
         /// <summary>

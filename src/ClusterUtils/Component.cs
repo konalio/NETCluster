@@ -22,6 +22,8 @@ namespace ClusterUtils
         /// </summary>
         protected ServerInfo ServerInfo;
 
+        protected bool LogAllInfo;
+
         /// <summary>
         /// Type of component.
         /// </summary>
@@ -36,6 +38,7 @@ namespace ClusterUtils
         {
             ServerInfo = new ServerInfo(config.ServerPort, config.ServerAddress);
             Type = type;
+            LogAllInfo = config.LogAllInfo;
         }
 
         /// <summary>
@@ -46,8 +49,9 @@ namespace ClusterUtils
             Console.WriteLine("{0} is running...", Type);
             Console.WriteLine("Server address: {0}", ServerInfo.Address);
             Console.WriteLine("Server port: {0}", ServerInfo.Port);
+            Console.WriteLine(LogAllInfo ? "Logging enabled" : "Logging disabled.");
         }
-
+        
         /// <summary>
         /// Sends single message to server and waits for single response.
         /// </summary>

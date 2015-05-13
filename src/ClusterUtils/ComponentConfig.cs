@@ -10,6 +10,7 @@ namespace ClusterUtils
     {
         public string ServerAddress { get; set; }
         public string ServerPort { get; set; }
+        public bool LogAllInfo { get; set; }
 
         /// <summary>
         /// Retreives configuration from App.config file.
@@ -19,11 +20,13 @@ namespace ClusterUtils
         {
             var serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
             var serverPort = ConfigurationManager.AppSettings["ServerPort"];
+            var logAll = ConfigurationManager.AppSettings["LogAllInfo"];
 
             return new ComponentConfig
             {
                 ServerAddress = serverAddress,
-                ServerPort = serverPort
+                ServerPort = serverPort,
+                LogAllInfo = bool.Parse(logAll)
             };
         }
     
@@ -62,6 +65,11 @@ namespace ClusterUtils
                         {
                             throw;
                         }
+                        break;
+                    }
+                    case "-logAll":
+                    {
+                        config.LogAllInfo = true;
                         break;
                     }
                     default:
