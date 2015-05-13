@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-using DVRPTaskSolver;
+using DVRPTaskSolver.Wrappers.DVRP;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DVRPTaskSolverTests
