@@ -1,4 +1,4 @@
-﻿namespace DVRPTaskSolver
+﻿namespace DVRPTaskSolver.Wrappers
 {
     public struct Point
     {

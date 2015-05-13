@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-namespace DVRPTaskSolver
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace DVRPTaskSolver.Wrappers.DVRP
 {
     [Serializable]
     public class DVRPLocationsSubset
     {
         public int[] Locations;
-       
-        public static byte[] Serialize(int [] locations)
+
+        public static byte[] Serialize(int[] locations)
         {
             if (locations == null)
                 return null;
-            DVRPLocationsSubset subset = new DVRPLocationsSubset();
-            subset.Locations = locations;
+            var subset = new DVRPLocationsSubset { Locations = locations };
 
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var bf = new BinaryFormatter();
+            using (var ms = new MemoryStream())
             {
                 bf.Serialize(ms, subset);
                 return ms.ToArray();
@@ -28,13 +24,13 @@ namespace DVRPTaskSolver
         }
         public static DVRPLocationsSubset GetFromByteArray(byte[] array)
         {
-            var result = new DVRPLocationsSubset();
+            DVRPLocationsSubset result;
             try
-            {               
+            {
                 var formatter = new BinaryFormatter();
                 using (var ms = new MemoryStream(array))
                 {
-                    result = (DVRPLocationsSubset)formatter.Deserialize(ms);                    
+                    result = (DVRPLocationsSubset)formatter.Deserialize(ms);
                 }
             }
             catch (Exception)

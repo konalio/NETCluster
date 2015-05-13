@@ -27,5 +27,24 @@
             Allows user to repeatedly ask if solution is ready and insert new problem instance.
             </summary>
         </member>
+        <member name="M:ComputationalClient.ComputationalClient.ProcessCommands(System.String[])">
+            <summary>
+            Processing of commands recevied by client.
+            </summary>
+            <param name="commands">Received commands.</param>
+            <returns>Returnes true if Client should exit. False otherwise.</returns>
+        </member>
+        <member name="M:ComputationalClient.ComputationalClient.ProcessRequestCommand(System.String[])">
+            <summary>
+            Retreives id and sends request to server for solution.
+            </summary>
+            <param name="commands"></param>
+        </member>
+        <member name="M:ComputationalClient.ComputationalClient.ProcessInputCommand(System.String[])">
+            <summary>
+            Reads data file and sends solve request to server.
+            </summary>
+            <param name="commands"></param>
+        </member>
     </members>
 </doc>
