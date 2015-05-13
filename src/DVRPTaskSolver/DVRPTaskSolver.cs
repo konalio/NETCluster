@@ -14,14 +14,10 @@ namespace DVRPTaskSolver
         public override byte[][] DivideProblem(int threadCount)
         {
             var dvrpData = DVRPData.GetFromBytes(_problemData);
-            var requests = dvrpData.Requests;
             var requestsCount = dvrpData.RequestsCount;
-            var requestsIds = new int[requestsCount];
+            var requestsIds = GetAllRequestsIds();
             var requestsSubsets = new List<List<int>>();
             var subset = new List<int>();
-
-            for (var i = 0; i < requestsCount; i++)
-                requestsIds[i] = requests[i].Id;
 
             requestsSubsets.Add(subset);
 
