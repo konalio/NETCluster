@@ -115,6 +115,15 @@
             Closes sockets between server and client.
             </summary>
         </member>
+        <member name="T:ClusterUtils.ComputingComponent">
+            <summary>
+            Class generalizing components that need external library to perform work.
+            General flow:
+                Load library/libraries that exposes classes extending TaskSolver class.
+                Register to server.
+                Do computations for cluster.
+            </summary>
+        </member>
         <member name="T:ClusterUtils.RegisteredComponent">
             <summary>
             General class for all components that register to main server:
@@ -196,6 +205,26 @@
             Method for handling all messages that given components may handle.
             </summary>
             <param name="responses">Messages received from server.</param>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.#ctor(ClusterUtils.ComponentConfig,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="config">Component config.</param>
+            <param name="type">Type of component.</param>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.Start">
+            <summary>
+            Starts the component:
+            - Prints info about the Server,
+            - Attempts to register to the Server,
+            - Starts sending Status messages to the Server.
+            </summary>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.CommandLineLoop">
+            <summary>
+            Simple command line for loading libraries and connecting to cluster.
+            </summary>
         </member>
         <member name="T:ClusterUtils.Serializers">
             <summary>

@@ -6,26 +6,13 @@ using ClusterUtils.Communication;
 
 namespace ComputationalNode
 {
-    class ComputationalNode : RegisteredComponent
+    class ComputationalNode : ComputingComponent
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="componentConfig">Server info from App.config and arguments.</param>
         public ComputationalNode(ComponentConfig componentConfig) : base(componentConfig, "ComputationalNode") { }
-
-        /// <summary>
-        /// Starts the Node:
-        /// - Prints info about the Server,
-        /// - Attempts to register to the Server,
-        /// - Starts sending Status messages to the Server.
-        /// </summary>
-        public void Start()
-        {
-            LogRuntimeInfo();
-            Register();
-            StartSendingStatus();
-        }
 
         /// <summary>
         /// Processes messages received from Server.

@@ -10,25 +10,14 @@ namespace TaskManager
     /// Implementation of TaskManager.
     /// Manager registeres to server and awaits for problems to divide or partial solutions to choose final solution.
     /// </summary>
-    public class TaskManager : RegisteredComponent
+    public class TaskManager : ComputingComponent
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="config">Server info from App.config and arguments.</param>
         public TaskManager(ComponentConfig config) : base(config, "TaskManager") { }
-
-        /// <summary>
-        /// Tries to register to server and starts sending status message.
-        /// </summary>
-        public void Start()
-        {
-            LogRuntimeInfo();
-            Register();
-            StartSendingStatus();
-            Console.ReadLine();
-        }
-
+        
         protected override void ProcessMessages(IEnumerable<MessagePackage> responses)
         {
             foreach (var message in responses)
