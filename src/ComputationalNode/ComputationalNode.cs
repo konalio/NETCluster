@@ -59,8 +59,17 @@ namespace ComputationalNode
         private void CreateAndSendPartialSolution(SolvePartialProblems message,
                         SolvePartialProblemsPartialProblem problem)
         {
-            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.CommonData);
+            var solverCreatorType = SolversCreatorTypes[message.ProblemType];
 
+            var creator = Activator.CreateInstance(solverCreatorType) as UCCTaskSolver.TaskSolverCreator;
+            if (creator == null)
+            {
+                Console.WriteLine("Cannot create solver.");
+                //todo send error message?
+                return;
+            }
+
+            var taskSolver = creator.CreateTaskSolverInstance(message.CommonData);
             var resultData = taskSolver.Solve(problem.Data, new TimeSpan());
 
             var solution = new Solutions

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using ClusterUtils.Communication;
 
 namespace ClusterUtils
@@ -13,13 +16,27 @@ namespace ClusterUtils
     /// </summary>
     public abstract class ComputingComponent : RegisteredComponent
     {
+        protected Dictionary<string, Type> SolversCreatorTypes = new Dictionary<string, Type>(); 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="config">Component config.</param>
         /// <param name="type">Type of component.</param>
-        protected ComputingComponent(ComponentConfig config, string type) : base(config, type)
+        protected ComputingComponent(ComponentConfig config, string type)
+            : base(config, type)
         { }
+
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
 
         /// <summary>
         /// Starts the component:
@@ -90,7 +107,32 @@ namespace ClusterUtils
 
         private void ProcessLoadCommand(string[] commands)
         {
-            Console.WriteLine(string.Format("Loaded library {0}.", commands[1]));
+            var dllPath = AssemblyDirectory + "\\" + commands[1];
+            var dll = Assembly.LoadFile(dllPath);
+            var solverTypes = dll.GetExportedTypes().Where(x => x.IsSubclassOf(typeof(UCCTaskSolver.TaskSolver)));
+            var creatorTypes = dll.GetExportedTypes().Where(x => x.IsSubclassOf(typeof(UCCTaskSolver.TaskSolverCreator)));
+
+            var solverTypesArray = solverTypes as Type[] ?? solverTypes.ToArray();
+            var creatorTypesArray = creatorTypes as Type[] ?? creatorTypes.ToArray();
+
+            if (!solverTypesArray.Any() || !creatorTypesArray.Any())
+            {
+                Console.WriteLine("Given library does not contain required classes.");
+                return;
+            }
+
+            var creatorType = creatorTypesArray[0];
+
+            var creator = Activator.CreateInstance(creatorType) as UCCTaskSolver.TaskSolverCreator;
+            if (creator == null) return;
+
+            var solver = creator.CreateTaskSolverInstance(new byte[0]);
+            var solvableProblemName = solver.Name;
+
+            SolversCreatorTypes.Add(solvableProblemName, creatorType);
+
+            Console.WriteLine(string.Format("Loaded library {0} with solver for {1} problem.", 
+                                                commands[1], solvableProblemName));
         }
 
         private static void PrintUsageMessage()
