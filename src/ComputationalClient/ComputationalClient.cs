@@ -166,7 +166,7 @@ namespace ComputationalClient
             Console.WriteLine("Client commands:");
             Console.WriteLine("  input problem-type input-file-path");
             Console.WriteLine("     supported problem types: DVRP");
-            Console.WriteLine("  solution problem-instance-id");
+            Console.WriteLine("  request problem-instance-id");
             Console.WriteLine("  quit");
         }
 
