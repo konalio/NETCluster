@@ -221,6 +221,12 @@
             - Starts sending Status messages to the Server.
             </summary>
         </member>
+        <member name="M:ClusterUtils.ComputingComponent.Register">
+            <summary>
+            Register to server and process register response message.
+            </summary>
+            <returns>True on registration success, false otherwise.</returns>
+        </member>
         <member name="M:ClusterUtils.ComputingComponent.CommandLineLoop">
             <summary>
             Simple command line for loading libraries and connecting to cluster.

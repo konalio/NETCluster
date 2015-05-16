@@ -16,7 +16,8 @@ namespace ClusterUtils
     /// </summary>
     public abstract class ComputingComponent : RegisteredComponent
     {
-        protected Dictionary<string, Type> SolversCreatorTypes = new Dictionary<string, Type>(); 
+        protected Dictionary<string, Type> SolversCreatorTypes = new Dictionary<string, Type>();
+        protected List<string> SolvableProblems = new List<string>(); 
 
         /// <summary>
         /// 
@@ -51,6 +52,28 @@ namespace ClusterUtils
             CommandLineLoop();
             Register();
             StartSendingStatus();
+        }
+
+        /// <summary>
+        /// Register to server and process register response message.
+        /// </summary>
+        /// <returns>True on registration success, false otherwise.</returns>
+        protected new bool Register()
+        {
+            var registerMessage = new Register
+            {
+                Type = Type,
+                SolvableProblems = SolvableProblems.Select(
+                    x => new RegisterSolvableProblemsProblemName
+                        {
+                            Value = x
+                        }
+                ).ToArray()
+            };
+
+            var response = SendMessageSingleResponse(registerMessage);
+
+            return ProcessRegisterResponse(response);
         }
 
         /// <summary>
@@ -130,6 +153,7 @@ namespace ClusterUtils
             var solvableProblemName = solver.Name;
 
             SolversCreatorTypes.Add(solvableProblemName, creatorType);
+            SolvableProblems.Add(solvableProblemName);
 
             Console.WriteLine(string.Format("Loaded library {0} with solver for {1} problem.", 
                                                 commands[1], solvableProblemName));

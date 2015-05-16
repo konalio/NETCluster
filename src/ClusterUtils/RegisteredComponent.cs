@@ -64,7 +64,7 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="response"></param>
         /// <returns>True on registration success, false otherwise.</returns>
-        private bool ProcessRegisterResponse(MessagePackage response)
+        protected bool ProcessRegisterResponse(MessagePackage response)
         {
             var message = (RegisterResponse) response.ClusterMessage;
             Id = ulong.Parse(message.Id);

@@ -64,8 +64,12 @@ namespace ComputationalNode
             var creator = Activator.CreateInstance(solverCreatorType) as UCCTaskSolver.TaskSolverCreator;
             if (creator == null)
             {
-                Console.WriteLine("Cannot create solver.");
-                //todo send error message?
+                var errorMessage = new Error
+                {
+                    ErrorMessage = "Cannot create solver.",
+                    ErrorType = ErrorErrorType.ExceptionOccured
+                };
+                SendMessageNoResponse(errorMessage);
                 return;
             }
 
