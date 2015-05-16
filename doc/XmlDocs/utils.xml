@@ -232,6 +232,24 @@
             Simple command line for loading libraries and connecting to cluster.
             </summary>
         </member>
+        <member name="M:ClusterUtils.ComputingComponent.CreateSolver(System.String,System.Byte[])">
+            <summary>
+            Creates instance of solver for given type with given data. 
+            If error occures, throws exception.
+            </summary>
+            <param name="problemType">Type of problem.</param>
+            <param name="data">Data for problem instance.</param>
+            <returns>Solver instance.</returns>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.CreateSolverOrSendError(System.String,System.Byte[])">
+            <summary>
+            Creates instance of solver for given type with given data.
+            
+            </summary>
+            <param name="problemType"></param>
+            <param name="data"></param>
+            <returns>Solver instance or null.</returns>
+        </member>
         <member name="T:ClusterUtils.Serializers">
             <summary>
             Helper class for serializing/deserializing objects.

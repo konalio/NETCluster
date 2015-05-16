@@ -159,6 +159,67 @@ namespace ClusterUtils
                                                 commands[1], solvableProblemName));
         }
 
+        /// <summary>
+        /// Creates instance of solver for given type with given data. 
+        /// If error occures, throws exception.
+        /// </summary>
+        /// <param name="problemType">Type of problem.</param>
+        /// <param name="data">Data for problem instance.</param>
+        /// <returns>Solver instance.</returns>
+        protected UCCTaskSolver.TaskSolver CreateSolver(string problemType, byte[] data)
+        {
+            try
+            {
+                var creatorType = SolversCreatorTypes[problemType];
+                var creator = Activator.CreateInstance(creatorType) as UCCTaskSolver.TaskSolverCreator;
+
+                return creator.CreateTaskSolverInstance(data);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new Exception("Task solver for given problem type has not been found.");
+            }
+            catch (TargetInvocationException tiException)
+            {
+                throw new Exception("Cannot create TaskSolverCreator.\n" + tiException.Message);
+            }
+            catch (ArgumentException aException)
+            {
+                throw new Exception("Cannot create TaskSolverCreator.\n" + aException.Message);
+            }
+            catch (NullReferenceException)
+            {
+                throw new Exception("Error in create TaskSolverCreator.");
+            }
+        }
+
+        /// <summary>
+        /// Creates instance of solver for given type with given data.
+        /// 
+        /// </summary>
+        /// <param name="problemType"></param>
+        /// <param name="data"></param>
+        /// <returns>Solver instance or null.</returns>
+        protected UCCTaskSolver.TaskSolver CreateSolverOrSendError(string problemType, byte[] data)
+        {
+            try
+            {
+                var taskSolver = CreateSolver(problemType, data);
+                return taskSolver;
+            }
+            catch (Exception exception)
+            {
+                var errorMessage = new Error
+                {
+                    ErrorType = ErrorErrorType.ExceptionOccured,
+                    ErrorMessage = exception.Message
+                };
+
+                SendMessageSingleResponse(errorMessage);
+                return null;
+            }
+        }
+
         private static void PrintUsageMessage()
         {
             Console.WriteLine("To load TaskSolvers:");

@@ -59,21 +59,9 @@ namespace ComputationalNode
         private void CreateAndSendPartialSolution(SolvePartialProblems message,
                         SolvePartialProblemsPartialProblem problem)
         {
-            var solverCreatorType = SolversCreatorTypes[message.ProblemType];
+            var taskSolver = CreateSolverOrSendError(message.ProblemType, message.CommonData);
+            if (taskSolver == null) return;
 
-            var creator = Activator.CreateInstance(solverCreatorType) as UCCTaskSolver.TaskSolverCreator;
-            if (creator == null)
-            {
-                var errorMessage = new Error
-                {
-                    ErrorMessage = "Cannot create solver.",
-                    ErrorType = ErrorErrorType.ExceptionOccured
-                };
-                SendMessageNoResponse(errorMessage);
-                return;
-            }
-
-            var taskSolver = creator.CreateTaskSolverInstance(message.CommonData);
             var resultData = taskSolver.Solve(problem.Data, new TimeSpan());
 
             var solution = new Solutions
