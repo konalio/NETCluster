@@ -16,7 +16,14 @@ namespace ClusterUtils
     /// </summary>
     public abstract class ComputingComponent : RegisteredComponent
     {
+        /// <summary>
+        /// Container for types of SolverCreators for specified problem type.
+        /// </summary>
         protected Dictionary<string, Type> SolversCreatorTypes = new Dictionary<string, Type>();
+
+        /// <summary>
+        /// Container for problems that this component may compute.
+        /// </summary>
         protected List<string> SolvableProblems = new List<string>(); 
 
         /// <summary>
@@ -28,6 +35,9 @@ namespace ClusterUtils
             : base(config, type)
         { }
 
+        /// <summary>
+        /// Gets working directory of assembly.
+        /// </summary>
         public static string AssemblyDirectory
         {
             get
@@ -50,32 +60,17 @@ namespace ClusterUtils
             LogRuntimeInfo();
             PrintUsageMessage();
             CommandLineLoop();
-            Register();
+            Register(
+                SolvableProblems.Select(
+                    x => new RegisterSolvableProblemsProblemName
+                    {
+                        Value = x
+                    }
+                ).ToArray()
+            );
             StartSendingStatus();
         }
-
-        /// <summary>
-        /// Register to server and process register response message.
-        /// </summary>
-        /// <returns>True on registration success, false otherwise.</returns>
-        protected new bool Register()
-        {
-            var registerMessage = new Register
-            {
-                Type = Type,
-                SolvableProblems = SolvableProblems.Select(
-                    x => new RegisterSolvableProblemsProblemName
-                        {
-                            Value = x
-                        }
-                ).ToArray()
-            };
-
-            var response = SendMessageSingleResponse(registerMessage);
-
-            return ProcessRegisterResponse(response);
-        }
-
+        
         /// <summary>
         /// Simple command line for loading libraries and connecting to cluster.
         /// </summary>

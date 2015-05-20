@@ -45,13 +45,20 @@ namespace ClusterUtils
         /// <returns>True on registration success, false otherwise.</returns>
         protected bool Register()
         {
+            return Register(new RegisterSolvableProblemsProblemName[0]);
+        }
+
+        /// <summary>
+        /// Register to server and process register response message.
+        /// </summary>
+        /// <param name="solvableProblems">List of problems that this component may solve.</param>
+        /// <returns>True on registration success, false otherwise.</returns>
+        protected bool Register(RegisterSolvableProblemsProblemName[] solvableProblems)
+        {
             var registerMessage = new Register
             {
                 Type = Type,
-                SolvableProblems = new []{new RegisterSolvableProblemsProblemName
-                {
-                    Value = "DVRP"
-                }}
+                SolvableProblems = solvableProblems
             };
 
             var response = SendMessageSingleResponse(registerMessage);

@@ -161,6 +161,13 @@
             </summary>
             <returns>True on registration success, false otherwise.</returns>
         </member>
+        <member name="M:ClusterUtils.RegisteredComponent.Register(RegisterSolvableProblemsProblemName[])">
+            <summary>
+            Register to server and process register response message.
+            </summary>
+            <param name="solvableProblems">List of problems that this component may solve.</param>
+            <returns>True on registration success, false otherwise.</returns>
+        </member>
         <member name="M:ClusterUtils.RegisteredComponent.ProcessRegisterResponse(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Process registration response - retreive Id assigned by server and timeout.
@@ -206,6 +213,16 @@
             </summary>
             <param name="responses">Messages received from server.</param>
         </member>
+        <member name="F:ClusterUtils.ComputingComponent.SolversCreatorTypes">
+            <summary>
+            Container for types of SolverCreators for specified problem type.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.ComputingComponent.SolvableProblems">
+            <summary>
+            Container for problems that this component may compute.
+            </summary>
+        </member>
         <member name="M:ClusterUtils.ComputingComponent.#ctor(ClusterUtils.ComponentConfig,System.String)">
             <summary>
             
@@ -220,12 +237,6 @@
             - Attempts to register to the Server,
             - Starts sending Status messages to the Server.
             </summary>
-        </member>
-        <member name="M:ClusterUtils.ComputingComponent.Register">
-            <summary>
-            Register to server and process register response message.
-            </summary>
-            <returns>True on registration success, false otherwise.</returns>
         </member>
         <member name="M:ClusterUtils.ComputingComponent.CommandLineLoop">
             <summary>
@@ -249,6 +260,11 @@
             <param name="problemType"></param>
             <param name="data"></param>
             <returns>Solver instance or null.</returns>
+        </member>
+        <member name="P:ClusterUtils.ComputingComponent.AssemblyDirectory">
+            <summary>
+            Gets working directory of assembly.
+            </summary>
         </member>
         <member name="T:ClusterUtils.Serializers">
             <summary>
