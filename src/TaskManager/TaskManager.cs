@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ClusterMessages;
 using ClusterUtils;
 using ClusterUtils.Communication;
@@ -10,25 +11,14 @@ namespace TaskManager
     /// Implementation of TaskManager.
     /// Manager registeres to server and awaits for problems to divide or partial solutions to choose final solution.
     /// </summary>
-    public class TaskManager : RegisteredComponent
+    public class TaskManager : ComputingComponent
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="config">Server info from App.config and arguments.</param>
         public TaskManager(ComponentConfig config) : base(config, "TaskManager") { }
-
-        /// <summary>
-        /// Tries to register to server and starts sending status message.
-        /// </summary>
-        public void Start()
-        {
-            LogRuntimeInfo();
-            Register();
-            StartSendingStatus();
-            Console.ReadLine();
-        }
-
+        
         protected override void ProcessMessages(IEnumerable<MessagePackage> responses)
         {
             foreach (var message in responses)
@@ -72,13 +62,17 @@ namespace TaskManager
         private void ChooseAndSendFinalSolution(Solutions message)
         {
             var solution = ChooseFinalSolution(message);
+            if (solution == null) return;
+
             SendMessageNoResponse(solution);
         }
 
         private Solutions ChooseFinalSolution(Solutions solutions)
         {
+            var taskSolver = CreateSolverOrSendError(solutions.ProblemType, solutions.CommonData);
+            if (taskSolver == null) return null;
+
             var partialSolutions = solutions.Solutions1;
-            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(solutions.CommonData);
 
             var partialSolutionsData = new byte[partialSolutions.Length][];
 
@@ -128,34 +122,27 @@ namespace TaskManager
         private void DivideAndSendPartialProblems(DivideProblem message)
         {
             var partialProblems = CreatePartialProblems(message);
+            if (partialProblems == null) return;
 
             SendMessageNoResponse(partialProblems);
         }
 
         private SolvePartialProblems CreatePartialProblems(DivideProblem message)
         {
-            var taskSolver = new DVRPTaskSolver.DVRPTaskSolver(message.Data);
-            var problemsData = taskSolver.DivideProblem(0);
+            var taskSolver = CreateSolverOrSendError(message.ProblemType, message.Data);
+            if (taskSolver == null) return null;
 
-            var partialProblems = new List<SolvePartialProblemsPartialProblem>();
-            for (var i = 0; i < problemsData.Length; i++)
-            {
-                partialProblems.Add(
-                    new SolvePartialProblemsPartialProblem
-                    {
-                        TaskId = (ulong)i,
-                        NodeID = Id,
-                        Data = problemsData[i]
-                    }
-                );
-            }
+            var problemsData = taskSolver.DivideProblem(0);
 
             var partialProblemsMessage = new SolvePartialProblems
             {
                 Id = message.Id,
                 ProblemType = "DVRP",
                 CommonData = message.Data,
-                PartialProblems = partialProblems.ToArray()
+                PartialProblems = problemsData.Select((t, i) => new SolvePartialProblemsPartialProblem
+                {
+                    TaskId = (ulong) i, NodeID = Id, Data = t
+                }).ToArray()
             };
 
             return partialProblemsMessage;

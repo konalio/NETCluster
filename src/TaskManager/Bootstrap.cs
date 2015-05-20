@@ -1,4 +1,5 @@
-﻿using ClusterUtils;
+﻿using System;
+using ClusterUtils;
 
 namespace TaskManager
 {
@@ -9,6 +10,8 @@ namespace TaskManager
             var manager = new TaskManager(ComponentConfig.GetComponentConfig(args));
 
             manager.Start();
+
+            Console.ReadLine();
         }
     }
 }

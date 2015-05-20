@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayComparer.cs" />
+    <Compile Include="DVRPTaskSolverCreator.cs" />
     <Compile Include="Wrappers\Depot.cs" />
     <Compile Include="Wrappers\DVRP\DVRPData.cs" />
     <Compile Include="Wrappers\DVRP\DVRPLocationsSubset.cs" />
