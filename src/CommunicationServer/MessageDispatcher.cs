@@ -151,6 +151,8 @@ namespace CommunicationServer
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
 
+            _components[(int)id].StatusOccured = true;
+
             //  The components do not inform server if they are busy or idle yet, that's why this part is
             //  commented at the moment
             //if (state == "Idle")
@@ -221,6 +223,9 @@ namespace CommunicationServer
                 Id = registeredComponent.id.ToString(),
                 Timeout = _componentTimeout.ToString()
             };
+
+            var thread = new Thread(CheckComponentTimeout);
+            thread.Start(registeredComponent.id);
 
             ConvertAndSendMessage(responseMessage, tp.Handler);
         }
@@ -576,6 +581,28 @@ namespace CommunicationServer
                 i++;
             }
             return null;
+        }
+
+        public void CheckComponentTimeout(object componentIndex)
+        {
+            var index = (int)componentIndex;
+            var ev = new ManualResetEvent(false);
+
+            while (true)
+            {
+                ev.WaitOne(_componentTimeout);
+
+                if (_components[index].StatusOccured)
+                {
+                    _components[index].StatusOccured = false;
+                }
+                else
+                {
+                    _components[index] = null;
+                    break;
+                }
+            }
+
         }
 
         public void AcceptCallback(IAsyncResult ar)

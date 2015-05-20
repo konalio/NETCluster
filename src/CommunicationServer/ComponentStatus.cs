@@ -11,12 +11,14 @@ namespace CommunicationServer
         public ulong id;
         public String type;
         public String[] solvableProblems;
+        public bool StatusOccured;
 
         public ComponentStatus(ulong idVal, String typeVal, String[] problemsVal)
         {
             id = idVal;
             type = typeVal;
             solvableProblems = problemsVal;
+            StatusOccured = false;
         }
     }
 }
