@@ -14,12 +14,11 @@ namespace CommunicationServer
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
         private ulong _problemsCount;
-        private ulong _componentCount;
+        private object _componentCount;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
         private List<IClusterMessage> _messageList;
-        //private List<ComponentStatus> _components;
         private Dictionary<int, ComponentStatus> _components;
 
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
@@ -36,7 +35,8 @@ namespace CommunicationServer
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
-            //_components = new List<ComponentStatus>();
+            _componentCount = new object();
+            _componentCount = 0;
             _components = new Dictionary<int, ComponentStatus>();
 
             var th1 = new Thread(ListeningThread);
@@ -214,25 +214,31 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleRegisterMessages(ThreadPackage tp)
         {
-            var message = (Register)tp.Message.ClusterMessage;
-
-            var registeredComponent = new ComponentStatus(
-                _componentCount++,
-                message.Type,
-                message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
-            );
-            _components.Add((int)_componentCount - 1,registeredComponent);
-
-            var responseMessage = new RegisterResponse
+            var message = (Register)tp.Message.ClusterMessage;           
+            
+            lock (_componentCount)
             {
-                Id = registeredComponent.id.ToString(),
-                Timeout = _componentTimeout.ToString()
-            };
 
-            var thread = new Thread(CheckComponentTimeout);
-            thread.Start((int)registeredComponent.id);
+                var registeredComponent = new ComponentStatus(
+                    (ulong)((int)_componentCount),
+                    message.Type,
+                    message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
+                );
+                _components.Add((int)_componentCount, registeredComponent);
 
-            ConvertAndSendMessage(responseMessage, tp.Handler);
+                _componentCount = (int)(_componentCount) + 1;
+
+                var responseMessage = new RegisterResponse
+                {
+                    Id = registeredComponent.id.ToString(),
+                    Timeout = _componentTimeout.ToString()
+                };
+
+                var thread = new Thread(CheckComponentTimeout);
+                thread.Start((int)registeredComponent.id);
+                ConvertAndSendMessage(responseMessage, tp.Handler);
+            }
+           
         }
 
         /// <summary>
@@ -613,25 +619,6 @@ namespace CommunicationServer
             }
             Console.WriteLine("Removing component:: " + index.ToString());
             _components.Remove(index);
-
-            /*
-            while (true)
-            {
-                //ev.WaitOne(_componentTimeout * 1000);
-
-                if (_components[index].StatusOccured)
-                {
-                    Console.WriteLine("Is Okay:: " + index.ToString());
-                    _components[index].StatusOccured = false;
-                }
-                else
-                {
-                    Console.WriteLine("Removing component:: " + index.ToString());
-                    _components.Remove(index);
-                    break;
-                }
-            }*/
-
         }
         
 
