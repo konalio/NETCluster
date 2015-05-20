@@ -45,13 +45,20 @@ namespace ClusterUtils
         /// <returns>True on registration success, false otherwise.</returns>
         protected bool Register()
         {
+            return Register(new RegisterSolvableProblemsProblemName[0]);
+        }
+
+        /// <summary>
+        /// Register to server and process register response message.
+        /// </summary>
+        /// <param name="solvableProblems">List of problems that this component may solve.</param>
+        /// <returns>True on registration success, false otherwise.</returns>
+        protected bool Register(RegisterSolvableProblemsProblemName[] solvableProblems)
+        {
             var registerMessage = new Register
             {
                 Type = Type,
-                SolvableProblems = new []{new RegisterSolvableProblemsProblemName
-                {
-                    Value = "DVRP"
-                }}
+                SolvableProblems = solvableProblems
             };
 
             var response = SendMessageSingleResponse(registerMessage);
@@ -64,7 +71,7 @@ namespace ClusterUtils
         /// </summary>
         /// <param name="response"></param>
         /// <returns>True on registration success, false otherwise.</returns>
-        private bool ProcessRegisterResponse(MessagePackage response)
+        protected bool ProcessRegisterResponse(MessagePackage response)
         {
             var message = (RegisterResponse) response.ClusterMessage;
             Id = ulong.Parse(message.Id);
@@ -126,7 +133,8 @@ namespace ClusterUtils
         /// <param name="package">Received NoOperation message.</param>
         protected void ProcessNoOperationMessage(MessagePackage package)
         {
-            Console.WriteLine("Received NoOperation message.");
+            if (LogAllInfo)
+                Console.WriteLine("Received NoOperation message.");
         }
 
         /// <summary>

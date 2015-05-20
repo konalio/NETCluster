@@ -16,11 +16,6 @@
             </summary>
             <param name="config">Server info from App.config and arguments.</param>
         </member>
-        <member name="M:TaskManager.TaskManager.Start">
-            <summary>
-            Tries to register to server and starts sending status message.
-            </summary>
-        </member>
         <member name="M:TaskManager.TaskManager.ProcessSolutions(ClusterUtils.Communication.MessagePackage)">
             <summary>
             Support for processing solutions messages. 

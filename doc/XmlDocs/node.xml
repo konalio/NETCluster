@@ -10,14 +10,6 @@
             </summary>
             <param name="componentConfig">Server info from App.config and arguments.</param>
         </member>
-        <member name="M:ComputationalNode.ComputationalNode.Start">
-            <summary>
-            Starts the Node:
-            - Prints info about the Server,
-            - Attempts to register to the Server,
-            - Starts sending Status messages to the Server.
-            </summary>
-        </member>
         <member name="M:ComputationalNode.ComputationalNode.ProcessMessages(System.Collections.Generic.IEnumerable{ClusterUtils.Communication.MessagePackage})">
             <summary>
             Processes messages received from Server.

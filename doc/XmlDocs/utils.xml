@@ -115,6 +115,15 @@
             Closes sockets between server and client.
             </summary>
         </member>
+        <member name="T:ClusterUtils.ComputingComponent">
+            <summary>
+            Class generalizing components that need external library to perform work.
+            General flow:
+                Load library/libraries that exposes classes extending TaskSolver class.
+                Register to server.
+                Do computations for cluster.
+            </summary>
+        </member>
         <member name="T:ClusterUtils.RegisteredComponent">
             <summary>
             General class for all components that register to main server:
@@ -150,6 +159,13 @@
             <summary>
             Register to server and process register response message.
             </summary>
+            <returns>True on registration success, false otherwise.</returns>
+        </member>
+        <member name="M:ClusterUtils.RegisteredComponent.Register(RegisterSolvableProblemsProblemName[])">
+            <summary>
+            Register to server and process register response message.
+            </summary>
+            <param name="solvableProblems">List of problems that this component may solve.</param>
             <returns>True on registration success, false otherwise.</returns>
         </member>
         <member name="M:ClusterUtils.RegisteredComponent.ProcessRegisterResponse(ClusterUtils.Communication.MessagePackage)">
@@ -196,6 +212,59 @@
             Method for handling all messages that given components may handle.
             </summary>
             <param name="responses">Messages received from server.</param>
+        </member>
+        <member name="F:ClusterUtils.ComputingComponent.SolversCreatorTypes">
+            <summary>
+            Container for types of SolverCreators for specified problem type.
+            </summary>
+        </member>
+        <member name="F:ClusterUtils.ComputingComponent.SolvableProblems">
+            <summary>
+            Container for problems that this component may compute.
+            </summary>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.#ctor(ClusterUtils.ComponentConfig,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="config">Component config.</param>
+            <param name="type">Type of component.</param>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.Start">
+            <summary>
+            Starts the component:
+            - Prints info about the Server,
+            - Attempts to register to the Server,
+            - Starts sending Status messages to the Server.
+            </summary>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.CommandLineLoop">
+            <summary>
+            Simple command line for loading libraries and connecting to cluster.
+            </summary>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.CreateSolver(System.String,System.Byte[])">
+            <summary>
+            Creates instance of solver for given type with given data. 
+            If error occures, throws exception.
+            </summary>
+            <param name="problemType">Type of problem.</param>
+            <param name="data">Data for problem instance.</param>
+            <returns>Solver instance.</returns>
+        </member>
+        <member name="M:ClusterUtils.ComputingComponent.CreateSolverOrSendError(System.String,System.Byte[])">
+            <summary>
+            Creates instance of solver for given type with given data.
+            
+            </summary>
+            <param name="problemType"></param>
+            <param name="data"></param>
+            <returns>Solver instance or null.</returns>
+        </member>
+        <member name="P:ClusterUtils.ComputingComponent.AssemblyDirectory">
+            <summary>
+            Gets working directory of assembly.
+            </summary>
         </member>
         <member name="T:ClusterUtils.Serializers">
             <summary>
