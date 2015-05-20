@@ -19,7 +19,8 @@ namespace CommunicationServer
         private readonly int _componentTimeout;
 
         private List<IClusterMessage> _messageList;
-        private List<ComponentStatus> _components;
+        //private List<ComponentStatus> _components;
+        private Dictionary<int, ComponentStatus> _components;
 
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
@@ -35,7 +36,8 @@ namespace CommunicationServer
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
-            _components = new List<ComponentStatus>();
+            //_components = new List<ComponentStatus>();
+            _components = new Dictionary<int, ComponentStatus>();
 
             var th1 = new Thread(ListeningThread);
             th1.Start(null);
@@ -151,6 +153,9 @@ namespace CommunicationServer
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
 
+            if (_components[(int)id] == null)
+                return;
+
             _components[(int)id].StatusOccured = true;
 
             //  The components do not inform server if they are busy or idle yet, that's why this part is
@@ -216,7 +221,7 @@ namespace CommunicationServer
                 message.Type,
                 message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
             );
-            _components.Add(registeredComponent);
+            _components.Add((int)_componentCount - 1,registeredComponent);
 
             var responseMessage = new RegisterResponse
             {
@@ -225,7 +230,7 @@ namespace CommunicationServer
             };
 
             var thread = new Thread(CheckComponentTimeout);
-            thread.Start(registeredComponent.id);
+            thread.Start((int)registeredComponent.id);
 
             ConvertAndSendMessage(responseMessage, tp.Handler);
         }
@@ -429,7 +434,6 @@ namespace CommunicationServer
             messageData[messageData1.Length] = 23;
             messageData2.CopyTo(messageData, messageData1.Length + 1);
             SendMessage(handler, messageData);
-
         }
 
         /// <summary>
@@ -583,27 +587,53 @@ namespace CommunicationServer
             return null;
         }
 
+        /// <summary>
+        /// Thread for checking if Component didn't cross the timeout
+        /// </summary>
+        /// <param name="componentIndex">Component Index</param>
         public void CheckComponentTimeout(object componentIndex)
         {
-            var index = (int)componentIndex;
+            var index = (int)(componentIndex);
             var ev = new ManualResetEvent(false);
 
+            for (int i = 0; i < _componentTimeout; i++)
+            {
+                ev.WaitOne(1000);
+                if (_components[index].StatusOccured)
+                {
+                    Console.WriteLine("Is Okay:: " + index.ToString());
+                    _components[index].StatusOccured = false;
+
+                    var thread = new Thread(CheckComponentTimeout);
+                    thread.Start(componentIndex);
+                    return;
+                    
+                }
+
+            }
+            Console.WriteLine("Removing component:: " + index.ToString());
+            _components.Remove(index);
+
+            /*
             while (true)
             {
-                ev.WaitOne(_componentTimeout);
+                //ev.WaitOne(_componentTimeout * 1000);
 
                 if (_components[index].StatusOccured)
                 {
+                    Console.WriteLine("Is Okay:: " + index.ToString());
                     _components[index].StatusOccured = false;
                 }
                 else
                 {
-                    _components[index] = null;
+                    Console.WriteLine("Removing component:: " + index.ToString());
+                    _components.Remove(index);
                     break;
                 }
-            }
+            }*/
 
         }
+        
 
         public void AcceptCallback(IAsyncResult ar)
         {
