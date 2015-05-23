@@ -14,7 +14,8 @@ namespace CommunicationServer
     {
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
         private ulong _problemsCount;
-        private object _componentCount;
+        private ulong _componentCount;
+        private object _object;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
@@ -35,7 +36,7 @@ namespace CommunicationServer
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
-            _componentCount = new object();
+            _object = new object();
             _componentCount = 0;
             _components = new Dictionary<int, ComponentStatus>();
 
@@ -216,17 +217,17 @@ namespace CommunicationServer
         {
             var message = (Register)tp.Message.ClusterMessage;           
             
-            lock (_componentCount)
+            lock (_object)
             {
 
                 var registeredComponent = new ComponentStatus(
-                    (ulong)((int)_componentCount),
+                    _componentCount,
                     message.Type,
                     message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
                 );
                 _components.Add((int)_componentCount, registeredComponent);
 
-                _componentCount = (int)(_componentCount) + 1;
+                _componentCount = _componentCount + 1;
 
                 var responseMessage = new RegisterResponse
                 {
