@@ -15,7 +15,7 @@ namespace CommunicationServer
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
         private ulong _problemsCount;
         private ulong _componentCount;
-        private object _object;
+        private object _lockingObject;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
@@ -36,7 +36,7 @@ namespace CommunicationServer
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
-            _object = new object();
+            _lockingObject = new object();
             _componentCount = 0;
             _components = new Dictionary<int, ComponentStatus>();
 
@@ -154,8 +154,18 @@ namespace CommunicationServer
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
 
-            if (_components[(int)id] == null)
-                return;
+
+            try
+            {
+                ComponentStatus cs;
+                _components.TryGetValue((int)id, out cs);
+
+            }
+            catch (ArgumentNullException)
+            {
+                Error error = new Error() { ErrorType = ErrorErrorType.UnknownSender };
+                ConvertAndSendMessage<Error>(error, tp.Handler);
+            }            
 
             _components[(int)id].StatusOccured = true;
 
@@ -217,7 +227,7 @@ namespace CommunicationServer
         {
             var message = (Register)tp.Message.ClusterMessage;           
             
-            lock (_object)
+            lock (_lockingObject)
             {
 
                 var registeredComponent = new ComponentStatus(
@@ -227,7 +237,7 @@ namespace CommunicationServer
                 );
                 _components.Add((int)_componentCount, registeredComponent);
 
-                _componentCount = _componentCount + 1;
+                _componentCount++;
 
                 var responseMessage = new RegisterResponse
                 {
@@ -602,15 +612,14 @@ namespace CommunicationServer
         {
             var index = (int)(componentIndex);
             var ev = new ManualResetEvent(false);
-
+            
             for (int i = 0; i < _componentTimeout; i++)
             {
                 ev.WaitOne(1000);
                 if (_components[index].StatusOccured)
                 {
-                    Console.WriteLine("Is Okay:: " + index.ToString());
+                    
                     _components[index].StatusOccured = false;
-
                     var thread = new Thread(CheckComponentTimeout);
                     thread.Start(componentIndex);
                     return;
