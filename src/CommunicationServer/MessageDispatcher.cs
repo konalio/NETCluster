@@ -153,27 +153,26 @@ namespace CommunicationServer
             var id = message.Id;
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
-
+            ComponentStatus cs;
 
             try
-            {
-                ComponentStatus cs;
-                _components.TryGetValue((int)id, out cs);
-
+            {                
+                cs = _components[(int)id];
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 Error error = new Error() { ErrorType = ErrorErrorType.UnknownSender };
                 ConvertAndSendMessage<Error>(error, tp.Handler);
+                return;
             }            
 
-            _components[(int)id].StatusOccured = true;
+            cs.StatusOccured = true;
 
             //  The components do not inform server if they are busy or idle yet, that's why this part is
             //  commented at the moment
             //if (state == "Idle")
             //{
-            switch (_components[(int)id].type)
+            switch (cs.type)
             {
                 case "TaskManager":
                     {
