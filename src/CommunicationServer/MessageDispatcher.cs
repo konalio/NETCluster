@@ -15,11 +15,12 @@ namespace CommunicationServer
         public static ManualResetEvent AllDone = new ManualResetEvent(false);
         private ulong _problemsCount;
         private ulong _componentCount;
+        private object _lockingObject;
         private readonly string _listeningPort;
         private readonly int _componentTimeout;
 
         private List<IClusterMessage> _messageList;
-        private List<ComponentStatus> _components;
+        private Dictionary<int, ComponentStatus> _components;
 
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
@@ -35,7 +36,9 @@ namespace CommunicationServer
         public void BeginDispatching()
         {
             _messageList = new List<IClusterMessage>();
-            _components = new List<ComponentStatus>();
+            _lockingObject = new object();
+            _componentCount = 0;
+            _components = new Dictionary<int, ComponentStatus>();
 
             var th1 = new Thread(ListeningThread);
             th1.Start(null);
@@ -150,12 +153,26 @@ namespace CommunicationServer
             var id = message.Id;
             var threads = message.Threads;
             var noOperationResponse = new NoOperation();
+            ComponentStatus cs;
+
+            try
+            {                
+                cs = _components[(int)id];
+            }
+            catch (Exception)
+            {
+                Error error = new Error() { ErrorType = ErrorErrorType.UnknownSender };
+                ConvertAndSendMessage<Error>(error, tp.Handler);
+                return;
+            }            
+
+            cs.StatusOccured = true;
 
             //  The components do not inform server if they are busy or idle yet, that's why this part is
             //  commented at the moment
             //if (state == "Idle")
             //{
-            switch (_components[(int)id].type)
+            switch (cs.type)
             {
                 case "TaskManager":
                     {
@@ -207,22 +224,31 @@ namespace CommunicationServer
         /// <param name="tp">Thread Package with Socket handler and XmlDocument ClusterMessage</param>
         public void HandleRegisterMessages(ThreadPackage tp)
         {
-            var message = (Register)tp.Message.ClusterMessage;
-
-            var registeredComponent = new ComponentStatus(
-                _componentCount++,
-                message.Type,
-                message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
-            );
-            _components.Add(registeredComponent);
-
-            var responseMessage = new RegisterResponse
+            var message = (Register)tp.Message.ClusterMessage;           
+            
+            lock (_lockingObject)
             {
-                Id = registeredComponent.id.ToString(),
-                Timeout = _componentTimeout.ToString()
-            };
 
-            ConvertAndSendMessage(responseMessage, tp.Handler);
+                var registeredComponent = new ComponentStatus(
+                    _componentCount,
+                    message.Type,
+                    message.SolvableProblems.Select(problemsWrapper => problemsWrapper.Value).ToArray()
+                );
+                _components.Add((int)_componentCount, registeredComponent);
+
+                _componentCount++;
+
+                var responseMessage = new RegisterResponse
+                {
+                    Id = registeredComponent.id.ToString(),
+                    Timeout = _componentTimeout.ToString()
+                };
+
+                var thread = new Thread(CheckComponentTimeout);
+                thread.Start((int)registeredComponent.id);
+                ConvertAndSendMessage(responseMessage, tp.Handler);
+            }
+           
         }
 
         /// <summary>
@@ -424,7 +450,6 @@ namespace CommunicationServer
             messageData[messageData1.Length] = 23;
             messageData2.CopyTo(messageData, messageData1.Length + 1);
             SendMessage(handler, messageData);
-
         }
 
         /// <summary>
@@ -577,6 +602,34 @@ namespace CommunicationServer
             }
             return null;
         }
+
+        /// <summary>
+        /// Thread for checking if Component didn't cross the timeout
+        /// </summary>
+        /// <param name="componentIndex">Component Index</param>
+        public void CheckComponentTimeout(object componentIndex)
+        {
+            var index = (int)(componentIndex);
+            var ev = new ManualResetEvent(false);
+            
+            for (int i = 0; i < _componentTimeout; i++)
+            {
+                ev.WaitOne(1000);
+                if (_components[index].StatusOccured)
+                {
+                    
+                    _components[index].StatusOccured = false;
+                    var thread = new Thread(CheckComponentTimeout);
+                    thread.Start(componentIndex);
+                    return;
+                    
+                }
+
+            }
+            Console.WriteLine("Removing component:: " + index.ToString());
+            _components.Remove(index);
+        }
+        
 
         public void AcceptCallback(IAsyncResult ar)
         {

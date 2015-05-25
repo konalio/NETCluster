@@ -141,6 +141,12 @@
             <param name="handler">Handler to the ComputationalNode</param>
             <returns></returns>
         </member>
+        <member name="M:CommunicationServer.MessageDispatcher.CheckComponentTimeout(System.Object)">
+            <summary>
+            Thread for checking if Component didn't cross the timeout
+            </summary>
+            <param name="componentIndex">Component Index</param>
+        </member>
         <member name="T:CommunicationServer.ServerConfig">
             <summary>
             Container for server configuration info - listening port, backup/no backup, timeout for components.
