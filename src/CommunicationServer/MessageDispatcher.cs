@@ -23,6 +23,11 @@ namespace CommunicationServer
         private Dictionary<int, ComponentStatus> _components;
 
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
+      
+        private Dictionary<int, Dictionary<int, Dictionary<int, SolvePartialProblems>>> _reservedPartialProblem =
+            new Dictionary<int, Dictionary<int, Dictionary<int, SolvePartialProblems>>>();
+
+      
 
         public MessageDispatcher(string listport, int timeout)
         {
@@ -195,9 +200,9 @@ namespace CommunicationServer
                     break;
                 case "ComputationalNode":
                     {
-                        var cm = SearchComputationalNodeMessages(tp.Handler);
+                        var cm = SearchComputationalNodeMessages((int)id,tp.Handler);
                         if (cm != null && cm.GetType() == typeof(SolvePartialProblems))
-                        {
+                        {                            
                             ConvertAndSendTwoMessages(cm as SolvePartialProblems, noOperationResponse, tp.Handler);
                         } else
                         {
@@ -356,6 +361,7 @@ namespace CommunicationServer
                 singleProblemArray[0] = problem;
                 singlePartialProblem.PartialProblems = singleProblemArray;
                 _messageList.Add(singlePartialProblem);
+                
             }
 
             SendNoOperationMessage(tp);
@@ -370,7 +376,7 @@ namespace CommunicationServer
         {
             var message = (Solutions)tp.Message.ClusterMessage;
             var type = message.Solutions1[0].Type;
-
+            
             switch (type)
             {
                 case SolutionsSolutionType.Final:
@@ -431,7 +437,17 @@ namespace CommunicationServer
             };
 
             AddPartialSolution(ss, message.Id);
+
+            RemovePartialProblemsBackup((int)message.Id, (int)partialSolution.TaskId);
+           
         }
+
+        public void RemovePartialProblemsBackup(int ProblemInstance, int TaskID)
+        {
+            var element = _reservedPartialProblem.FirstOrDefault(x => x.Value.ContainsKey(ProblemInstance));
+            _reservedPartialProblem[element.Key][ProblemInstance].Remove(TaskID);
+
+        }       
 
         /// <summary>
         /// Converts two Messages of different types to the binary array data and sends them to component
@@ -567,7 +583,7 @@ namespace CommunicationServer
         /// <param name="handler">Handler to the ComputationalNode</param>
         /// <returns></returns>
 
-        public IClusterMessage SearchComputationalNodeMessages(Socket handler)
+        public IClusterMessage SearchComputationalNodeMessages(int id,Socket handler)
         {
             var i = 0;
             const int timeout = 2;
@@ -592,6 +608,8 @@ namespace CommunicationServer
                     if (problems != null)
                     {
                         var spp = problems;
+
+                        AddPartialProblemBackup(id, spp);                                       
                         _messageList.Remove(problems);
                         return spp;
                     }
@@ -602,6 +620,19 @@ namespace CommunicationServer
             }
             return null;
         }
+
+        public void AddPartialProblemBackup(int ComponentId, SolvePartialProblems spp)
+        {
+            if (!_reservedPartialProblem.ContainsKey(ComponentId))
+            {
+                _reservedPartialProblem.Add(ComponentId, new Dictionary<int, Dictionary<int, SolvePartialProblems>>());
+            }
+            if (!_reservedPartialProblem[ComponentId].ContainsKey((int)spp.Id))
+            {
+                _reservedPartialProblem[ComponentId].Add((int)spp.Id, new Dictionary<int, SolvePartialProblems>());
+            }
+        }
+        
 
         /// <summary>
         /// Thread for checking if Component didn't cross the timeout
@@ -628,6 +659,20 @@ namespace CommunicationServer
             }
             Console.WriteLine("Removing component:: " + index.ToString());
             _components.Remove(index);
+
+            try
+            {
+                foreach (var element in _reservedPartialProblem[index])
+                    foreach (var elementIn in _reservedPartialProblem[index][element.Key])
+                        _messageList.Add(elementIn.Value);
+                _reservedPartialProblem.Remove(index);
+
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
         }
         
 
