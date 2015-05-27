@@ -547,7 +547,7 @@ namespace CommunicationServer
                             NodeID = id,
                             Data = sr.Data
                         };
-                        DivideProblemBackup.AddBackup(_divideProblemBackup, (int)id, dp);
+                        DivideProblemBackup.AddBackup(_divideProblemBackup, (int)id, sr);
                         _messageList.Remove(_messageList[i]);
                         return dp;
 
@@ -633,7 +633,7 @@ namespace CommunicationServer
                 }
 
             }
-            List<DivideProblem> divideProblemsList = DivideProblemBackup.GetAllElementsAndDelete(ref _divideProblemBackup, index);
+            List<SolveRequest> divideProblemsList = DivideProblemBackup.GetAllElementsAndDelete(ref _divideProblemBackup, index);
             List<Solutions> mergeSolutionList = MerginSolutionBackup.GetAllElementsAndDelete(ref _mergeSolutionBackup, index);
 
             foreach(var element in divideProblemsList)

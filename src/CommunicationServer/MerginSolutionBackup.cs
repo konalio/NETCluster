@@ -14,13 +14,13 @@ namespace CommunicationServer
         public MerginSolutionBackup() { }
 
         public static void AddBackup(List<MerginSolutionBackup> list, int compID, Solutions sol)
-        {
+        {            
             var element = new MerginSolutionBackup() { ComponentID = compID, Solution = sol };
             list.Add(element);
         }
 
         public static void RemoveBackup(List<MerginSolutionBackup> list, int problemInstanceID)
-        {
+        {            
             MerginSolutionBackup dpb = null;
             lock(list)
             {
@@ -49,7 +49,7 @@ namespace CommunicationServer
                     list.Add(element.Solution);
                 }
             }
-            problemsList = copy;
+            problemsList = copy;            
             return list;           
 
         }

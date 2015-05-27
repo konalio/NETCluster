@@ -9,18 +9,18 @@ namespace CommunicationServer
     class DivideProblemBackup
     {
         public int ComponentID;
-        public DivideProblem Problem;
+        public SolveRequest Problem;
 
         public DivideProblemBackup() { }
 
-        public static void AddBackup(List<DivideProblemBackup> list, int compID, DivideProblem prob)
-        {
-            var element = new DivideProblemBackup() { ComponentID = compID, Problem = prob };
+        public static void AddBackup(List<DivideProblemBackup> list, int compID, SolveRequest prob)
+        {   
+            var element = new DivideProblemBackup() { ComponentID = compID, Problem = prob };            
             list.Add(element);
         }
 
         public static void RemoveBackup(List<DivideProblemBackup> list, int problemInstanceID)
-        {
+        {            
             DivideProblemBackup dpb = null;
             lock(list)
             {
@@ -37,10 +37,10 @@ namespace CommunicationServer
             }            
         }
 
-        public static List<DivideProblem> GetAllElementsAndDelete(ref List<DivideProblemBackup> problemsList, int compID)
+        public static List<SolveRequest> GetAllElementsAndDelete(ref List<DivideProblemBackup> problemsList, int compID)
         {            
             List<DivideProblemBackup> copy = new List<DivideProblemBackup>(problemsList);
-            List<DivideProblem> list = new List<DivideProblem>();
+            List<SolveRequest> list = new List<SolveRequest>();
 
             foreach (var element in problemsList)
             {
@@ -48,7 +48,7 @@ namespace CommunicationServer
                 {
                     list.Add(element.Problem);
                 }
-            }
+            }            
             problemsList = copy;
             return list;           
 
