@@ -47,6 +47,8 @@
     <Compile Include="CommunicationsServer.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="ComponentStatus.cs" />
+    <Compile Include="DivideProblemBackup.cs" />
+    <Compile Include="MerginSolutionBackup.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="PartialProblemsBackup.cs" />
     <Compile Include="ProblemInstance.cs" />

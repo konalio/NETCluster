@@ -134,7 +134,7 @@
             <param name="handler">Handler to the TaskManager</param>
             <returns></returns>
         </member>
-        <member name="M:CommunicationServer.MessageDispatcher.SearchComputationalNodeMessages(System.Net.Sockets.Socket)">
+        <member name="M:CommunicationServer.MessageDispatcher.SearchComputationalNodeMessages(System.Int32,System.Net.Sockets.Socket)">
             <summary>
             Searches listed messages (SolvePartialProblems) for ComputationalNode
             </summary>
@@ -146,6 +146,11 @@
             Thread for checking if Component didn't cross the timeout
             </summary>
             <param name="componentIndex">Component Index</param>
+        </member>
+        <member name="T:CommunicationServer.PartialProblemsBackup">
+            <summary>
+            Backup class for PartialProblems 
+            </summary>
         </member>
         <member name="T:CommunicationServer.ServerConfig">
             <summary>
