@@ -13,13 +13,13 @@ namespace CommunicationServer
 
         public DivideProblemBackup() { }
 
-        public static void AddDivideProblemBackup(List<DivideProblemBackup> list, int compID, DivideProblem prob)
+        public static void AddBackup(List<DivideProblemBackup> list, int compID, DivideProblem prob)
         {
             var element = new DivideProblemBackup() { ComponentID = compID, Problem = prob };
             list.Add(element);
         }
 
-        public static void RemoveDivideProblemBackup(List<DivideProblemBackup> list, int problemInstanceID)
+        public static void RemoveBackup(List<DivideProblemBackup> list, int problemInstanceID)
         {
             DivideProblemBackup dpb = null;
             lock(list)
