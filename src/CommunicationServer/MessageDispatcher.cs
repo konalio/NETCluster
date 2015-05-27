@@ -22,6 +22,7 @@ namespace CommunicationServer
         private List<IClusterMessage> _messageList;
         private Dictionary<int, ComponentStatus> _components;
 
+        
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
         public MessageDispatcher(string listport, int timeout)
