@@ -27,7 +27,15 @@ namespace ClusterUtils
                 var xmlS = new XmlSerializer(obj.GetType());
                 xmlS.Serialize(streamWriter, obj);
 
-                return ms.ToArray();
+                var streamBytes = ms.ToArray();
+                var messageBytes = new List<byte>();
+
+                for (var i = 3; i < streamBytes.Length; i++)
+                {
+                    messageBytes.Add(streamBytes[i]);
+                }
+
+                return messageBytes.ToArray();
             }
         }
 
