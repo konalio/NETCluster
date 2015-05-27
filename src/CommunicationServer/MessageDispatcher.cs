@@ -21,7 +21,7 @@ namespace CommunicationServer
 
         private List<IClusterMessage> _messageList;
         private Dictionary<int, ComponentStatus> _components;
-
+        private List<DivideProblemBackup> _divideProblemBackup = new List<DivideProblemBackup>();
         
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
@@ -325,7 +325,7 @@ namespace CommunicationServer
         public void HandlePartialProblemsMessages(ThreadPackage tp)
         {
             var message = (SolvePartialProblems)tp.Message.ClusterMessage;
-
+            
             var partialProblems = message.PartialProblems;
 
             var problemInstance = _problemInstances.Find(pi => pi.Id == message.Id);
@@ -359,6 +359,7 @@ namespace CommunicationServer
                 _messageList.Add(singlePartialProblem);
             }
 
+            DivideProblemBackup.RemoveDivideProblemBackup(_divideProblemBackup, (int)message.Id);
             SendNoOperationMessage(tp);
         }
 
@@ -542,7 +543,7 @@ namespace CommunicationServer
                             NodeID = id,
                             Data = sr.Data
                         };
-
+                        DivideProblemBackup.AddDivideProblemBackup(_divideProblemBackup, (int)id, dp);
                         _messageList.Remove(_messageList[i]);
                         return dp;
 
@@ -627,6 +628,13 @@ namespace CommunicationServer
                 }
 
             }
+            List<DivideProblem> divideProblemsList = DivideProblemBackup.GetAllElementsAndDelete(ref _divideProblemBackup, index);
+
+            foreach(var element in divideProblemsList)
+            {
+                _messageList.Add(element);
+            }
+
             Console.WriteLine("Removing component:: " + index.ToString());
             _components.Remove(index);
         }
