@@ -21,13 +21,10 @@ namespace CommunicationServer
 
         private List<IClusterMessage> _messageList;
         private Dictionary<int, ComponentStatus> _components;
+        private List<PartialProblemsBackup> _partialProblemsBackup = new List<PartialProblemsBackup>();
 
-        private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
-      
-        private Dictionary<int, Dictionary<int, Dictionary<int, SolvePartialProblems>>> _reservedPartialProblem =
-            new Dictionary<int, Dictionary<int, Dictionary<int, SolvePartialProblems>>>();
+        private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();  
 
-      
 
         public MessageDispatcher(string listport, int timeout)
         {
@@ -438,16 +435,10 @@ namespace CommunicationServer
 
             AddPartialSolution(ss, message.Id);
 
-            RemovePartialProblemsBackup((int)message.Id, (int)partialSolution.TaskId);
+            PartialProblemsBackup.RemovePartialProblemBackup(_partialProblemsBackup, (int)partialSolution.TaskId, (int)message.Id);
            
         }
-
-        public void RemovePartialProblemsBackup(int ProblemInstance, int TaskID)
-        {
-            var element = _reservedPartialProblem.FirstOrDefault(x => x.Value.ContainsKey(ProblemInstance));
-            _reservedPartialProblem[element.Key][ProblemInstance].Remove(TaskID);
-
-        }       
+ 
 
         /// <summary>
         /// Converts two Messages of different types to the binary array data and sends them to component
@@ -608,8 +599,7 @@ namespace CommunicationServer
                     if (problems != null)
                     {
                         var spp = problems;
-
-                        AddPartialProblemBackup(id, spp);                                       
+                        PartialProblemsBackup.AddPartialProblemBackup(_partialProblemsBackup, id, spp);                                     
                         _messageList.Remove(problems);
                         return spp;
                     }
@@ -619,20 +609,7 @@ namespace CommunicationServer
                 i++;
             }
             return null;
-        }
-
-        public void AddPartialProblemBackup(int ComponentId, SolvePartialProblems spp)
-        {
-            if (!_reservedPartialProblem.ContainsKey(ComponentId))
-            {
-                _reservedPartialProblem.Add(ComponentId, new Dictionary<int, Dictionary<int, SolvePartialProblems>>());
-            }
-            if (!_reservedPartialProblem[ComponentId].ContainsKey((int)spp.Id))
-            {
-                _reservedPartialProblem[ComponentId].Add((int)spp.Id, new Dictionary<int, SolvePartialProblems>());
-            }
-        }
-        
+        }        
 
         /// <summary>
         /// Thread for checking if Component didn't cross the timeout
@@ -660,17 +637,11 @@ namespace CommunicationServer
             Console.WriteLine("Removing component:: " + index.ToString());
             _components.Remove(index);
 
-            try
-            {
-                foreach (var element in _reservedPartialProblem[index])
-                    foreach (var elementIn in _reservedPartialProblem[index][element.Key])
-                        _messageList.Add(elementIn.Value);
-                _reservedPartialProblem.Remove(index);
+            var unsolvedList = PartialProblemsBackup.GetComponentsPartialProblemsAndDelete(ref _partialProblemsBackup, index);
 
-            }
-            catch (Exception)
+            foreach (var element in unsolvedList)
             {
-                return;
+                _messageList.Add(element);
             }
 
         }
