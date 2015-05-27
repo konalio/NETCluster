@@ -21,8 +21,10 @@ namespace CommunicationServer
 
         private List<IClusterMessage> _messageList;
         private Dictionary<int, ComponentStatus> _components;
+
         private List<DivideProblemBackup> _divideProblemBackup = new List<DivideProblemBackup>();
-        
+        private List<MerginSolutionBackup> _mergeSolutionBackup = new List<MerginSolutionBackup>();
+
         private readonly List<ProblemInstance> _problemInstances = new List<ProblemInstance>();
 
         public MessageDispatcher(string listport, int timeout)
@@ -359,7 +361,7 @@ namespace CommunicationServer
                 _messageList.Add(singlePartialProblem);
             }
 
-            DivideProblemBackup.RemoveDivideProblemBackup(_divideProblemBackup, (int)message.Id);
+            DivideProblemBackup.RemoveBackup(_divideProblemBackup, (int)message.Id);
             SendNoOperationMessage(tp);
         }
 
@@ -408,6 +410,8 @@ namespace CommunicationServer
 
             if (problemInstance == null)
                 throw new Exception("Send error message - unknown problem.");
+
+            MerginSolutionBackup.RemoveBackup(_mergeSolutionBackup, (int) id); 
 
             problemInstance.FinalSolutionFound = true;
             problemInstance.FinalSolution = solution;
@@ -543,7 +547,7 @@ namespace CommunicationServer
                             NodeID = id,
                             Data = sr.Data
                         };
-                        DivideProblemBackup.AddDivideProblemBackup(_divideProblemBackup, (int)id, dp);
+                        DivideProblemBackup.AddBackup(_divideProblemBackup, (int)id, dp);
                         _messageList.Remove(_messageList[i]);
                         return dp;
 
@@ -552,6 +556,7 @@ namespace CommunicationServer
                     if (_messageList[i] is Solutions)
                     {
                         Solutions s = _messageList[i] as Solutions;
+                        MerginSolutionBackup.AddBackup(_mergeSolutionBackup, (int)id, s); 
                         _messageList.Remove(_messageList[i]);
                         return s;
                     }
@@ -629,8 +634,14 @@ namespace CommunicationServer
 
             }
             List<DivideProblem> divideProblemsList = DivideProblemBackup.GetAllElementsAndDelete(ref _divideProblemBackup, index);
+            List<Solutions> mergeSolutionList = MerginSolutionBackup.GetAllElementsAndDelete(ref _mergeSolutionBackup, index);
 
             foreach(var element in divideProblemsList)
+            {
+                _messageList.Add(element);
+            }
+
+            foreach (var element in mergeSolutionList)
             {
                 _messageList.Add(element);
             }
