@@ -216,6 +216,7 @@ namespace ComputationalClient
                     Console.WriteLine("Received final solution.");
                     var finalSolutionString = Encoding.UTF8.GetString(((Solutions) response.ClusterMessage).Solutions1[0].Data);
                     Console.WriteLine(finalSolutionString);
+                    Console.WriteLine("Computations time: {0}ms", ((Solutions) response.ClusterMessage).Solutions1[0].ComputationsTime);
                 }
                 else
                 {

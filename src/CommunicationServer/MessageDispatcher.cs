@@ -268,14 +268,15 @@ namespace CommunicationServer
                 Id = _problemsCount++,
                 ProblemType = message.ProblemType,
                 SolvingTimeout = message.SolvingTimeout,
-                Data = message.Data
+                Data = message.Data,
             };
             _messageList.Add(sr);
 
             _problemInstances.Add(new ProblemInstance
             {
                 CommonData = message.Data,
-                Id = sr.Id
+                Id = sr.Id,
+                StartTime = DateTime.Now
             });
 
             var responseForClient = new SolveRequestResponse
@@ -409,7 +410,7 @@ namespace CommunicationServer
             };
 
             var problemInstance = _problemInstances.Find(pi => pi.Id == id);
-
+            problemInstance.EndTime = DateTime.Now;
             if (problemInstance == null)
                 throw new Exception("Send error message - unknown problem.");
 
@@ -417,6 +418,8 @@ namespace CommunicationServer
 
             problemInstance.FinalSolutionFound = true;
             problemInstance.FinalSolution = solution;
+            problemInstance.FinalSolution.ComputationsTime =
+                (ulong)(problemInstance.EndTime - problemInstance.StartTime).Milliseconds;
         }
 
         /// <summary>

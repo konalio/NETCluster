@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CommunicationServer
 {
@@ -12,5 +13,8 @@ namespace CommunicationServer
         public SolutionsSolution FinalSolution;
         public bool FinalSolutionFound = false;
         public byte[] CommonData;
+
+        public DateTime StartTime;
+        public DateTime EndTime;
     }
 }
